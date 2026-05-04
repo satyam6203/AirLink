@@ -5,7 +5,7 @@ import payload.response.ApiResponse;
 public class HomeController {
 
     public String home(){
-        ApiResponse api = new ApiResponse();
+        ApiResponse api = new ApiResponse("City");
         return "hello";
     }
 }

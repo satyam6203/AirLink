@@ -1,23 +1,25 @@
 package com.airline.service;
 
-import org.springframework.data.domain.Page;
+
 import payload.request.CityRequest;
 import payload.response.CityResponse;
 
-import java.awt.print.Pageable;
+import org.springframework.data.domain.Pageable;
+
+import org.springframework.data.domain.Page;
 
 public interface CityService {
 
-    CityResponse createCity(CityRequest req);
-    CityResponse getCityById(Long id);
+    CityResponse createCity(CityRequest req) throws Exception;
+    CityResponse getCityById(Long id) throws Exception;
 
-    CityResponse updateCity(Long id, CityRequest request);
-    void deleteCity(Long id);
+    CityResponse updateCity(Long id, CityRequest request) throws Exception;
+    void deleteCity(Long id) throws Exception;
     Page<CityResponse> getAllCities(Pageable pageable);
 
     Page<CityResponse> searchCities(String keyword, Pageable pageable);
     Page<CityResponse> getCityByCountryCode(String countryCode, Pageable pageable);
 
     boolean cityExists(String cityCode);
-    boolean validateCityCode(String cityCode);
+
 }
