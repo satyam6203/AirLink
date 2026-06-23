@@ -10,7 +10,7 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface CityRepo extends JpaRepository<City,Long> {
 
-    boolean exitsByCityCode(String cityCode);
+    boolean existsByCityCode(String cityCode);
     boolean existsByCityCodeAndIdNot(String cityCode, Long id);
 
     Page<City> findByCountryCodeIgnoreCase(String countryCode, Pageable pageable);

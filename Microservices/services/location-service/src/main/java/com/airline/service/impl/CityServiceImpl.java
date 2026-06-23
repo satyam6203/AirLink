@@ -20,7 +20,7 @@ public class CityServiceImpl implements CityService {
 
     @Override
     public CityResponse createCity(CityRequest req) throws Exception {
-        if(cityRepo.exitsByCityCode(req.getCityCode())){
+        if(cityRepo.existsByCityCode(req.getCityCode())){
             throw new Exception("City with given code already Exists");
         }
         City city = CityMapper.toEntity(req);
@@ -39,7 +39,7 @@ public class CityServiceImpl implements CityService {
     public CityResponse updateCity(Long id, CityRequest request) throws Exception {
         City city = cityRepo.findById(id).orElseThrow(
                 ()-> new Exception("City not found with this id."));
-        if(cityRepo.exitsByCityCode(request.getCityCode())){
+        if(cityRepo.existsByCityCode(request.getCityCode())){
             throw  new Exception("city with the given code already exists");
         }
         City update = cityRepo.save(CityMapper.updateEntity(city , request));
@@ -70,7 +70,7 @@ public class CityServiceImpl implements CityService {
 
     @Override
     public boolean cityExists(String cityCode) {
-        return cityRepo.exitsByCityCode(cityCode);
+        return cityRepo.existsByCityCode(cityCode);
     }
 
 
