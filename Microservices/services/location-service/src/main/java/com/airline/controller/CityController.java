@@ -15,7 +15,7 @@ import payload.response.ApiResponse;
 import payload.response.CityResponse;
 
 @RestController
-@RequestMapping("/api/cities/")
+@RequestMapping("/api/cities")
 @RequiredArgsConstructor
 public class CityController {
 
@@ -36,7 +36,7 @@ public class CityController {
         return ResponseEntity.status(HttpStatus.FOUND).body(res);
     }
 
-    @GetMapping("/all/cities")
+    @GetMapping("/all")
     public ResponseEntity<Page<CityResponse>> getAllCities(
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "20") int size,
