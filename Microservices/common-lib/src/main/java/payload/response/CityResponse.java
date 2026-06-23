@@ -19,5 +19,4 @@ public class CityResponse {
     private String countryName;
     private String regionCode;
     private String timeZoneOffset;
-
 }

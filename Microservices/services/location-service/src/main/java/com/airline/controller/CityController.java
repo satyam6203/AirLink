@@ -1,10 +1,8 @@
 package com.airline.controller;
 
-import com.airline.Model.City;
 import com.airline.service.CityService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import org.apache.coyote.Response;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;

@@ -1,10 +1,8 @@
 package com.airline.Mapper;
 
 import com.airline.Model.City;
-import lombok.Data;
 import payload.request.CityRequest;
 import payload.response.CityResponse;
-
 
 public class CityMapper {
     public static City toEntity(CityRequest req){

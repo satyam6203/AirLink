@@ -35,4 +35,13 @@ public class Airport {
     @JsonIgnore
     @ManyToOne
     private City city;
+
+    @JsonIgnore
+    @Transient
+    public String getDetailedName(){
+        if(city != null && city.getCountryCode() != null){
+            return name.toUpperCase() + "/" + city.getCityCode();
+        }
+        return name.toUpperCase();
+    }
 }
