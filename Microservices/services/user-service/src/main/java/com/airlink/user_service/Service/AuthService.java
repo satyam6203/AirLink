@@ -4,6 +4,6 @@ import payload.dto.UserDTO;
 import payload.response.AuthResponse;
 
 public interface AuthService {
-    AuthResponse login(String email, String password);
+    AuthResponse login(String email, String password) throws Exception;
     AuthResponse signUp(UserDTO req) throws Exception;
 }

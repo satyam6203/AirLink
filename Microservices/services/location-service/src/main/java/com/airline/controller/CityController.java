@@ -82,7 +82,7 @@ public class CityController {
         return ResponseEntity.ok(cityService.getCityByCountryCode(countryCode.toLowerCase(),pageable));
     }
 
-    @GetMapping("/exits/{cityCode}")
+    @GetMapping("/exists/{cityCode}")
     public ResponseEntity<Boolean> checkCityExists(@PathVariable String cityCode){
         return ResponseEntity.ok(cityService.cityExists(cityCode.toUpperCase()));
     }

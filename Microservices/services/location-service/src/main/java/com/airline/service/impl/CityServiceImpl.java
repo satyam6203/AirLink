@@ -31,25 +31,25 @@ public class CityServiceImpl implements CityService {
     @Override
     public CityResponse getCityById(Long id) throws Exception {
         City city = cityRepo.findById(id).orElseThrow(
-                ()-> new Exception("City not found with this id."));
+                () -> new Exception("City not found with this id."));
         return CityMapper.toResponse(city);
     }
 
     @Override
     public CityResponse updateCity(Long id, CityRequest request) throws Exception {
         City city = cityRepo.findById(id).orElseThrow(
-                ()-> new Exception("City not found with this id."));
+                () -> new Exception("City not found with this id."));
         if(cityRepo.existsByCityCode(request.getCityCode())){
             throw  new Exception("city with the given code already exists");
         }
-        City update = cityRepo.save(CityMapper.updateEntity(city , request));
+        City update = cityRepo.save(CityMapper.updateEntity(city, request));
         return CityMapper.toResponse(update);
     }
 
     @Override
     public void deleteCity(Long id) throws Exception {
         City city = cityRepo.findById(id).orElseThrow(
-                ()-> new Exception("City not found with this id."));
+                () -> new Exception("City not found with this id."));
         cityRepo.deleteById(id);
     }
 
@@ -60,12 +60,12 @@ public class CityServiceImpl implements CityService {
 
     @Override
     public Page<CityResponse> searchCities(String keyword, Pageable pageable) {
-        return cityRepo.searchByKeyword(keyword,pageable).map(CityMapper :: toResponse);
+        return cityRepo.searchByKeyword(keyword, pageable).map(CityMapper :: toResponse);
     }
 
     @Override
     public Page<CityResponse> getCityByCountryCode(String countryCode, Pageable pageable) {
-        return cityRepo.findByCountryCodeIgnoreCase(countryCode,pageable).map(CityMapper :: toResponse);
+        return cityRepo.findByCountryCodeIgnoreCase(countryCode, pageable).map(CityMapper :: toResponse);
     }
 
     @Override
