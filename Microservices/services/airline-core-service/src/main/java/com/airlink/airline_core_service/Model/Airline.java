@@ -1,5 +1,6 @@
 package com.airlink.airline_core_service.Model;
 
+import embeddable.Support;
 import enums.AirLineStatus;
 import jakarta.persistence.*;
 import lombok.*;
@@ -25,13 +26,15 @@ public class Airline {
     private String iataCode;
 
     @Column(unique = true, nullable = false)
-    private String iacaCode;
+    private String icaoCode;
 
     @Column(nullable = false)
     private String name;
 
     private String alias;
 
+    @Column(unique = true, nullable = false)
+    private Long ownerId;
     private String logoUrl;
     private String website;
 
@@ -41,6 +44,9 @@ public class Airline {
     private String alliance;
 
     private Long headquarterCityId;
+
+    @Embedded
+    private Support support;
 
     private Long updatedById;
 

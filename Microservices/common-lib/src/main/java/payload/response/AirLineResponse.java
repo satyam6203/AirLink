@@ -5,6 +5,9 @@ import enums.AirLineStatus;
 import lombok.*;
 import payload.dto.UserDTO;
 
+import java.time.Instant;
+import java.time.LocalDateTime;
+
 @Getter
 @Setter
 @AllArgsConstructor
@@ -14,7 +17,7 @@ public class AirLineResponse {
 
     private Long id;
     private String iataCode;
-    private String iacaCode;
+    private String icaoCode;
     private String name;
     private String alias;
     private String logoUrl;
@@ -27,4 +30,6 @@ public class AirLineResponse {
     private Long updatedById;
     private CityResponse headquartersCity;
     private Support support;
+    private Instant createdAt;
+    private Instant updatedAt;
 }
