@@ -5,6 +5,8 @@
     <file url="file://$PROJECT_DIR$/cloud/src/main/resources" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/common-lib/src/main/java" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/common-lib/src/main/resources" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/services/airline-core-service/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/services/airline-core-service/src/main/resources" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/services/location-service/src/main/java" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/services/location-service/src/main/resources" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/services/src/main/java" charset="UTF-8" />
