@@ -1,0 +1,17 @@
+server:
+  port: 8003
+
+spring:
+  application:
+    name: airline-core-service
+
+  datasource:
+    url: jdbc:mysql://localhost:3306/airline_core
+    username: root
+    password: Golu@1234
+    driver-class-name: com.mysql.cj.jdbc.Driver
+
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: true
