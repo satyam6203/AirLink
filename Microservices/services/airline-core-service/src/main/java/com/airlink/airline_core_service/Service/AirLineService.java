@@ -17,6 +17,6 @@ public interface AirLineService {
     AirLineResponse updateAirLine(AirLineRequest request, Long ownerId) throws Exception;
     Page<AirLineResponse> getAllAirLines(Pageable pageable);
     void deleteAirLine(Long id, Long ownerId) throws Exception;
-    AirLineResponse changeStatus(Long airLineId, AirLineStatus status) throws Exception;
+    AirLineResponse changeStatus(Long airlineId, AirLineStatus status) throws Exception;
     List<AirLineDropdownItem> getAirLineDropDown();
 }

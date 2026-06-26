@@ -13,6 +13,7 @@ import payload.request.AirLineRequest;
 import payload.response.AirLineDropdownItem;
 import payload.response.AirLineResponse;
 
+import java.time.Instant;
 import java.util.List;
 
 @Service
@@ -24,6 +25,8 @@ public class AirLineServiceImpl implements AirLineService {
     @Override
     public AirLineResponse createAirLine(AirLineRequest request, Long ownerId) {
         Airline airline = AirLineMapper.toEntity(request, ownerId);
+        airline.setCreatedAt(Instant.now());
+        airline.setUpdatedAt(Instant.now());
         Airline savedAirLine = airLineRepo.save(airline);
         return AirLineMapper.toResponse(savedAirLine);
     }
@@ -72,10 +75,10 @@ public class AirLineServiceImpl implements AirLineService {
     }
 
     @Override
-    public AirLineResponse changeStatus(Long airLineId, AirLineStatus status) throws Exception {
-        Airline airline = airLineRepo.findById(airLineId)
+    public AirLineResponse changeStatus(Long airlineId, AirLineStatus status) throws Exception {
+        Airline airline = airLineRepo.findById(airlineId)
                 .orElseThrow(
-                        () -> new Exception("AirLine not found with this id " + airLineId)
+                        () -> new Exception("Airline not found with this id " + airlineId)
                 );
         airline.setStatus(status);
         Airline updatedAirLine = airLineRepo.save(airline);

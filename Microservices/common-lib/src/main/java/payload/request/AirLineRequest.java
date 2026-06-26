@@ -5,6 +5,8 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
 import lombok.*;
 
+import java.time.Instant;
+
 @Getter
 @Setter
 @AllArgsConstructor
@@ -40,4 +42,8 @@ public class AirLineRequest {
     private String supportHours;
 
     private Long headquarterCityId;
+
+    private Instant createdAt;
+
+    private Instant updatedAt;
 }
