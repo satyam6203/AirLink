@@ -55,8 +55,14 @@ public class AircraftMapper {
                 .nextMaintenanceDate(aircraft.getNextMaintenanceDate())
                 .status(aircraft.getStatus())
                 .isAvailable(aircraft.getIsAvailable())
-                .airline(aircraft)
+                .airlineId(aircraft.getAirline() != null ? aircraft.getAirline().getId() : null)
+                .airlineName(aircraft.getAirline() != null ? aircraft.getAirline().getName() : null)
+                .airlineIataCode(aircraft.getAirline() != null ? aircraft.getAirline().getIataCode() : null)
                 .currentAirportId(aircraft.getCurrentAirportId())
+                .totalSeats(aircraft.getTotalSeats())
+                .requiresMaintenance(aircraft.getCode())
+                .createdAt(aircraft.getCreatedAt())
+                .updatedAt(aircraft.getUpdatedAt())
                 .build();
     }
 }

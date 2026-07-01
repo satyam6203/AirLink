@@ -51,6 +51,14 @@ public class AircraftResponse {
     private String airlineName;
     private String airlineIataCode;
 
+    private Long currentAirportId;
+
+    private Integer totalSeats;
+
+    private boolean isOperational;
+
+    private String requiresMaintenance;
+
     private Instant createdAt;
     private Instant updatedAt;
 }
