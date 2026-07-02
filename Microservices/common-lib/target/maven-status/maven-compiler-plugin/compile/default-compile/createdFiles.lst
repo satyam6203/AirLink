@@ -1,4 +1,5 @@
 payload\request\CityRequest$CityRequestBuilder.class
+enums\AircraftStatus.class
 embeddable\Address$AddressBuilder.class
 payload\dto\UserDTO.class
 payload\request\AirLineRequest$AirLineRequestBuilder.class
@@ -18,12 +19,16 @@ enums\UserRole.class
 payload\request\CityRequest.class
 payload\response\AirportResponse.class
 payload\response\ApiResponse$ApiResponseBuilder.class
+payload\response\AircraftResponse$AircraftResponseBuilder.class
 payload\response\ApiResponse.class
 embeddable\GeoCode.class
 embeddable\Support$SupportBuilder.class
 payload\request\LoginRequest.class
 payload\response\AirLineResponse$AirLineResponseBuilder.class
+payload\request\AircraftRequest$AircraftRequestBuilder.class
+payload\request\AircraftRequest.class
 payload\request\AirportRequest.class
+payload\response\AircraftResponse.class
 payload\response\AirLineResponse.class
 CommonLibApplication.class
 payload\request\AirLineRequest.class

@@ -43,7 +43,4 @@ public class AirLineRequest {
 
     private Long headquarterCityId;
 
-    private Instant createdAt;
-
-    private Instant updatedAt;
 }

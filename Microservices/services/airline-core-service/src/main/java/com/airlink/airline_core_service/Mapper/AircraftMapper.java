@@ -2,6 +2,7 @@ package com.airlink.airline_core_service.Mapper;
 
 import com.airlink.airline_core_service.Model.Aircraft;
 import com.airlink.airline_core_service.Model.Airline;
+import payload.request.AirLineRequest;
 import payload.request.AircraftRequest;
 import payload.response.AircraftResponse;
 
@@ -64,5 +65,28 @@ public class AircraftMapper {
                 .createdAt(aircraft.getCreatedAt())
                 .updatedAt(aircraft.getUpdatedAt())
                 .build();
+    }
+
+    public static void updateEntity(Aircraft aircraft, AircraftRequest request){
+        if(aircraft == null || request == null) return;
+
+        aircraft.setCode(request.getCode());
+        aircraft.setManufacturer(request.getManufacturer());
+        aircraft.setModel(request.getModel());
+        aircraft.setSeatingCapacity(request.getSeatingCapacity());
+        aircraft.setEconomySeats(request.getEconomySeats());
+        aircraft.setPremiumEconomySeats(request.getPremiumEconomySeats());
+        aircraft.setBusinessSeats(request.getBusinessSeats());
+        aircraft.setFirstClassSeat(request.getFirstClassSeat());
+        aircraft.setRangeKm(request.getRangeKm());
+        aircraft.setCruisingSpeedKmh(request.getCruisingSpeedKmh());
+        aircraft.setMaxAltitudeFt(request.getMaxAltitudeFt());
+        aircraft.setYearOfManufacture(request.getYearOfManufacture());
+        aircraft.setRegistrationDate(request.getRegistrationDate().atStartOfDay());
+        aircraft.setNextMaintenanceDate(request.getNextMaintenanceDate().atStartOfDay());
+        aircraft.setStatus(request.getStatus());
+        aircraft.setIsAvailable(request.getIsAvailable());
+//        aircraft.setAirline(airline);
+        aircraft.setCurrentAirportId(request.getCurrentAirportId());
     }
 }

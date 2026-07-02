@@ -22,7 +22,7 @@ public class AirLineController {
 
     private final AirLineService airLineService;
 
-    @PostMapping("/create/{ownerId}")
+    @PostMapping("/create")
     public ResponseEntity<AirLineResponse> createAirline(
             @Valid @RequestBody AirLineRequest request,
             @RequestHeader("X-User-id") Long userId
