@@ -1,0 +1,17 @@
+server:
+  port: 8004
+
+spring:
+  application:
+    name: flight-ops-service
+
+  datasource:
+    url: jdbc:mysql://localhost:3306/airline_location
+    username: root
+    password: Golu@1234
+    driver-class-name: com.mysql.cj.jdbc.Driver
+
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: true
