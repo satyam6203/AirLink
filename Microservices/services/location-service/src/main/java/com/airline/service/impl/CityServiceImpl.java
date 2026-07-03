@@ -39,7 +39,7 @@ public class CityServiceImpl implements CityService {
     public CityResponse updateCity(Long id, CityRequest request) throws Exception {
         City city = cityRepo.findById(id).orElseThrow(
                 () -> new Exception("City not found with this id."));
-        if(cityRepo.existsByCityCode(request.getCityCode())){
+        if(cityRepo.existsByCityCodeAndIdNot(request.getCityCode(), id)){
             throw  new Exception("city with the given code already exists");
         }
         City update = cityRepo.save(CityMapper.updateEntity(city, request));

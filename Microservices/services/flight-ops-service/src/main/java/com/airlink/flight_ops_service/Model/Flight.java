@@ -20,19 +20,20 @@ public class Flight {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(nullable = false)
+    @Column(nullable = false, unique = true)
     private String flightNumber;
 
     @Column(nullable = false)
-    private Long airlineId;
+    private Long aircraftId;
 
+    private Long airlineId;
     @Column(nullable = false)
     private Long departureAirportId;
 
     @Column(nullable = false)
     private Long arrivalAirportId;
 
-    private FlightStatus status;
+    private FlightStatus status = FlightStatus.SCHEDULED;
 
     @CreatedDate
     @Column(updatable = false, nullable = false)
