@@ -1,9 +1,11 @@
 package com.airlink.flight_ops_service.Service;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import payload.request.FlightInstanceRequest;
 import payload.response.FlightInstanceResponse;
 
-import java.awt.print.Pageable;
+import java.time.LocalDate;
 
 public interface FlightInstanceService {
 
@@ -12,19 +14,19 @@ public interface FlightInstanceService {
             FlightInstanceRequest request
     ) throws Exception;
 
-    FlightInstanceResponse getFlightInstanceBuId(Long id);
+    FlightInstanceResponse getFlightInstanceBuId(Long id) throws Exception;
 
-    FlightInstanceResponse getFlightInstanceById( Long airlineId,
-                                                  Long departureAirportId,
-                                                  Long arrivalAirportId,
-                                                  Long flightId,
-                                                  Long onDate,
-                                                  Pageable pageable
+    Page<FlightInstanceResponse> getByAirlineId(Long airlineId,
+                                                Long departureAirportId,
+                                                Long arrivalAirportId,
+                                                Long flightId,
+                                                LocalDate onDate,
+                                                Pageable pageable
 
     );
 
-    FlightInstanceResponse updateLightInstance(Long id, FlightInstanceRequest request);
+    FlightInstanceResponse updateLightInstance(Long id, FlightInstanceRequest request) throws Exception;
 
-    void deleteLightInstance(Long id);
+    void deleteLightInstance(Long id) throws Exception;
 
 }

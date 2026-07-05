@@ -1,6 +1,7 @@
 package com.airlink.flight_ops_service.Repository;
 
 import com.airlink.flight_ops_service.Model.FlightInstance;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -22,7 +23,7 @@ public interface FlightInstanceRepo extends JpaRepository<FlightInstance, Long> 
               and (:dayStart is null or fi.departureDateTime >= :dayStart)
               and (:dayEnd is null or fi.arrivalDateTime <= :dayEnd)
             """)
-    List<FlightInstance> findByAirlineId(
+    Page<FlightInstance> findByAirlineId(
             @Param("airlineId") Long airlineId,
             @Param("departureAirportId") Long departureAirportId,
             @Param("arrivalAirportId") Long arrivalAirportId,

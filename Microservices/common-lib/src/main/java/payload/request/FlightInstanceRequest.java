@@ -1,5 +1,6 @@
 package payload.request;
 
+
 import enums.FlightStatus;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
