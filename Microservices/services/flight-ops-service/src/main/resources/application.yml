@@ -6,7 +6,7 @@ spring:
     name: flight-ops-service
 
   datasource:
-    url: jdbc:mysql://localhost:3306/airline_location
+    url: jdbc:mysql://localhost:3306/fight_ops
     username: root
     password: Golu@1234
     driver-class-name: com.mysql.cj.jdbc.Driver

@@ -2,11 +2,13 @@ package com.airlink.flight_ops_service.Controller;
 
 import com.airlink.flight_ops_service.Service.FlightService;
 import enums.FlightStatus;
+import jakarta.persistence.EntityListeners;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.apache.coyote.Response;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;

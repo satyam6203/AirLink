@@ -8,15 +8,15 @@ import java.util.List;
 
 public interface FlightScheduleService {
 
-    FlightScheduleResponse createFlightSchedule(Long userId,
+    FlightScheduleResponse createFlightSchedule(Long airlineId,
                                                 FlightScheduleRequest request
     ) throws Exception;
 
-    FlightScheduleResponse getFlightScheduleById(Long id);
+    FlightScheduleResponse getFlightScheduleById(Long id) throws Exception;
     List<FlightScheduleResponse> getFlightScheduleByAirline(Long UserId);
     FlightScheduleResponse updateFlightSchedule(Long id,
                                                 FlightScheduleRequest request
-    );
-    void deleteFlightSchedule(Long id);
+    ) throws Exception;
+    void deleteFlightSchedule(Long id) throws Exception;
 
 }

@@ -4,6 +4,7 @@ import com.airlink.user_service.Model.User;
 import com.airlink.user_service.Service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.apache.coyote.Response;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import payload.dto.UserDTO;
@@ -14,7 +15,7 @@ import java.util.List;
 @RequestMapping("/api/users")
 @RequiredArgsConstructor
 public class UserController {
-
+    
     private final UserService userService;
 
     @GetMapping("/profile")
