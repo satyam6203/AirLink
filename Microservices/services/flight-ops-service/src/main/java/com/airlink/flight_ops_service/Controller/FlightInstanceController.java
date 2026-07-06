@@ -60,7 +60,7 @@ public class FlightInstanceController {
     @PutMapping("/update/{id}")
     public ResponseEntity<FlightInstanceResponse> updateFlightInstance(
             @PathVariable Long id,
-            @Valid @RequestBody FlightInstanceRequest request
+            @RequestBody FlightInstanceRequest request
     ) throws Exception {
         return ResponseEntity.ok(flightInstanceService.updateLightInstance(id, request));
     }

@@ -2,6 +2,7 @@ payload\request\CityRequest$CityRequestBuilder.class
 payload\response\FlightResponse.class
 enums\AircraftStatus.class
 payload\request\FlightInstanceRequest$FlightInstanceRequestBuilder.class
+payload\response\FlightScheduleResponse$FlightScheduleResponseBuilder.class
 embeddable\Address$AddressBuilder.class
 payload\dto\UserDTO.class
 payload\request\AirLineRequest$AirLineRequestBuilder.class
@@ -12,6 +13,7 @@ payload\response\AirLineDropdownItem$AirLineDropdownItemBuilder.class
 payload\response\AuthResponse$AuthResponseBuilder.class
 embeddable\Address.class
 enums\AirLineStatus.class
+payload\request\FlightScheduleRequest.class
 payload\response\CityResponse.class
 payload\response\FlightInstanceResponse.class
 embeddable\GeoCode$GeoCodeBuilder.class
@@ -31,12 +33,14 @@ embeddable\Support$SupportBuilder.class
 payload\request\LoginRequest.class
 payload\response\AirLineResponse$AirLineResponseBuilder.class
 payload\request\AircraftRequest$AircraftRequestBuilder.class
+payload\response\FlightScheduleResponse.class
 payload\request\AircraftRequest.class
 payload\request\AirportRequest.class
 payload\response\AircraftResponse.class
 payload\response\AirLineResponse.class
 enums\FlightStatus.class
 payload\request\FlightInstanceRequest.class
+payload\request\FlightScheduleRequest$FlightScheduleRequestBuilder.class
 payload\request\FlightRequest$FlightRequestBuilder.class
 CommonLibApplication.class
 payload\request\AirLineRequest.class
