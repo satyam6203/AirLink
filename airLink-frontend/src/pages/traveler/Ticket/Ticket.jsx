@@ -36,7 +36,7 @@ const Ticket = () => {
       <!DOCTYPE html>
       <html>
         <head>
-          <title>zosh-air-flight-ticket</title>
+          <title>airlink-flight-ticket</title>
           <meta charset="utf-8" />
           <script src="https://cdn.tailwindcss.com"></script>
           <style>
@@ -128,7 +128,7 @@ const Ticket = () => {
             </div>
             <div>
               <div className="text-[16px] font-bold tracking-tight leading-none text-gray-900">
-                {booking.airlineName || "Zosh Air"}
+                {booking.airlineName || "AirLink"}
               </div>
               <div className="text-[10px] uppercase tracking-[0.25em] text-gray-400 leading-none mb-0.5">
                 {booking.flightName || "Airline"}
