@@ -1,0 +1,122 @@
+[
+  {
+    "flightNumber": "FT101",
+    "aircraftId": 1,
+    "departureAirportId": 1,
+    "arrivalAirportId": 5
+  },
+  {
+    "flightNumber": "FT102",
+    "aircraftId": 1,
+    "departureAirportId": 2,
+    "arrivalAirportId": 8
+  },
+  {
+    "flightNumber": "FT103",
+    "aircraftId": 1,
+    "departureAirportId": 3,
+    "arrivalAirportId": 12
+  },
+  {
+    "flightNumber": "FT104",
+    "aircraftId": 1,
+    "departureAirportId": 4,
+    "arrivalAirportId": 15
+  },
+  {
+    "flightNumber": "FT105",
+    "aircraftId": 1,
+    "departureAirportId": 5,
+    "arrivalAirportId": 2
+  },
+  {
+    "flightNumber": "FT106",
+    "aircraftId": 1,
+    "departureAirportId": 6,
+    "arrivalAirportId": 10
+  },
+  {
+    "flightNumber": "FT107",
+    "aircraftId": 1,
+    "departureAirportId": 7,
+    "arrivalAirportId": 14
+  },
+  {
+    "flightNumber": "FT108",
+    "aircraftId": 1,
+    "departureAirportId": 8,
+    "arrivalAirportId": 3
+  },
+  {
+    "flightNumber": "FT109",
+    "aircraftId": 1,
+    "departureAirportId": 9,
+    "arrivalAirportId": 16
+  },
+  {
+    "flightNumber": "FT110",
+    "aircraftId": 1,
+    "departureAirportId": 10,
+    "arrivalAirportId": 4
+  },
+  {
+    "flightNumber": "FT111",
+    "aircraftId": 1,
+    "departureAirportId": 11,
+    "arrivalAirportId": 17
+  },
+  {
+    "flightNumber": "FT112",
+    "aircraftId": 1,
+    "departureAirportId": 12,
+    "arrivalAirportId": 6
+  },
+  {
+    "flightNumber": "FT113",
+    "aircraftId": 1,
+    "departureAirportId": 13,
+    "arrivalAirportId": 1
+  },
+  {
+    "flightNumber": "FT114",
+    "aircraftId": 1,
+    "departureAirportId": 14,
+    "arrivalAirportId": 7
+  },
+  {
+    "flightNumber": "FT115",
+    "aircraftId": 1,
+    "departureAirportId": 15,
+    "arrivalAirportId": 9
+  },
+  {
+    "flightNumber": "FT116",
+    "aircraftId": 1,
+    "departureAirportId": 16,
+    "arrivalAirportId": 11
+  },
+  {
+    "flightNumber": "FT117",
+    "aircraftId": 1,
+    "departureAirportId": 17,
+    "arrivalAirportId": 13
+  },
+  {
+    "flightNumber": "FT118",
+    "aircraftId": 1,
+    "departureAirportId": 18,
+    "arrivalAirportId": 2
+  },
+  {
+    "flightNumber": "FT119",
+    "aircraftId": 1,
+    "departureAirportId": 5,
+    "arrivalAirportId": 18
+  },
+  {
+    "flightNumber": "FT120",
+    "aircraftId": 1,
+    "departureAirportId": 8,
+    "arrivalAirportId": 12
+  }
+]

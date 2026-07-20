@@ -1,0 +1,90 @@
+[
+  {
+    "type": "BAGGAGE",
+    "subType": "CHECKED_15KG",
+    "rfisc": "BG15",
+    "name": "15kg Checked Baggage",
+    "description": "Add 15kg checked baggage to your booking.",
+    "iconUrl": "https://example.com/icons/baggage-15kg.png",
+    "metadata": {
+      "baggage": {
+        "weight": 15,
+        "unit": "KG",
+        "pieces": 1,
+        "category": "CHECKED",
+        "dimensions": "158 cm linear",
+        "notes": "Standard checked baggage"
+      }
+    },
+    "displayOrder": 1
+  },
+  {
+    "type": "BAGGAGE",
+    "subType": "CHECKED_25KG",
+    "rfisc": "BG25",
+    "name": "25kg Checked Baggage",
+    "description": "Add 25kg checked baggage for extra luggage.",
+    "iconUrl": "https://example.com/icons/baggage-25kg.png",
+    "metadata": {
+      "baggage": {
+        "weight": 25,
+        "unit": "KG",
+        "pieces": 1,
+        "category": "CHECKED",
+        "dimensions": "158 cm linear",
+        "notes": "Extra weight allowance"
+      }
+    },
+    "displayOrder": 2
+  },
+  {
+    "type": "BAGGAGE",
+    "subType": "CABIN_7KG",
+    "rfisc": "CB07",
+    "name": "7kg Cabin Baggage",
+    "description": "Carry 7kg cabin baggage onboard.",
+    "iconUrl": "https://example.com/icons/cabin-7kg.png",
+    "metadata": {
+      "baggage": {
+        "weight": 7,
+        "unit": "KG",
+        "pieces": 1,
+        "category": "CABIN",
+        "dimensions": "55x35x25 cm",
+        "notes": "Fits in overhead bin"
+      }
+    },
+    "displayOrder": 3
+  },
+  {
+    "type": "BAGGAGE",
+    "subType": "SPORTS_EQUIPMENT",
+    "rfisc": "SPRT",
+    "name": "Sports Equipment",
+    "description": "Carry sports equipment like golf kits or skis.",
+    "iconUrl": "https://example.com/icons/sports.png",
+    "metadata": {
+      "baggage": {
+        "weight": 20,
+        "unit": "KG",
+        "pieces": 1,
+        "category": "SPORTS",
+        "dimensions": "200 cm linear",
+        "notes": "Special handling required"
+      }
+    },
+    "displayOrder": 4
+  },
+  {
+    "type": "TRAVEL_PROTECTION",
+    "subType": "STANDARD_PROTECTION",
+    "rfisc": "TP01",
+    "name": "Standard Travel Protection",
+    "description": "Basic coverage for trip cancellations and delays.",
+    "iconUrl": "https://example.com/icons/protection.png",
+    "metadata": {
+      "protectionSummary": "Covers cancellations, delays, and basic medical emergencies."
+    },
+    "displayOrder": 5
+  }
+]

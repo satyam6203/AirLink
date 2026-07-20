@@ -1,0 +1,20 @@
+  export const cabinClassValue = {
+    name: '',
+    code: '',
+    description: '',
+    aircraftId: '',
+    displayOrder: 1,
+    isActive: true,
+    isBookable: true,
+    typicalSeatPitch: 32,
+    typicalSeatWidth: 17.5,
+    seatType: 'STANDARD',
+    hasPriorityBoarding: false,
+    hasLoungeAccess: false,
+    hasExtraLegroom: false,
+    hasPreferredSeating: false,
+    hasMealService: false,
+    hasWifiAccess: false,
+    hasPowerOutlet: false,
+    hasEntertainment: false
+  };
