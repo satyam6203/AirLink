@@ -21,6 +21,7 @@
         <module>location-service</module>
         <module>airline-core-service</module>
         <module>flight-ops-service</module>
+        <module>pricing-service</module>
     </modules>
 
 </project>

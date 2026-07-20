@@ -1,0 +1,17 @@
+server:
+  port: 8005
+
+spring:
+  application:
+    name: pricing-service
+
+  datasource:
+    url: jdbc:mysql://localhost:3306/pricing_service
+    username: root
+    password: Golu@1234
+    driver-class-name: com.mysql.cj.jdbc.Driver
+
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: true
