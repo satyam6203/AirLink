@@ -1,8 +1,15 @@
 package com.airlink.pricing_service.Model;
 
+import embeddable.*;
+import enums.CabinClassType;
 import jakarta.persistence.*;
-import jakarta.validation.constraints.NotNull;
 import lombok.*;
+import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UpdateTimestamp;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
+
+import java.time.Instant;
+
 
 @Entity
 @Getter
@@ -10,6 +17,7 @@ import lombok.*;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
+@EntityListeners(AuditingEntityListener.class)
 public class Fare {
 
     @Id
@@ -29,7 +37,7 @@ public class Fare {
     private Long cabinClassId;
 
     @Enumerated(EnumType.STRING)
-    private CabinClassType cabinClass;
+    private CabinClassType cabinClassType;
 
     private Double basePrice;
 
@@ -39,5 +47,28 @@ public class Fare {
     private Double currentPrice;
 
     private String fareLabel;
-    
+
+    @Embedded
+    private SeatsBenefits seatsBenefits = new SeatsBenefits();
+
+    @Embedded
+    private BoardingBenefits boardingBenefits = new BoardingBenefits();
+
+    @Embedded
+    @Builder.Default
+    private InFlightBenefits inFlightBenefits = new InFlightBenefits();
+
+    @Embedded
+    @Builder.Default
+    private FlexibilityBenefits flexibilityBenefits = new FlexibilityBenefits();
+
+    @Embedded
+    @Builder.Default
+    private PremiumServiceBenefits premiumServiceBenefits = new PremiumServiceBenefits();
+
+    @CreationTimestamp
+    private Instant createdAt;
+
+    @UpdateTimestamp
+    private Instant updatedAt;
 }
