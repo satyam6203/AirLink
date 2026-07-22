@@ -9,14 +9,14 @@ import java.util.Map;
 
 public interface FareService {
 
-    FareResponse createFare(FareRequest request);
-    FareResponse getFareById(Long id);
+    FareResponse createFare(FareRequest request) throws Exception;
+    FareResponse getFareById(Long id) throws Exception;
     List<FareResponse> getFaresByFlightIdAndCabinClassId(
             Long flightId,
             Long cabinClassId
     );
-    FareResponse updateFare(Long id, FareRequest request);
-    void deleteFare(Long id);
+    FareResponse updateFare(Long id, FareRequest request) throws Exception;
+    void deleteFare(Long id) throws Exception;
     List<Fare> getFares();
 
     Map<Long, FareResponse> getLowestFarePerFlight(

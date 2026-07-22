@@ -39,6 +39,9 @@ public class Fare {
     @Enumerated(EnumType.STRING)
     private CabinClassType cabinClassType;
 
+    @Column(nullable = false)
+    private Double baseFare;
+
     private Double basePrice;
 
     private double texesAndFees;
@@ -71,4 +74,8 @@ public class Fare {
 
     @UpdateTimestamp
     private Instant updatedAt;
+
+    public Double getTotalPrice(){
+        return baseFare + texesAndFees + airlineFees + currentPrice;
+    }
 }
