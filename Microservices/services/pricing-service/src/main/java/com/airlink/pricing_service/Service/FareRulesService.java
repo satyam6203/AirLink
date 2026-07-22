@@ -8,11 +8,11 @@ import java.util.List;
 
 public interface FareRulesService {
 
-    FareRulesResponse createRule(FareRulesRequest request);
-    FareRulesResponse getFareRulesById(Long id);
-    FareRulesResponse getFareRulesByFareId(Long fareId);
+    FareRulesResponse createRule(FareRulesRequest request) throws Exception;
+    FareRulesResponse getFareRulesById(Long id) throws Exception;
+    FareRulesResponse getFareRulesByFareId(Long fareId) throws Exception;
     List<FareRulesResponse> getFareRulesByAirlineId(Long airlineId);
-    FareRulesResponse updateFareRules(Long id, FareRulesRequest request);
-    void deleteFareRules(Long id);
+    FareRulesResponse updateFareRules(Long id, FareRulesRequest request) throws Exception;
+    void deleteFareRules(Long id) throws Exception;
 
 }
