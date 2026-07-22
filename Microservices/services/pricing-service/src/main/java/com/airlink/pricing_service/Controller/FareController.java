@@ -69,7 +69,7 @@ public class FareController {
     ) throws Exception {
         return ResponseEntity.ok(fareService.updateFare(id, request));
     }
-    
+
     @DeleteMapping("/delete/{id}")
     public ResponseEntity<Void> deleteFare(@PathVariable Long id) throws Exception {
         fareService.deleteFare(id);

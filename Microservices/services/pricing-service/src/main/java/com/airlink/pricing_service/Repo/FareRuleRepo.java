@@ -1,0 +1,10 @@
+package com.airlink.pricing_service.Repo;
+
+import com.airlink.pricing_service.Model.FareRules;
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.stereotype.Repository;
+
+@Repository
+public interface FareRuleRepo extends JpaRepository<FareRules, Long> {
+
+}
