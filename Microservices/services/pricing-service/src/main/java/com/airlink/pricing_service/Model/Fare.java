@@ -51,6 +51,12 @@ public class Fare {
 
     private String fareLabel;
 
+    @OneToOne(mappedBy = "fare", cascade = CascadeType.ALL,orphanRemoval = true)
+    private BaggagePolicy baggagePolicy;
+
+    @OneToOne(mappedBy = "fare", cascade = CascadeType.ALL, orphanRemoval = true)
+    private FareRules fareRules;
+
     @Embedded
     private SeatsBenefits seatsBenefits = new SeatsBenefits();
 

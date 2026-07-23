@@ -1,5 +1,6 @@
 package com.airlink.pricing_service.Model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
@@ -21,15 +22,18 @@ public class BaggagePolicy {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
 
+    @OneToOne
+    @JsonIgnore
     private Fare fare;
 
+    @Column(nullable = false)
     private String name;
 
     private String description;
 
     private Double cabinBaggageMaxWeight;
 
-    private Integer cabinBaggagePrice = 1;
+    private Integer cabinBaggagePieces = 1;
 
     private Double cabinBaggageWeightPerPrice;
 
@@ -37,7 +41,7 @@ public class BaggagePolicy {
 
     private Double checkInBaggageMaxWeight;
 
-    private Integer checkInBaggagePrice = 1;
+    private Integer checkInBaggagePieces = 1;
 
     private Double checkInBaggageWeightPerPrice;
 
