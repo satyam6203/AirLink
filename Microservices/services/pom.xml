@@ -22,6 +22,7 @@
         <module>airline-core-service</module>
         <module>flight-ops-service</module>
         <module>pricing-service</module>
+        <module>seat-service</module>
     </modules>
 
 </project>

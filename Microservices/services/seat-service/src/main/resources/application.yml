@@ -1,0 +1,17 @@
+server:
+  port: 8006
+
+spring:
+  application:
+    name: seat-service
+
+  datasource:
+    url: jdbc:mysql://localhost:3306/seat_service
+    username: root
+    password: Golu@1234
+    driver-class-name: com.mysql.cj.jdbc.Driver
+
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: true
