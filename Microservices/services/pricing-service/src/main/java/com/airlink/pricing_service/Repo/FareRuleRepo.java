@@ -11,5 +11,5 @@ public interface FareRuleRepo extends JpaRepository<FareRules, Long> {
 
     FareRules findByFareId(Long fareId);
     List<FareRules> findByAirlineId(Long airlineId);
-    boolean existByFareId(Long fareId);
+    boolean existsByFareId(Long fareId);
 }

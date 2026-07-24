@@ -26,7 +26,7 @@ public class BaggagePolicyServiceImpl implements BaggagePolicyService {
         Fare fare = fareRepo.findById(request.getFareId()).orElseThrow(
                 () -> new Exception("baggage policy not found with this id")
         );
-        if(baggageRepo.existByFareId(fare.getId())){
+        if(baggageRepo.existsByFareId(fare.getId())){
             throw new Exception("baggage policy already exists");
         }
         BaggagePolicy baggagePolicy = BaggagePolicyMapper.toEntity(request, fare);

@@ -11,5 +11,5 @@ import java.util.List;
 public interface BaggageRepo extends JpaRepository<BaggagePolicy, Long> {
     BaggagePolicy findByFareId(Long fareId);
     List<BaggagePolicy> findByAirlineId(Long airlineId);
-    boolean existByFareId(Long fareId);
+    boolean existsByFareId(Long fareId);
 }

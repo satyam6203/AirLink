@@ -21,7 +21,7 @@ public class FareServiceImpl implements FareService {
 
     @Override
     public FareResponse createFare(FareRequest request) throws Exception {
-        if(fareRepo.exitsByFlightIdAndCabinClassAndName(
+        if(fareRepo.existsByFlightIdAndCabinClassIdAndName(
                 request.getFlightId(),
                 request.getCabinClassId(),
                 request.getName()
@@ -55,7 +55,7 @@ public class FareServiceImpl implements FareService {
         Fare fare = fareRepo.findById(id).orElseThrow(
                 () -> new Exception("Fare not found with this id " + id)
         );
-        if(fareRepo.existByFlightIdAndCabinClassIdAndNameAndIdNot(
+        if(fareRepo.existsByFlightIdAndCabinClassIdAndNameAndIdNot(
                 request.getFlightId(),
                 request.getCabinClassId(),
                 request.getName(),

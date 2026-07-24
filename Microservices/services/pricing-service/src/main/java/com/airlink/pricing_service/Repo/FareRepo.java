@@ -8,13 +8,13 @@ import java.util.List;
 
 @Repository
 public interface FareRepo extends JpaRepository<Fare, Long> {
-    boolean exitsByFlightIdAndCabinClassAndName(
+    boolean existsByFlightIdAndCabinClassIdAndName(
             Long flightId,
             Long cabinClassId,
             String name
     );
     List<Fare> findByFlightIdInAndCabinClassId(List<Long> flightId, Long cabinClassId);
-    Boolean existByFlightIdAndCabinClassIdAndNameAndIdNot(Long flightId,
+    Boolean existsByFlightIdAndCabinClassIdAndNameAndIdNot(Long flightId,
                                                           Long cabinClassId,
                                                           String name,
                                                           Long id
