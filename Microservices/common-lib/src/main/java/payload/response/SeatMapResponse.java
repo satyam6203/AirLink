@@ -5,6 +5,8 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.List;
+
 @Data
 @Builder
 @NoArgsConstructor
@@ -26,7 +28,7 @@ public class SeatMapResponse {
     private Integer availableSeats;
     private Integer occupiedSeats;
 
-//    private List<SeatResponse> seats;
+    private List<SeatResponse> seats;
 
     private Integer windowSeats;
     private Integer aisleSeats;
