@@ -1,24 +1,38 @@
-package payload.response;
+package payload.request;
 
 import enums.SeatType;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Positive;
+import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
-import lombok.RequiredArgsConstructor;
-
-import java.time.LocalDateTime;
+import lombok.NoArgsConstructor;
 
 @Data
+@NoArgsConstructor
 @AllArgsConstructor
-@RequiredArgsConstructor
 @Builder
-public class SeatResponse {
+public class SeatRequest {
 
-    private Long id;
+    @NotBlank(message = "Seat number is required")
+    @Size(min = 2, max = 10)
     private String seatNumber;
+
+    @NotNull(message = "Seat row is required")
+    @Positive
     private Integer seatRow;
+
     private Character columnLetter;
+
+    @NotNull(message = "Seat type is required")
     private SeatType seatType;
+
+    @NotNull(message = "Seat map ID is required")
+    private Long seatMapId;
+
+    private Long cabinClassId;
 
     private Boolean isAvailable;
     private Boolean isBlocked;
@@ -27,7 +41,6 @@ public class SeatResponse {
 
     private Double basePrice;
     private Double premiumSurcharge;
-    private Double totalPrice;
 
     private Boolean hasExtraLegroom;
     private Boolean hasBassinet;
@@ -41,19 +54,4 @@ public class SeatResponse {
     private Integer seatPitch;
     private Integer seatWidth;
     private Integer reclineAngle;
-
-    private Long seatMapId;
-    private String seatMapName;
-    private Long cabinClassId;
-    private String cabinClassName;
-
-    private LocalDateTime createdAt;
-    private LocalDateTime updatedAt;
-    private String createdBy;
-    private String updatedBy;
-
-    private Boolean isPremiumSeat;
-    private Boolean isBookable;
-    private String fullPosition;
-    private String seatCharacteristics;
 }
