@@ -7,6 +7,7 @@ import com.arilink.seat_service.Model.SeatMap;
 import com.arilink.seat_service.Repo.CabinClassRepo;
 import com.arilink.seat_service.Repo.SeatMapRepo;
 import com.arilink.seat_service.Service.SeatMapService;
+import com.arilink.seat_service.Service.SeatService;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 import payload.request.SeatMapRequest;
@@ -18,6 +19,7 @@ public class SeatMapServiceImpl implements SeatMapService {
 
     private final SeatMapRepo seatMapRepo;
     private final CabinClassRepo cabinClassRepo;
+    private final SeatService seatService;
 
     @Override
     public SeatMapResponse createSeatMap(Long airlineId, SeatMapRequest request) throws Exception {
@@ -36,6 +38,7 @@ public class SeatMapServiceImpl implements SeatMapService {
         SeatMap seatMap = SeatMapMapper.toEntity(request, cabinClass);
         seatMap.setAirlineId(airlineId);
         SeatMap saved = seatMapRepo.save(seatMap);
+        seatService.generateSeats(saved.getId());
         return SeatMapMapper.toResponse(saved);
     }
 

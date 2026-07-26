@@ -10,30 +10,27 @@ import java.util.List;
 @Getter
 @Setter
 @AllArgsConstructor
-@NoArgsConstructor
+@RequiredArgsConstructor
 @Builder
-public class SeatMap {
+@EntityListeners(AuditingEntityListener.class)
+public class FlightInstanceCabin {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
 
     @Column(nullable = false)
-    private String name;
+    private Long flightInstanceId;
 
-    private int totalRows;
-
-    @Column(nullable = false)
-    private int rightSeatsPerRow;
-
-    @Column(nullable = false)
-    private int leftSeatsPerRow;
-
-    private Long airlineId;
-
-    @OneToMany(mappedBy = "seatMap", fetch = FetchType.LAZY, orphanRemoval = true)
-    private List<Seat> seats;
-
-    @OneToOne
+    @ManyToOne
     private CabinClass cabinClass;
+
+    @Column(nullable = false)
+    private Integer totalSeats;
+
+    private Integer bookedSeats = 0;
+
+    public Integer getAvailableSeats(){
+        return totalSeats - bookedSeats;
+    }
 }

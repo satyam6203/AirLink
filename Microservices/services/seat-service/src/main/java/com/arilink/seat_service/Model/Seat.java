@@ -84,7 +84,7 @@ public class Seat {
     @Column(name = "version")
     private Long version;
 
-    private Double getTotalPrice(){
+    public Double getTotalPrice(){
         Double total = basePrice != null ? basePrice : 0;
         if(premiumSuperCharge != null){
             total += premiumSuperCharge;
