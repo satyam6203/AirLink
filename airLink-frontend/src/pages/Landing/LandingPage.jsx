@@ -110,7 +110,7 @@ const LandingPage = () => {
                 <Plane className="h-6 w-6 text-white" />
               </div>
               <span className="text-2xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
-                AirlinePro
+                AirLink
               </span>
             </div>
             <nav className="hidden md:flex items-center space-x-8">
@@ -846,11 +846,11 @@ const LandingPage = () => {
                   <Plane className="h-5 w-5 text-primary-foreground" />
                 </div>
                 <span className="text-xl font-bold bg-gradient-to-r from-primary to-primary bg-clip-text text-transparent">
-                  AirlinePro
+                  AirLink
                 </span>
               </div>
               <div className="text-sm text-center lg:text-right">
-                <p>&copy; 2024 AirlinePro. All rights reserved.</p>
+                <p>&copy; 2024 AirLink. All rights reserved.</p>
                 <p className="text-muted-foreground mt-1">Making travel accessible for everyone.</p>
               </div>
             </div>
