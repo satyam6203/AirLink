@@ -1,6 +1,7 @@
 package com.arilink.seat_service.Mapper;
 
 import com.arilink.seat_service.Model.CabinClass;
+import com.arilink.seat_service.Model.SeatMap;
 import enums.CabinClassType;
 import payload.request.CabinClassRequest;
 import payload.response.CabinClassResponse;
@@ -24,7 +25,7 @@ public class CabinClassMapper {
                 .build();
     }
 
-    public static CabinClassResponse toResponse(CabinClass cabinClass){
+    public static CabinClassResponse toResponse(CabinClass cabinClass, SeatMap seatMap){
         if(cabinClass == null) return null;
 
         return CabinClassResponse.builder()
@@ -33,6 +34,7 @@ public class CabinClassMapper {
                 .code(cabinClass.getCode())
                 .description(cabinClass.getDescription())
                 .aircraftId(cabinClass.getAircraftId())
+                .seatMap(seatMap != null ? SeatMapMapper.toResponse(seatMap) : null)
                 .displayOrder(cabinClass.getDisplayOrder())
                 .isActive(cabinClass.getIsActive())
                 .isBookable(cabinClass.getIsBookable())

@@ -1,9 +1,13 @@
 package com.arilink.seat_service.Mapper;
 
 import com.arilink.seat_service.Model.CabinClass;
+import com.arilink.seat_service.Model.Seat;
 import com.arilink.seat_service.Model.SeatMap;
 import payload.request.SeatMapRequest;
 import payload.response.SeatMapResponse;
+
+import java.util.List;
+import java.util.stream.Collectors;
 
 public class SeatMapMapper {
 
@@ -20,6 +24,22 @@ public class SeatMapMapper {
     }
 
     public static SeatMapResponse toResponse(SeatMap seatMap){
+
+        List<Seat> seats = seatMap.getSeats();
+
+        int totalSeats = seats != null ? seats.size() : 0;
+        int availableSeats = seats != null ? (int) seats.stream().filter(seat ->
+                Boolean.TRUE.equals(seat.getIsAvailable()) &&
+                        Boolean.TRUE.equals(seat.getIsActive()) &&
+                        !Boolean.TRUE.equals(seat.getIsBlocked())).count() : 0;
+
+        int windowSeats = seats != null ? (int) seats.stream().filter(seat ->
+                seat.getSeatType().name().contains("WINDOW")).count() : 0;
+        int aisleSeats = seats != null ? (int) seats.stream().filter(seat ->
+                seat.getSeatType().name().contains("AISLE")).count() : 0;
+        int middleSeats = seats != null ? (int) seats.stream().filter(seat ->
+                seat.getSeatType().name().contains("MIDDLE")).count() : 0;
+
         return SeatMapResponse.builder()
                 .id(seatMap.getId())
                 .name(seatMap.getName())
@@ -30,16 +50,14 @@ public class SeatMapMapper {
                 .cabinClassId(seatMap.getCabinClass() != null ? seatMap.getCabinClass().getId() : null)
                 .cabinClassName(seatMap.getCabinClass() != null ? seatMap.getCabinClass().getName().toString() : null)
                 .cabinClassCode(seatMap.getCabinClass() != null ? seatMap.getCabinClass().getCode() : null)
-//                .totalSeats(totalSeats)
-//                .availableSeats(availableSeats)
-//                .occupiedSeats(totalSeats - availableSeats)
-//                .seats(seats != null ? seats.stream().map(SeatMapper::toResponse)
-//                        .collect(Collectors.toList()) : null)
-//                .windowSeats(windowSeats)
-//                .aisleSeats(aisleSeats)
-//                .middleSeats(middleSeats)
-//                .premiumSeats(premiumSeats)
-//                .emergencyExitSeats(emergencyExitSeats)
+                .totalSeats(totalSeats)
+                .availableSeats(availableSeats)
+                .occupiedSeats(totalSeats - availableSeats)
+                .seats(seats != null ? seats.stream().map(SeatMapper::toResponse)
+                        .collect(Collectors.toList()) : null)
+                .windowSeats(windowSeats)
+                .aisleSeats(aisleSeats)
+                .middleSeats(middleSeats)
                 .build();
     }
 

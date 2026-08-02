@@ -10,6 +10,7 @@ import org.springframework.data.annotation.LastModifiedBy;
 
 import java.time.LocalDateTime;
 
+@Entity
 @Getter
 @Setter
 @AllArgsConstructor
@@ -58,7 +59,7 @@ public class Seat {
     @Column(name = "column_letter")
     private Character columnLetter;
 
-    @OneToMany
+    @ManyToOne
     private SeatMap seatMap;
 
     @ManyToOne
@@ -96,7 +97,7 @@ public class Seat {
         return isActive && isAvailable && !isBlocked;
     }
 
-    private String getFullPosition(){
+    public String getFullPosition(){
         return seatRow + "" + columnLetter;
     }
 }

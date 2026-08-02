@@ -29,6 +29,7 @@ public class SeatMapper {
     }
 
     public static SeatResponse toResponse(Seat seat) {
+        if (seat == null) return null;
         return SeatResponse.builder()
                 .id(seat.getId())
                 .seatNumber(seat.getSeatNumber())

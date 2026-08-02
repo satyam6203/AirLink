@@ -1,12 +1,14 @@
 package com.arilink.seat_service.Service;
 
+import enums.SeatAvailabilityStatus;
+import payload.request.SeatInstanceRequest;
 import payload.response.SeatInstanceResponse;
 
 import java.util.List;
 
-public interface SeatInstanceService {
+public interface SeatInstance {
 
-    SeatInstanceResponse createSeatInstance(SeatInstanceRequest request);
+    SeatInstanceResponse createSeatInstance(SeatInstanceRequest request) throws Exception;
     SeatInstanceResponse getSeatInstanceById(Long id);
     List<SeatInstanceResponse> getSeatInstancesByFlightId(Long flightId);
     List<SeatInstanceResponse> getAvailableSeatsByFlightId(Long flightId);

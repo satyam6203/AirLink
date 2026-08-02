@@ -1,5 +1,6 @@
 package com.arilink.seat_service.Model;
 
+import enums.SeatAvailabilityStatus;
 import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
@@ -27,7 +28,6 @@ public class SeatInstance {
     private Long flightId;
 
     private FlightInstanceCabin flightInstanceCabin;
-
     private Long flightInstanceId;
 
     private Seat seat;
@@ -35,6 +35,10 @@ public class SeatInstance {
     private Boolean isAvailable = true;
 
     private String mealPreference;
+
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
+    private SeatAvailabilityStatus status = SeatAvailabilityStatus.AVAILABLE;
 
     private Double fare;
     private Double premiumSurcharge;
@@ -47,13 +51,14 @@ public class SeatInstance {
     @LastModifiedDate
     private Instant updatedAt;
 
+
     @PrePersist
     public void preCreate(){
         this.createdAt = Instant.now();
         this.updatedAt = Instant.now();
     }
     
-    @PrePersist
+    @PreUpdate
     public void preUpdate(){
         this.updatedAt = Instant.now();
     }

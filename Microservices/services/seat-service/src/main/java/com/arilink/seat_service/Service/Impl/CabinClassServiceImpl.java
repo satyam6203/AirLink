@@ -29,7 +29,7 @@ public class CabinClassServiceImpl implements CabinClassService {
         }
         CabinClass cabinClass = CabinClassMapper.toEntity(request);
         CabinClass saved = cabinClassRepo.save(cabinClass);
-        return CabinClassMapper.toResponse(saved);
+        return CabinClassMapper.toResponse(saved, null);
     }
 
     @Override
@@ -37,21 +37,21 @@ public class CabinClassServiceImpl implements CabinClassService {
         CabinClass cabinClass = cabinClassRepo.findById(id).orElseThrow(
                 () -> new Exception("cabin class not found with this id " + id)
         );
-        return CabinClassMapper.toResponse(cabinClass);
+        return CabinClassMapper.toResponse(cabinClass, null);
     }
 
     @Override
     public List<CabinClassResponse> getCabinClassesByAircraftId(Long aircraftId) {
         return cabinClassRepo.findByAircraftId(aircraftId)
                 .stream()
-                .map(CabinClassMapper :: toResponse)
+                .map(cc -> CabinClassMapper.toResponse(cc, cc.getSeatMap()))
                 .collect(Collectors.toList());
     }
 
     @Override
     public CabinClassResponse getByAircraftIdAndName(Long aircraftId, CabinClassType name) {
         CabinClass cabinClass = cabinClassRepo.findByAircraftIdAndName(aircraftId, name);
-        return CabinClassMapper.toResponse(cabinClass);
+        return CabinClassMapper.toResponse(cabinClass, null);
     }
 
     @Override
@@ -68,7 +68,7 @@ public class CabinClassServiceImpl implements CabinClassService {
         }
         CabinClassMapper.updateEntity(request, cabinClass);
         CabinClass updatedClass = cabinClassRepo.save(cabinClass);
-        return CabinClassMapper.toResponse(updatedClass);
+        return CabinClassMapper.toResponse(updatedClass, updatedClass.getSeatMap());
     }
 
     @Override

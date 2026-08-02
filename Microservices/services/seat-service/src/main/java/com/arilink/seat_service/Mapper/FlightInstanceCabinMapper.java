@@ -14,10 +14,10 @@ public class FlightInstanceCabinMapper {
                 .flightInstanceId(fic.getFlightInstanceId())
                 .cabinClassType(fic.getCabinClass() != null ? fic.getCabinClass().getName() : null)
                 .cabinClass(fic.getCabinClass() != null ?
-                        CabinClassMapper.toResponse(fic.getCabinClass()) : null)
-//                .seats(fic.getSeats() != null ?
-//                        fic.getSeats().stream().map(SeatInstanceMapper ::toResponse)
-//                                .collect(Collectors.toList()) : null)
+                        CabinClassMapper.toResponse(fic.getCabinClass(),fic.getCabinClass().getSeatMap()) : null)
+                .seats(fic.getSeats() != null ?
+                        fic.getSeats().stream().map(SeatInstanceMapper :: toResponse)
+                                .collect(Collectors.toList()) : null)
                 .seatMap(fic.getCabinClass() != null && fic.getCabinClass().getSeatMap() != null ?
                         SeatMapMapper.toSimpleResponse(fic.getCabinClass().getSeatMap()) : null)
                 .totalSeats(fic.getTotalSeats())
