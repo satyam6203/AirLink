@@ -47,7 +47,7 @@ public class CabinClassController {
         );
     }
 
-    @GetMapping("/aircraft/{aircraft}")
+    @GetMapping("/aircraft/{aircraftId}")
     public ResponseEntity<List<CabinClassResponse>> getCabinClassesByAirCraftId(
             @PathVariable Long aircraftId
     ){

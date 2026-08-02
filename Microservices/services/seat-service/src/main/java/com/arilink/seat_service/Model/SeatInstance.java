@@ -27,9 +27,11 @@ public class SeatInstance {
 
     private Long flightId;
 
+    @ManyToOne
     private FlightInstanceCabin flightInstanceCabin;
     private Long flightInstanceId;
 
+    @ManyToOne
     private Seat seat;
     private Boolean isBooked = true;
     private Boolean isAvailable = true;
