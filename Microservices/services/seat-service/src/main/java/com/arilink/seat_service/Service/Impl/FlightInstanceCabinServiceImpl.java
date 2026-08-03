@@ -34,7 +34,7 @@ public class FlightInstanceCabinServiceImpl implements FlightInstanceService {
     @Override
     public FlightInstanceCabinResponse createFlightInstanceCabin(FlightInstanceCabinRequest request) throws Exception {
 
-        CabinClass cabinClass = cabinClassRepo.findById(request.getFlightId())
+        CabinClass cabinClass = cabinClassRepo.findById(request.getCabinClassId())
                 .orElseThrow(
                         () -> new Exception("Cabin class not found")
                 );
@@ -65,8 +65,8 @@ public class FlightInstanceCabinServiceImpl implements FlightInstanceService {
                         seat -> {
                             Double premiumSuperCharge = getPremiumSuperCharge(
                                     seat.getSeatType(),
-                                    1000.0,
-                                    500.0
+                                    request.getWindowSurcharge(),
+                                    request.getAisleSurcharge()
                             );
                             SeatInstance seatInstance = SeatInstance.builder()
                                     .flightId(request.getFlightId())
@@ -119,7 +119,7 @@ public class FlightInstanceCabinServiceImpl implements FlightInstanceService {
                 );
 
         if(request != null){
-            CabinClass cabinClass = cabinClassRepo.findById(request.getFlightId()).orElseThrow(
+            CabinClass cabinClass = cabinClassRepo.findById(request.getCabinClassId()).orElseThrow(
                     () -> new EntityNotFoundException("Cabin class not found")
             );
             flightInstanceCabin.setCabinClass(cabinClass);
