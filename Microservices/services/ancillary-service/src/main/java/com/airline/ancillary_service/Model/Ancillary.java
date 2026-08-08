@@ -1,5 +1,6 @@
 package com.airline.ancillary_service.Model;
 
+import com.airline.ancillary_service.Converter.AncillaryMetadataConverter;
 import domain.AncillaryMetadata;
 import enums.AncillaryType;
 import jakarta.persistence.*;
@@ -29,7 +30,7 @@ public class Ancillary {
 
     private String description;
 
-    @Convert(converter = An)
+    @Convert(converter = AncillaryMetadataConverter.class)
     private AncillaryMetadata metadata;
 
 
