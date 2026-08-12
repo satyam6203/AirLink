@@ -7,6 +7,7 @@ import org.springframework.data.annotation.Id;
 
 @Entity
 @Setter
+@Getter
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder

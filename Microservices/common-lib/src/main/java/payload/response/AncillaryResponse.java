@@ -7,6 +7,8 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.List;
+
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
@@ -22,7 +24,7 @@ public class AncillaryResponse {
     private String categoryIcon;
     private String iconUrl;
     private AncillaryMetadata metadata;
-//    private List<InsuranceCoverageResponse> coverages;
+    private List<InsuranceCoverageResponse> coverages;
     private Integer displayOrder;
     private Long airlineId;
 }

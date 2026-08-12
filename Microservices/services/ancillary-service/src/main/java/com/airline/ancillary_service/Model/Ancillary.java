@@ -33,5 +33,9 @@ public class Ancillary {
     @Convert(converter = AncillaryMetadataConverter.class)
     private AncillaryMetadata metadata;
 
+    private Integer displayOrder;
+
+    @Column(name = "airline_id", nullable = false)
+    private Long airlineId;
 
 }
