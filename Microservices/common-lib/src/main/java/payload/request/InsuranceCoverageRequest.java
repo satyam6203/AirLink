@@ -31,8 +31,6 @@ public class InsuranceCoverageRequest {
     @PositiveOrZero(message = "Coverage amount must be zero or positive")
     private Double coverageAmount;
 
-    private String currency;
-
     private Boolean isFlat;
 
     private String claimCondition;

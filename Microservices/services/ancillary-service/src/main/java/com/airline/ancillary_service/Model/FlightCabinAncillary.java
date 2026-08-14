@@ -2,7 +2,6 @@ package com.airline.ancillary_service.Model;
 
 import jakarta.persistence.*;
 import lombok.*;
-import org.springframework.data.annotation.Id;
 
 @Entity
 @Getter

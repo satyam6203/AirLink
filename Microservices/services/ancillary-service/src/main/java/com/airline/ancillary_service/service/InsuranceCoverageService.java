@@ -9,8 +9,6 @@ public interface InsuranceCoverageService {
 
     InsuranceCoverageResponse createCoverage(InsuranceCoverageRequest request) throws Exception;
 
-    List<InsuranceCoverageResponse> createCoveragesBulk(List<InsuranceCoverageRequest> requests) throws Exception;
-
     InsuranceCoverageResponse updateCoverage(Long id, InsuranceCoverageRequest request) throws Exception;
 
     void deleteCoverage(Long id) throws Exception;

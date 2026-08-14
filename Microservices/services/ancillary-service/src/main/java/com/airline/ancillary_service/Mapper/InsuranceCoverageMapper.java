@@ -20,7 +20,6 @@ public class InsuranceCoverageMapper {
                 .name(entity.getName())
                 .description(entity.getDescription())
                 .coverageAmount(entity.getCoverageAmount())
-                .currency(entity.getCurrency())
                 .isFlat(entity.isFlat())
                 .claimCondition(entity.getClaimCondition())
                 .emergencyContact(entity.getEmergencyContact())
@@ -40,7 +39,6 @@ public class InsuranceCoverageMapper {
                 .name(request.getName())
                 .description(request.getDescription())
                 .coverageAmount(request.getCoverageAmount())
-                .currency(request.getCurrency() != null ? request.getCurrency() : "INR")
                 .isFlat(request.getIsFlat() != null ? request.getIsFlat() : true)
                 .claimCondition(request.getClaimCondition())
                 .emergencyContact(request.getEmergencyContact())
@@ -69,9 +67,6 @@ public class InsuranceCoverageMapper {
         }
         if (request.getCoverageAmount() != null) {
             entity.setCoverageAmount(request.getCoverageAmount());
-        }
-        if (request.getCurrency() != null) {
-            entity.setCurrency(request.getCurrency());
         }
         if (request.getIsFlat() != null) {
             entity.setFlat(request.getIsFlat());

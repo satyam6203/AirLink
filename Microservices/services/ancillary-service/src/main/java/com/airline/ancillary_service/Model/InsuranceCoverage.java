@@ -17,10 +17,9 @@ public class InsuranceCoverage {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne
     private Ancillary ancillary;
 
-    @Enumerated(EnumType.STRING)
     @Column(nullable = false)
     private CoverageType coverageType;
 
@@ -33,14 +32,9 @@ public class InsuranceCoverage {
     @Column(nullable = false)
     private Double coverageAmount;
 
-    @Column(length = 3)
-    @Builder.Default
-    private String currency = "INR";
-
     @Builder.Default
     private boolean isFlat = true;
 
-    @Column(length = 500)
     private String claimCondition;
 
     @Column(length = 100)
@@ -48,6 +42,5 @@ public class InsuranceCoverage {
 
     private Integer displayOrder;
 
-    @Builder.Default
     private boolean active = true;
 }
