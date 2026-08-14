@@ -9,8 +9,6 @@ public interface FlightMealService {
 
     FlightMealResponse create(FlightMealRequest request) throws Exception;
 
-    List<FlightMealResponse> bulkCreate(List<FlightMealRequest> requests) throws Exception;
-
     FlightMealResponse getById(Long id) throws Exception;
 
     List<FlightMealResponse> getByFlightId(Long flightId);

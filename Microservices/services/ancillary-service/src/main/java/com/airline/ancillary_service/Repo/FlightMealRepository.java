@@ -6,12 +6,17 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
 import java.util.Optional;
 
 @Repository
 public interface FlightMealRepository extends JpaRepository<FlightMeal, Long>, JpaSpecificationExecutor<FlightMeal> {
 
     Optional<FlightMeal> findByFlightIdAndMeal(Long flightId, Meal meal);
+
+    List<FlightMeal> findByFlightId(Long id);
+
+    boolean existsByFlightIdAndMealId(Long id, Long mealId);
 
     void deleteByFlightId(Long flightId);
 }

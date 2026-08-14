@@ -15,11 +15,7 @@ public class FlightMealResponse {
     private MealResponse meal;
     private Boolean available;
     private Double price;
-    private String currency;
-    private Integer maxQuantity;
-    private String serviceClassRestriction;
     private Integer displayOrder;
-    private Boolean complimentary;
     private String notes;
 }
 

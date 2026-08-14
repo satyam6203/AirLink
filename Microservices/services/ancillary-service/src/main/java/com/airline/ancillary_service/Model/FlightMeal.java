@@ -18,15 +18,13 @@ public class FlightMeal {
     @Column(nullable = false)
     private Long flightId;
 
-    @OneToMany(fetch = FetchType.LAZY)
+    @ManyToOne
     private Meal meal;
 
-    @Builder.Default
     @Column(nullable = false)
-    private Boolean isAvailable = false;
+    private Boolean isAvailable = true;
 
     private Double price;
 
-    @Builder.Default
     private Integer displayOrder = 0;
 }
