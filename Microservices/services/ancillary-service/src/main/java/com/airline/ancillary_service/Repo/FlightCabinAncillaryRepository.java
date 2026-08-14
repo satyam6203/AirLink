@@ -15,7 +15,7 @@ public interface FlightCabinAncillaryRepository extends JpaRepository<FlightCabi
 
     List<FlightCabinAncillary> findByCabinClassId(Long cabinClassId);
 
-    Optional<FlightCabinAncillary> findByFlightIdAndCabinClassIdAndAncillary_Type(
+    FlightCabinAncillary findByFlightIdAndCabinClassIdAndAncillary_Type(
             Long flightId, Long cabinClassId, AncillaryType type);
 
     List<FlightCabinAncillary> findAllByFlightIdAndCabinClassIdAndAncillary_Type(

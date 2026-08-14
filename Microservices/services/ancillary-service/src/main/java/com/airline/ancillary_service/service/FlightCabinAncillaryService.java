@@ -10,8 +10,6 @@ public interface FlightCabinAncillaryService {
 
     FlightCabinAncillaryResponse create(FlightCabinAncillaryRequest request) throws Exception;
 
-    List<FlightCabinAncillaryResponse> bulkCreate(List<FlightCabinAncillaryRequest> requests) throws Exception;
-
     FlightCabinAncillaryResponse getById(Long id) throws Exception;
 
     List<FlightCabinAncillaryResponse> getAllByFlightAndCabinClass(
@@ -26,7 +24,7 @@ public interface FlightCabinAncillaryService {
 
     FlightCabinAncillaryResponse update(Long id, FlightCabinAncillaryRequest request) throws Exception;
 
-    void delete(Long id);
+    void delete(Long id) throws Exception;
 
     Double calculateAncillaryPrice(List<Long> ancillaryIds);
 }

@@ -28,8 +28,6 @@ public class FlightCabinAncillaryRequest {
 
     private Double price;
 
-    private String currency;
-
     @NotNull(message = "Included in fare status is required")
     private Boolean includedInFare;
 

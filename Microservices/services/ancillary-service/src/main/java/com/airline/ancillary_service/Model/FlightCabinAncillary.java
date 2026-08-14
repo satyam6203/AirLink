@@ -21,21 +21,15 @@ public class FlightCabinAncillary {
     @Column(nullable = false)
     private Long cabinClassId;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne
     private Ancillary ancillary;
 
-    @Column(nullable = false)
-    @Builder.Default
-    private Boolean available = true;
+    private Boolean available;
 
     private Integer maxQuantity;
 
     private Double price;
 
-    private String currency;
-
-    @Column(nullable = false)
-    @Builder.Default
     private Boolean includedInFare = false;
 
 }

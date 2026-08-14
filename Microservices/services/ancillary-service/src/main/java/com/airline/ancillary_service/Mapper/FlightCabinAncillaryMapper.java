@@ -22,7 +22,6 @@ public class FlightCabinAncillaryMapper {
                 .available(flightCabinAncillary.getAvailable())
                 .maxQuantity(flightCabinAncillary.getMaxQuantity())
                 .price(flightCabinAncillary.getPrice())
-                .currency(flightCabinAncillary.getCurrency())
                 .includedInFare(flightCabinAncillary.getIncludedInFare())
                 .build();
     }
