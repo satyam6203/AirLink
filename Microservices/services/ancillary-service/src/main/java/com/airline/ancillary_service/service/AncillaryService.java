@@ -7,13 +7,13 @@ import java.util.List;
 
 public interface AncillaryService {
 
-    AncillaryResponse create(Long userId, AncillaryRequest request) throws Exception;
+    AncillaryResponse create(Long airlineId, AncillaryRequest request) throws Exception;
 
     AncillaryResponse getById(Long id) throws Exception;
 
-    List<AncillaryResponse> getAllByAirlineId(Long userId);
+    List<AncillaryResponse> getAllByAirlineId(Long airlineId);
 
     AncillaryResponse update(Long id, AncillaryRequest request) throws Exception;
 
-    void delete(Long id);
+    void delete(Long id) throws Exception;
 }
