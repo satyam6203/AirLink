@@ -10,13 +10,11 @@ public interface MealService {
 
     MealResponse create(Long userId, MealRequest request) throws Exception;
 
-    List<MealResponse> bulkCreate(Long userId, List<MealRequest> requests) throws Exception;
-
     MealResponse getById(Long id) throws Exception;
 
-    List<MealResponse> getByAirlineId(Long userId);
+    List<MealResponse> getByAirlineId(Long airlineId);
 
-    MealResponse update(Long userId, Long id, MealRequest request) throws Exception;
+    MealResponse update(Long airlineId, Long id, MealRequest request) throws Exception;
 
     void delete(Long id) throws Exception;
 

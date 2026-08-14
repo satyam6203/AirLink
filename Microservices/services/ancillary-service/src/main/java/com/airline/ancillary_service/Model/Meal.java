@@ -50,7 +50,6 @@ public class Meal {
 
     private Integer advanceBookingHours;
 
-    @Builder.Default
     private Integer displayOrder = 0;
 
     @Column(nullable = false)

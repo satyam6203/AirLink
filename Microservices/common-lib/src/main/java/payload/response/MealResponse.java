@@ -19,11 +19,7 @@ public class MealResponse {
     private String mealType;
     private String dietaryRestriction;
     private String ingredients;
-    private String allergens;
-    private String nutritionalInfo;
     private String imageUrl;
-    private Double price;
-    private String currency;
     private Boolean available;
     private Boolean requiresAdvanceBooking;
     private Integer advanceBookingHours;
