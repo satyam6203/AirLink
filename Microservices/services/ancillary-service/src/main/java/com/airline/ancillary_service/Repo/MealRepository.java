@@ -11,9 +11,9 @@ import java.util.Optional;
 @Repository
 public interface MealRepository extends JpaRepository<Meal, Long>, JpaSpecificationExecutor<Meal> {
 
-    List<Meal> finByAirlineId(Long airlineId);
+    List<Meal> findByAirlineId(Long airlineId);
 
     boolean existsByCodeAndAirlineId(String code, Long airlineId);
 
-    boolean existsByAirlineIdAndIdNot(Long airlineId, String code, Long id);
+    boolean existsByAirlineIdAndCodeAndIdNot(Long airlineId, String code, Long id);
 }

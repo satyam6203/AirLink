@@ -12,8 +12,6 @@ import java.util.List;
 public interface InsuranceCoverageRepository extends JpaRepository<InsuranceCoverage, Long> {
     List<InsuranceCoverage> findByAncillaryId(Long ancillaryId);
 
-    List<InsuranceCoverage> findByAncillaryAndActiveTrue(Long ancillary);
-
     List<InsuranceCoverage> findByCoverageType(CoverageType coverageType);
 
     List<InsuranceCoverage> findByAncillaryIdAndActiveTrue(Long ancillaryId);

@@ -81,7 +81,7 @@ public class InsuranceCoverageServiceImpl implements InsuranceCoverageService {
 
     @Override
     public List<InsuranceCoverageResponse> getActiveCoveragesByAncillaryId(Long ancillaryId) {
-        return insuranceCoverageRepository.findByAncillaryAndActiveTrue(ancillaryId)
+        return insuranceCoverageRepository.findByAncillaryIdAndActiveTrue(ancillaryId)
                 .stream()
                 .map(InsuranceCoverageMapper :: toResponse)
                 .collect(Collectors.toList());

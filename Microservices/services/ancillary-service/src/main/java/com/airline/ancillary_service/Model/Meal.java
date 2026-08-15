@@ -52,6 +52,8 @@ public class Meal {
 
     private Integer displayOrder = 0;
 
+    private String description;
+
     @Column(nullable = false)
     private Long airlineId;
 

@@ -38,7 +38,7 @@ public class MealController {
 
     @GetMapping("/all")
     public ResponseEntity<List<MealResponse>> getAllMealByAirLineId(
-            @PathVariable Long airlineId
+            @RequestHeader("X-Airline-Id") Long airlineId
     ){
         return ResponseEntity.ok(mealService.getByAirlineId(airlineId));
     }

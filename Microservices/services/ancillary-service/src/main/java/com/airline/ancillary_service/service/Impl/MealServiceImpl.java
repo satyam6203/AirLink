@@ -54,7 +54,7 @@ public class MealServiceImpl implements MealService {
 
     @Override
     public List<MealResponse> getByAirlineId(Long airlineId) {
-        return mealRepository.finByAirlineId(airlineId)
+        return mealRepository.findByAirlineId(airlineId)
                 .stream()
                 .map(MealMapper :: toResponse)
                 .collect(Collectors.toList());
@@ -66,7 +66,7 @@ public class MealServiceImpl implements MealService {
                 () -> new Exception("Meal not found with id")
         );
 
-        if(request.getCode() != null && mealRepository.existsByAirlineIdAndIdNot(airlineId,
+        if(request.getCode() != null && mealRepository.existsByAirlineIdAndCodeAndIdNot(airlineId,
                 request.getCode(), meal.getId())){
             throw new Exception("meal code already exists");
         }
