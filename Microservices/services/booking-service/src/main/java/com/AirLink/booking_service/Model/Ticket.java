@@ -3,7 +3,6 @@ package com.AirLink.booking_service.Model;
 import enums.TicketStatus;
 import jakarta.persistence.*;
 import lombok.*;
-import org.springframework.data.annotation.Id;
 
 import java.time.LocalDateTime;
 
