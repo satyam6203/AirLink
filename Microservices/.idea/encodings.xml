@@ -15,6 +15,8 @@
     <file url="file://$PROJECT_DIR$/services/flight-ops-service/src/main/resources" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/services/location-service/src/main/java" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/services/location-service/src/main/resources" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/services/payment-service/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/services/payment-service/src/main/resources" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/services/pricing-service/src/main/java" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/services/pricing-service/src/main/resources" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/services/seat-service/src/main/java" charset="UTF-8" />
