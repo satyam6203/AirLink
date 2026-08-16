@@ -11,6 +11,7 @@ import org.hibernate.annotations.UpdateTimestamp;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
+import java.time.Instant;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 
@@ -47,11 +48,7 @@ public class Passenger {
     @Column(nullable = false)
     private Gender gender;
 
-    @Column(unique = true)
-    private String passportNumber;
-
     private String nationality;
-    private String frequentFlyerNumber;
 
     private Long primaryUserId;
 
@@ -65,10 +62,10 @@ public class Passenger {
 
     @CreationTimestamp
     @Column(updatable = false)
-    private LocalDateTime createdAt;
+    private Instant createdAt;
 
     @UpdateTimestamp
-    private LocalDateTime updatedAt;
+    private Instant updatedAt;
 
     public String getFullName() {
         return firstName + " " + lastName;
