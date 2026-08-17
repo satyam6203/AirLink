@@ -1,5 +1,7 @@
 package com.airlink.flight_ops_service.Service.Impl;
 
+import com.airlink.flight_ops_service.Integration.AircraftIntegrationService;
+import com.airlink.flight_ops_service.Integration.AirlineIntegrationServiceImpl;
 import com.airlink.flight_ops_service.Mapper.FlightMapper;
 import com.airlink.flight_ops_service.Model.Flight;
 import com.airlink.flight_ops_service.Repository.FlightRepo;
@@ -21,6 +23,8 @@ import payload.response.FlightResponse;
 public class FlightServiceImpl implements FlightService {
 
     private final FlightRepo flightRepo;
+    private final AirlineIntegrationServiceImpl airlineIntegrationService;
+    private final AircraftIntegrationService aircraftIntegrationService;
 
     @Override
     public FlightResponse createFLight(Long airlineId, FlightRequest request) throws Exception {
@@ -84,13 +88,9 @@ public class FlightServiceImpl implements FlightService {
     }
 
     public FlightResponse convertFlightResponse(Flight flight){
-        AircraftResponse aircraft = AircraftResponse.builder()
-                .id(flight.getId())
-                .build();
+        AircraftResponse aircraft = aircraftIntegrationService.getAircraftId(flight.getAircraftId());
 
-        AirLineResponse airline = AirLineResponse.builder()
-                .id(flight.getAirlineId())
-                .build();
+        AirLineResponse airline = airlineIntegrationService.getByAirlineId(flight.getAircraftId());
 
         AirportResponse arrivalAirport = AirportResponse.builder()
                 .id(flight.getArrivalAirportId())
