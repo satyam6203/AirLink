@@ -18,7 +18,7 @@
     <description>Aggregator for cloud infrastructure modules (Eureka, config, Gateway)</description>
 
     <modules>
-        <!--<module>service-registry</module>-->
+        <module>service-registry</module>
         <!--<module>config-server</module>-->
         <!--<module>api-gateway</module>-->
     </modules>

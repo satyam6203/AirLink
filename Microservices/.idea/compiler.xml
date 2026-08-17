@@ -17,6 +17,7 @@
         <module name="seat-service" />
         <module name="ancillary-service" />
         <module name="pricing-service" />
+        <module name="service-registry" />
       </profile>
     </annotationProcessing>
   </component>
@@ -30,6 +31,7 @@
       <module name="payment-service" options="-parameters" />
       <module name="pricing-service" options="-parameters" />
       <module name="seat-service" options="-parameters" />
+      <module name="service-registry" options="-parameters" />
       <module name="user-service" options="-parameters" />
       <module name="user-service (1)" options="-parameters" />
     </option>
