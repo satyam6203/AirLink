@@ -15,3 +15,13 @@ spring:
     hibernate:
       ddl-auto: update
     show-sql: true
+
+razorpay:
+  api:
+    key:
+    secret:
+
+  callback:
+    base-url: https://airlink-air.vercel.app/
+
+
