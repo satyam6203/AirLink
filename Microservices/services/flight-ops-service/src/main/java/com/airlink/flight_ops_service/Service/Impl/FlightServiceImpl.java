@@ -1,7 +1,7 @@
 package com.airlink.flight_ops_service.Service.Impl;
 
-import com.airlink.flight_ops_service.Integration.AircraftIntegrationService;
-import com.airlink.flight_ops_service.Integration.AirlineIntegrationServiceImpl;
+import com.airlink.flight_ops_service.Client.AirlineClient;
+import com.airlink.flight_ops_service.Client.LocationClient;
 import com.airlink.flight_ops_service.Mapper.FlightMapper;
 import com.airlink.flight_ops_service.Model.Flight;
 import com.airlink.flight_ops_service.Repository.FlightRepo;
@@ -23,8 +23,8 @@ import payload.response.FlightResponse;
 public class FlightServiceImpl implements FlightService {
 
     private final FlightRepo flightRepo;
-    private final AirlineIntegrationServiceImpl airlineIntegrationService;
-    private final AircraftIntegrationService aircraftIntegrationService;
+    private final AirlineClient airlineClient;
+    private final LocationClient locationClient;
 
     @Override
     public FlightResponse createFLight(Long airlineId, FlightRequest request) throws Exception {
@@ -88,16 +88,12 @@ public class FlightServiceImpl implements FlightService {
     }
 
     public FlightResponse convertFlightResponse(Flight flight){
-        AircraftResponse aircraft = aircraftIntegrationService.getAircraftId(flight.getAircraftId());
+        AircraftResponse aircraft = airlineClient.getAircraftById(flight.getAircraftId());
 
-        AirLineResponse airline = airlineIntegrationService.getByAirlineId(flight.getAircraftId());
+        AirLineResponse airline = airlineClient.getAirLineById(flight.getAircraftId());
 
-        AirportResponse arrivalAirport = AirportResponse.builder()
-                .id(flight.getArrivalAirportId())
-                .build();
-        AirportResponse departure = AirportResponse.builder()
-                .id(flight.getDepartureAirportId())
-                .build();
+        AirportResponse arrivalAirport = locationClient.getAirportById(flight.getArrivalAirportId());
+        AirportResponse departure = locationClient.getAirportById(flight.getDepartureAirportId());
         return FlightMapper.response(
                 flight,
                 aircraft,
