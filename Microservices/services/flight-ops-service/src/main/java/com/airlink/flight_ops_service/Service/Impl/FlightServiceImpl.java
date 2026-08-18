@@ -90,7 +90,7 @@ public class FlightServiceImpl implements FlightService {
     public FlightResponse convertFlightResponse(Flight flight){
         AircraftResponse aircraft = airlineClient.getAircraftById(flight.getAircraftId());
 
-        AirLineResponse airline = airlineClient.getAirLineById(flight.getAircraftId());
+        AirLineResponse airline = airlineClient.getAirLineById(flight.getAirlineId());
 
         AirportResponse arrivalAirport = locationClient.getAirportById(flight.getArrivalAirportId());
         AirportResponse departure = locationClient.getAirportById(flight.getDepartureAirportId());

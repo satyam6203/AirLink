@@ -6,6 +6,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.time.DayOfWeek;
+import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.List;
 
@@ -23,8 +24,8 @@ public class FlightScheduleResponse {
     private AirportResponse arrivalAirport;
     private LocalTime departureTime;
     private LocalTime arrivalTime;
-    private LocalTime startDate;
-    private LocalTime endDate;
+    private LocalDate startDate;
+    private LocalDate endDate;
 
     private List<DayOfWeek> operationalDays;
     private boolean isActive;

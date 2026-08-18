@@ -1,5 +1,10 @@
 package com.AirLink.booking_service.Service.Impl;
 
+import com.AirLink.booking_service.Client.AncillaryClient;
+import com.AirLink.booking_service.Client.FlightClient;
+import com.AirLink.booking_service.Client.PaymentClient;
+import com.AirLink.booking_service.Client.SeatClient;
+import com.AirLink.booking_service.Integration.PricingIntegrationService;
 import com.AirLink.booking_service.Mapper.BookingMapper;
 import com.AirLink.booking_service.Model.Booking;
 import com.AirLink.booking_service.Model.Passenger;
@@ -8,12 +13,14 @@ import com.AirLink.booking_service.Service.BookingService;
 import com.AirLink.booking_service.Service.PassengerService;
 import com.AirLink.booking_service.Service.TicketService;
 import enums.BookingStatus;
+import enums.PaymentGateway;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import payload.dto.PaymentDTO;
 import payload.request.BookingRequest;
 import payload.request.PassengerRequest;
+import payload.request.PaymentInitiateRequest;
 import payload.response.*;
 
 import java.util.*;
@@ -26,9 +33,14 @@ public class BookingServiceImpl implements BookingService {
     private final BookingRepo bookingRepo;
     private final PassengerService passengerService;
     private final TicketService ticketService;
+    private final AncillaryClient ancillaryClient;
+    private final PaymentClient paymentClient;
+    private final SeatClient seatClient;
+    private final PricingIntegrationService pricingIntegrationService;
+    private final FlightClient flightClient;
 
     @Override
-    public BookingResponse createBooking(BookingRequest request, Long userId) throws Exception {
+    public PaymentInitiateResponse createBooking(BookingRequest request, Long userId) throws Exception {
 
         String bookingReference = generateBookingReference();
 
@@ -38,8 +50,10 @@ public class BookingServiceImpl implements BookingService {
             passengers.add(passenger);
         }
 
+        FlightResponse flightResponse = flightClient.getFlightById(request.getFlightId());
+
         Booking booking = BookingMapper.toEntity(request, userId, passengers, bookingReference);
-        booking.setAirlineId(1L);
+        booking.setAirlineId(flightResponse.getAirline().getId());
 
         List<Long> seatInstance = request.getPassengers().stream()
                 .map(PassengerRequest :: getSeatInstanceId)
@@ -53,7 +67,25 @@ public class BookingServiceImpl implements BookingService {
         }
 
         ticketService.generateTicketsForBooking(booking);
-        return convertBookingResponse(booking);
+        Double fareTotal = pricingIntegrationService.calculateFareTotal(request.getFareId());
+
+        Double seatPrice = seatClient.calculateSeatPrice(booking.getSeatInstanceIds());
+
+        Double ancillaryPrice = ancillaryClient.calculateAncillariesPrice(booking.getAncillaryIds());
+
+        Double mealPrice = ancillaryClient.calculateMealPrice(booking.getMealIds());
+
+        Double total = fareTotal + seatPrice + ancillaryPrice + mealPrice;
+
+        PaymentInitiateRequest request1 = PaymentInitiateRequest.builder()
+                .userId(userId)
+                .bookingId(booking.getId())
+                .gateway(PaymentGateway.RAZORPAY)
+                .amount(total)
+                .description("payment booking for " + booking.getId())
+                .build();
+
+        return paymentClient.initiatePayment(request1);
     }
 
     @Override

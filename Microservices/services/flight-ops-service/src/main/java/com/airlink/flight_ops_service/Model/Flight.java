@@ -29,6 +29,7 @@ public class Flight {
     private Long aircraftId;
 
     private Long airlineId;
+
     @Column(nullable = false)
     private Long departureAirportId;
 

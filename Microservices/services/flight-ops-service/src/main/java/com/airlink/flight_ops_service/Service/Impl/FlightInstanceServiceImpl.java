@@ -1,5 +1,7 @@
 package com.airlink.flight_ops_service.Service.Impl;
 
+import com.airlink.flight_ops_service.Client.AirlineClient;
+import com.airlink.flight_ops_service.Client.LocationClient;
 import com.airlink.flight_ops_service.Mapper.FlightInstanceMapper;
 import com.airlink.flight_ops_service.Model.Flight;
 import com.airlink.flight_ops_service.Model.FlightInstance;
@@ -24,6 +26,8 @@ import java.time.LocalDateTime;
 public class FlightInstanceServiceImpl implements FlightInstanceService {
 
     private final FlightInstanceRepo flightInstanceRepo;
+    private final AirlineClient airlineClient;
+    private final LocationClient locationClient;
     private final FlightRepo flightRepo;
 
     @Override
@@ -32,10 +36,7 @@ public class FlightInstanceServiceImpl implements FlightInstanceService {
                 ()-> new  Exception("Flight not found")
         );
 
-        AircraftResponse aircraft = AircraftResponse.builder()
-                .id(1L)
-                .totalSeats(90)
-                .build();
+        AircraftResponse aircraft = airlineClient.getAircraftById(flight.getAircraftId());
 
         FlightInstance flightInstance = FlightInstanceMapper.toEntity(request, flight);
         flightInstance.setTotalSeats(aircraft.getTotalSeats());
@@ -89,20 +90,12 @@ public class FlightInstanceServiceImpl implements FlightInstanceService {
     }
 
     private FlightInstanceResponse convertToFlightInstanceResponse(FlightInstance flightInstance){
-        AircraftResponse aircraft = AircraftResponse.builder()
-                .id(flightInstance.getId())
-                .build();
+        AircraftResponse aircraft = airlineClient.getAircraftById(flightInstance.getFlight().getAircraftId());
 
-        AirLineResponse airline = AirLineResponse.builder()
-                .id(flightInstance.getAirlineId())
-                .build();
+        AirLineResponse airline = airlineClient.getAirLineById(flightInstance.getAirlineId());
 
-        AirportResponse arrivalAirport = AirportResponse.builder()
-                .id(flightInstance.getArrivalAirportId())
-                .build();
-        AirportResponse departure = AirportResponse.builder()
-                .id(flightInstance.getDepartureAirportId())
-                .build();
+        AirportResponse arrivalAirport = locationClient.getAirportById(flightInstance.getArrivalAirportId());
+        AirportResponse departure = locationClient.getAirportById(flightInstance.getDepartureAirportId());
 
         return FlightInstanceMapper.toResponse(
                 flightInstance,

@@ -18,10 +18,17 @@ spring:
 
 razorpay:
   api:
-    key:
-    secret:
+    key: rzp_test_TRGFLMVQqVNROk
+    secret: CLUUkjbL2Dx8GCl4UbN8QDhs
 
   callback:
     base-url: https://airlink-air.vercel.app/
+
+eureka:
+  client:
+    register-with-eureka: true
+    fetch-registry: true
+  instance:
+    prefer-ip-address: true
 
 

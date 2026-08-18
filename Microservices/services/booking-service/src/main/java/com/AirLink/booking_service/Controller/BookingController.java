@@ -9,6 +9,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import payload.request.BookingRequest;
 import payload.response.BookingResponse;
+import payload.response.PaymentInitiateResponse;
 
 import java.util.List;
 
@@ -20,7 +21,7 @@ public class BookingController {
     private final BookingService bookingService;
 
     @PostMapping("/create")
-    public ResponseEntity<BookingResponse> createBooking(
+    public ResponseEntity<PaymentInitiateResponse> createBooking(
             @RequestHeader("X-User-Id") Long userId,
             @Valid @RequestBody BookingRequest request
     ) throws Exception {

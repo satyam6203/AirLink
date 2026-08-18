@@ -1,5 +1,7 @@
 package com.airlink.flight_ops_service.Service.Impl;
 
+import com.airlink.flight_ops_service.Client.AirlineClient;
+import com.airlink.flight_ops_service.Client.LocationClient;
 import com.airlink.flight_ops_service.Mapper.FlightInstanceMapper;
 import com.airlink.flight_ops_service.Mapper.FlightScheduleMapper;
 import com.airlink.flight_ops_service.Model.Flight;
@@ -30,6 +32,8 @@ public class FlightScheduleServiceImpl implements FlightScheduleService {
     private final FlightScheduleRepo flightScheduleRepo;
     private final FlightRepo flightRepo;
     private final FlightInstanceService flightInstanceService;
+    private final LocationClient locationClient;
+    private final AirlineClient airlineClient;
 
     @Override
     public FlightScheduleResponse createFlightSchedule(Long airlineId,
@@ -46,8 +50,8 @@ public class FlightScheduleServiceImpl implements FlightScheduleService {
         FlightSchedule saved = flightScheduleRepo.save(flightSchedule);
 
         List<DayOfWeek> operatingDays = saved.getOperationalDays();
-        LocalDate startDate = LocalDate.from(saved.getStartDate());
-        LocalDate endDate = LocalDate.from(saved.getEndDate());
+        LocalDate startDate = saved.getStartDate();
+        LocalDate endDate = saved.getEndDate();
 
         FlightInstanceRequest flightInstanceRequest = FlightInstanceRequest.builder()
                 .scheduledId(saved.getId())
@@ -111,13 +115,9 @@ public class FlightScheduleServiceImpl implements FlightScheduleService {
     private FlightScheduleResponse convertToFlightScheduleResponse(
             FlightSchedule flightSchedule
     ){
-        AirportResponse departure = AirportResponse.builder()
-                .id(flightSchedule.getDepartureAirportId())
-                .build();
+        AirportResponse departure = locationClient.getAirportById(flightSchedule.getDepartureAirportId());
 
-        AirportResponse arrival = AirportResponse.builder()
-                .id(flightSchedule.getArrivalAirportId())
-                .build();
+        AirportResponse arrival = locationClient.getAirportById(flightSchedule.getArrivalAirportId());
         return FlightScheduleMapper.toResponse(
                 flightSchedule,
                 arrival,

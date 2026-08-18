@@ -28,8 +28,8 @@ public class PaymentController {
 
     @PostMapping("/initiate")
     public ResponseEntity<PaymentInitiateResponse> initiatePayment(
-            @Valid @RequestBody PaymentInitiateRequest request,
-            @RequestHeader("X-User-Id") Long userId) throws Exception {
+            @Valid @RequestBody PaymentInitiateRequest request
+           ) throws Exception {
 
         PaymentInitiateResponse response = paymentService
                 .initiatePayment(request);

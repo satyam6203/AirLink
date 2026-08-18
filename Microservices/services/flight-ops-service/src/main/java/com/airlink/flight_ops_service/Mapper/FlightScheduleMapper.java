@@ -6,7 +6,7 @@ import payload.request.FlightScheduleRequest;
 import payload.response.AirportResponse;
 import payload.response.FlightScheduleResponse;
 
-import java.time.LocalTime;
+import java.time.LocalDate;
 
 public class FlightScheduleMapper {
 
@@ -21,8 +21,8 @@ public class FlightScheduleMapper {
                 .departureTime(request.getDepartureTime())
                 .arrivalTime(request.getArrivalTime())
                 .operationalDays(request.getOperatingDays())
-                .startDate(LocalTime.from(request.getStartDate()))
-                .endDate(LocalTime.from(request.getEndDate()))
+                .startDate(request.getStartDate())
+                .endDate(request.getEndDate())
                 .isActive(request.getIsActive() != null ? request.getIsActive() : true)
                 .build();
     }
@@ -62,10 +62,10 @@ public class FlightScheduleMapper {
             existing.setOperationalDays(request.getOperatingDays());
 
         if(request.getStartDate() != null)
-            existing.setStartDate(LocalTime.from(request.getStartDate()));
+            existing.setStartDate(request.getStartDate());
 
         if(request.getEndDate() != null)
-            existing.setEndDate(LocalTime.from(request.getEndDate()));
+            existing.setEndDate(request.getEndDate());
 
         if (request.getIsActive() != null)
             existing.setActive(request.getIsActive());

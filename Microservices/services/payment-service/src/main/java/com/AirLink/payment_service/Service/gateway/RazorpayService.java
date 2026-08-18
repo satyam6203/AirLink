@@ -53,8 +53,8 @@ public class RazorpayService {
         paymentLinkRequest.put("reminder_enable", true);
 
         String successUrl = callbackBaseUrl + "/booking-success/" + payment.getBookingId();
-        paymentLinkRequest.put("callback_put", successUrl);
         paymentLinkRequest.put("callback_url", successUrl);
+        paymentLinkRequest.put("callback_method", "get");
 
         JSONObject notes = new JSONObject();
         notes.put("user_id", userDTO.getId());
