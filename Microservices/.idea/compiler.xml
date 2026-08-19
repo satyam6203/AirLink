@@ -12,6 +12,7 @@
         <module name="location-service" />
         <module name="user-service (1)" />
         <module name="booking-service" />
+        <module name="api-gateway" />
         <module name="common-lib" />
         <module name="user-service" />
         <module name="seat-service" />
@@ -25,6 +26,7 @@
     <option name="ADDITIONAL_OPTIONS_OVERRIDE">
       <module name="airline-core-service" options="-parameters" />
       <module name="ancillary-service" options="-parameters" />
+      <module name="api-gateway" options="-parameters" />
       <module name="booking-service" options="-parameters" />
       <module name="common-lib" options="-parameters" />
       <module name="location-service" options="-parameters" />
