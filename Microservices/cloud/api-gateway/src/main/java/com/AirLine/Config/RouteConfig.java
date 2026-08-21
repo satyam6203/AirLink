@@ -28,9 +28,6 @@ public class RouteConfig {
                 .route(RequestPredicates.POST("/api/cities/**"), HandlerFunctions.http())
                 .route(RequestPredicates.POST("/api/airports/**"), HandlerFunctions.http())
                 .filter(LoadBalancerFilterFunctions.lb("location-service"))
-//                .filter(CircuitBreakerFilterFunctions.circuitBreaker("location-service-cb", URI.create("forward:/fallback")))
-//                .before(this::jwtAuthFilter)
-//                .before(request -> requireRole(request, "ROLE_SYSTEM_ADMIN"))
                 .build();
     }
 
@@ -46,7 +43,7 @@ public class RouteConfig {
     @Bean
     public RouterFunction<ServerResponse> userServiceRoutes(){
         return GatewayRouterFunctions.route("user-service-route")
-                .route(RequestPredicates.path("/api/user/**"), HandlerFunctions.http())
+                .route(RequestPredicates.path("/api/users/**"), HandlerFunctions.http())
                 .filter(LoadBalancerFilterFunctions.lb("user-service"))
                 .build();
     }
