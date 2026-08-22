@@ -48,7 +48,7 @@ public class JwtUtils {
             return false;
         }
     }
-    
+
     public Duration getRemainingValidity(String token){
         Date expiration = extractAllClaims(token).getExpiration();
         return Duration.between(Instant.now(), expiration.toInstant());
