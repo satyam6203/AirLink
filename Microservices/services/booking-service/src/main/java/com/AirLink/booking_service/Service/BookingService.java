@@ -12,13 +12,13 @@ public interface BookingService {
     PaymentInitiateResponse createBooking(BookingRequest request, Long userId) throws Exception;
     BookingResponse updateBooking(Long id, BookingRequest request);
     BookingResponse getBookingById(Long id) throws Exception;
-    List<BookingResponse> getAllBookingsByAirline(Long airlineId,
+    List<BookingResponse> getAllBookingsByAirline(Long userId,
                                                   String searchQuery,
                                                   BookingStatus status,
                                                   Long flightInstanceId,
                                                   String sortDirection
     );
-    List<BookingResponse> getBookingByUser(Long UserId);
+    List<BookingResponse> getBookingByUser(Long userId);
     BookingResponse cancelBooking(Long id) throws Exception;
     void deleteBooking(Long id) throws Exception;
 }

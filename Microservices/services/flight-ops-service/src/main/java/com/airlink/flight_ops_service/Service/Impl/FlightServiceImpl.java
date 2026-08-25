@@ -27,21 +27,26 @@ public class FlightServiceImpl implements FlightService {
     private final LocationClient locationClient;
 
     @Override
-    public FlightResponse createFLight(Long airlineId, FlightRequest request) throws Exception {
+    public FlightResponse createFLight(Long userId, FlightRequest request) throws Exception {
+
+        AirLineResponse response = airlineClient.getAirLineByOwner(userId);
         if(flightRepo.existsByFlightNumber(request.getFlightNumber())){
             throw new Exception("Flight already exist by this flightNumber");
         }
         Flight flight = FlightMapper.toEntity(request);
-        flight.setAirlineId(airlineId);
+        flight.setAirlineId(response.getId());
         Flight saved = flightRepo.save(flight);
         return convertFlightResponse(saved);
     }
 
     @Override
-    public Page<FlightResponse> getFlightByAirline(Long airLineId, Long departureAirportId, Long arrivalAirportId, Pageable pageable) {
-
-        return flightRepo.findByAirlineId(airLineId, departureAirportId, arrivalAirportId, pageable)
-                .map(this::convertFlightResponse);
+    public Page<FlightResponse> getFlightByAirline(Long userId, Long departureAirportId, Long arrivalAirportId, Pageable pageable) {
+        AirLineResponse response = airlineClient.getAirLineByOwner(userId);
+        return flightRepo.findByAirlineId(response.getId(),
+                        departureAirportId,
+                        arrivalAirportId,
+                        pageable
+                ).map(this::convertFlightResponse);
     }
 
     @Override
@@ -80,8 +85,9 @@ public class FlightServiceImpl implements FlightService {
     }
 
     @Override
-    public void deleteFlight(Long id, Long airLineId) throws Exception {
-        Flight exists = flightRepo.findByAirlineIdAndId(id, airLineId).orElseThrow(
+    public void deleteFlight(Long id, Long userId) throws Exception {
+        AirLineResponse response = airlineClient.getAirLineByOwner(userId);
+        Flight exists = flightRepo.findByAirlineIdAndId(id, response.getId()).orElseThrow(
                 () -> new Exception("Flight not found with this id")
         );
         flightRepo.delete(exists);

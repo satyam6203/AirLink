@@ -6,12 +6,15 @@ import com.airline.ancillary_service.Model.Ancillary;
 import com.airline.ancillary_service.Model.InsuranceCoverage;
 import com.airline.ancillary_service.Repo.AncillaryRepository;
 import com.airline.ancillary_service.Repo.InsuranceCoverageRepository;
+import com.airline.ancillary_service.client.AirlineClient;
 import com.airline.ancillary_service.service.AncillaryService;
 import lombok.AllArgsConstructor;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import payload.request.AncillaryRequest;
+import payload.response.AirLineResponse;
+import payload.response.AircraftResponse;
 import payload.response.AncillaryResponse;
 import payload.response.InsuranceCoverageResponse;
 
@@ -25,11 +28,11 @@ public class AncillaryServiceImpl implements AncillaryService {
 
     private final AncillaryRepository ancillaryRepository;
     private final InsuranceCoverageRepository insuranceCoverageRepository;
-//    private final AirlineI
+    private final AirlineClient airlineClient;
 
     @Override
-    public AncillaryResponse create(Long airlineId, AncillaryRequest request) throws Exception {
-
+    public AncillaryResponse create(Long userId, AncillaryRequest request) throws Exception {
+        AirLineResponse response = airlineClient.getAirLineByOwner(userId);
         Ancillary ancillary = Ancillary.builder()
                 .type(request.getType())
                 .subType(request.getSubType())
@@ -38,7 +41,7 @@ public class AncillaryServiceImpl implements AncillaryService {
                 .description(request.getDescription())
                 .metadata(request.getMetadata())
                 .displayOrder(request.getDisplayOrder())
-                .airlineId(airlineId)
+                .airlineId(response.getOwnerId())
                 .build();
 
         Ancillary saved = ancillaryRepository.save(ancillary);
@@ -58,9 +61,9 @@ public class AncillaryServiceImpl implements AncillaryService {
     }
 
     @Override
-    public List<AncillaryResponse> getAllByAirlineId(Long airlineId) {
-
-        return ancillaryRepository.findByAirlineId(airlineId).stream()
+    public List<AncillaryResponse> getAllByAirlineId(Long userId) {
+        AirLineResponse response = airlineClient.getAirLineByOwner(userId);
+        return ancillaryRepository.findByAirlineId(userId).stream()
                 .map(ancillary -> {
                     List<InsuranceCoverage>  insuranceCoverages = insuranceCoverageRepository.findByAncillaryId(ancillary.getId());
                     List<InsuranceCoverageResponse> responses = insuranceCoverages.stream()

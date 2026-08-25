@@ -36,8 +36,9 @@ public class FlightScheduleServiceImpl implements FlightScheduleService {
     private final AirlineClient airlineClient;
 
     @Override
-    public FlightScheduleResponse createFlightSchedule(Long airlineId,
+    public FlightScheduleResponse createFlightSchedule(Long userId,
                                                        FlightScheduleRequest request) throws Exception {
+        AirLineResponse response = airlineClient.getAirLineByOwner(userId);
         Flight flight = flightRepo.findById(request.getFlightId()).orElseThrow(
                 ()-> new Exception("flight not found with this id")
         );
@@ -71,7 +72,7 @@ public class FlightScheduleServiceImpl implements FlightScheduleService {
                         LocalDateTime.of(date, saved.getArrivalTime())
                 );
 
-                flightInstanceService.createFlightInstance(airlineId, flightInstanceRequest);
+                flightInstanceService.createFlightInstance(response.getId(), flightInstanceRequest);
             }
         }
         return convertToFlightScheduleResponse(saved);
@@ -86,8 +87,9 @@ public class FlightScheduleServiceImpl implements FlightScheduleService {
     }
 
     @Override
-    public List<FlightScheduleResponse> getFlightScheduleByAirline(Long airlineId) {
-        List<FlightSchedule> schedules = flightScheduleRepo.findByFlightAirlineId(airlineId);
+    public List<FlightScheduleResponse> getFlightScheduleByAirline(Long userId) {
+        AirLineResponse response = airlineClient.getAirLineByOwner(userId);
+        List<FlightSchedule> schedules = flightScheduleRepo.findByFlightAirlineId(response.getId());
 
         return schedules.stream().map(
                 this::convertToFlightScheduleResponse

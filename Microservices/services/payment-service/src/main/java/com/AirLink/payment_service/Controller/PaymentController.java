@@ -58,8 +58,8 @@ public class PaymentController {
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "20") int size,
             @RequestParam(defaultValue = "createdAt") String sortBy,
-            @RequestParam(defaultValue = "DESC") String sortDirection,
-            @RequestHeader("X-User-Id") Long userId) {
+            @RequestParam(defaultValue = "DESC") String sortDirection)
+    {
         Sort.Direction direction = sortDirection.equalsIgnoreCase("ASC") ?
                 Sort.Direction.ASC : Sort.Direction.DESC;
 

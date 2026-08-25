@@ -10,23 +10,21 @@ import java.time.LocalDate;
 public interface FlightInstanceService {
 
     FlightInstanceResponse createFlightInstance(
-            Long airlineId,
+            Long userId,
             FlightInstanceRequest request
     ) throws Exception;
 
     FlightInstanceResponse getFlightInstanceBuId(Long id) throws Exception;
 
-    Page<FlightInstanceResponse> getByAirlineId(Long airlineId,
+    Page<FlightInstanceResponse> getByAirlineId(Long userId,
                                                 Long departureAirportId,
                                                 Long arrivalAirportId,
                                                 Long flightId,
                                                 LocalDate onDate,
                                                 Pageable pageable
-
     );
 
     FlightInstanceResponse updateLightInstance(Long id, FlightInstanceRequest request) throws Exception;
 
     void deleteLightInstance(Long id) throws Exception;
-
 }

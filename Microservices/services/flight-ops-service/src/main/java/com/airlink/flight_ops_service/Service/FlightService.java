@@ -10,7 +10,7 @@ import payload.response.FlightResponse;
 public interface FlightService {
 
     FlightResponse createFLight(Long userId, FlightRequest request) throws Exception;
-    Page<FlightResponse> getFlightByAirline(Long airLineId,
+    Page<FlightResponse> getFlightByAirline(Long userId,
                                             Long departureAirportId,
                                             Long arrivalAirportId,
                                             Pageable pageable
@@ -18,5 +18,5 @@ public interface FlightService {
     FlightResponse getFlightById(Long id) throws Exception;
     FlightResponse updateFlight(Long id, FlightRequest request) throws Exception;
     FlightResponse changeStatus(Long id, FlightStatus status) throws Exception;
-    void deleteFlight(Long id, Long airlineId) throws Exception;
+    void deleteFlight(Long id, Long userId) throws Exception;
 }

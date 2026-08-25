@@ -8,7 +8,7 @@ import java.util.List;
 
 public interface FlightScheduleService {
 
-    FlightScheduleResponse createFlightSchedule(Long airlineId,
+    FlightScheduleResponse createFlightSchedule(Long userId,
                                                 FlightScheduleRequest request
     ) throws Exception;
 

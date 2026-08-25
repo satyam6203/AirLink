@@ -25,11 +25,11 @@ public class FlightInstanceController {
 
     @PostMapping("/create")
     public ResponseEntity<FlightInstanceResponse> createFlightInstance(
-            @RequestHeader("X-Airline-Id") Long airlineId,
+            @RequestHeader("X-User-Id") Long userId,
             @Valid  @RequestBody FlightInstanceRequest request
     ) throws Exception {
         return ResponseEntity.status(HttpStatus.CREATED).body(
-                flightInstanceService.createFlightInstance(airlineId,request)
+                flightInstanceService.createFlightInstance(userId,request)
         );
     }
 
@@ -42,7 +42,7 @@ public class FlightInstanceController {
 
     @GetMapping()
     public ResponseEntity<Page<FlightInstanceResponse>> getByAirlineId(
-            @RequestHeader("X-Airline-Id") Long airlineId,
+            @RequestHeader("X-User-Id") Long userId,
             @RequestParam(required = false) Long departureAirportId,
             @RequestParam(required = false) Long arrivalAirportId,
             @RequestParam(required = false) Long flightId,
@@ -50,7 +50,7 @@ public class FlightInstanceController {
             Pageable pageable
             ){
         return ResponseEntity.ok(flightInstanceService.getByAirlineId(
-                airlineId,
+                userId,
                 departureAirportId,
                 arrivalAirportId,
                 flightId,

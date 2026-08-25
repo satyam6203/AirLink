@@ -1,5 +1,6 @@
 package com.arilink.seat_service.Service.Impl;
 
+import com.arilink.seat_service.Client.AirlineClient;
 import com.arilink.seat_service.Mapper.CabinClassMapper;
 import com.arilink.seat_service.Mapper.SeatMapMapper;
 import com.arilink.seat_service.Model.CabinClass;
@@ -11,6 +12,7 @@ import com.arilink.seat_service.Service.SeatService;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 import payload.request.SeatMapRequest;
+import payload.response.AirLineResponse;
 import payload.response.SeatMapResponse;
 
 @Service
@@ -20,23 +22,24 @@ public class SeatMapServiceImpl implements SeatMapService {
     private final SeatMapRepo seatMapRepo;
     private final CabinClassRepo cabinClassRepo;
     private final SeatService seatService;
+    private final AirlineClient airlineClient;
 
     @Override
-    public SeatMapResponse createSeatMap(Long airlineId, SeatMapRequest request) throws Exception {
-
+    public SeatMapResponse createSeatMap(Long userId, SeatMapRequest request) throws Exception {
+        AirLineResponse response = airlineClient.getAirLineByOwner(userId);
         CabinClass cabinClass = cabinClassRepo.findById(request.getCabinClassId())
                 .orElseThrow(
                         () -> new Exception("cabin class not found with cabinId")
                 );
         if(seatMapRepo.existsByAirlineIdAndCabinClassIdAndName(
-                airlineId,
+                response.getId(),
                 request.getCabinClassId(),
                 request.getName()
         )){
             throw new Exception("cabin class already exists with given name");
         }
         SeatMap seatMap = SeatMapMapper.toEntity(request, cabinClass);
-        seatMap.setAirlineId(airlineId);
+        seatMap.setAirlineId(response.getId());
         SeatMap saved = seatMapRepo.save(seatMap);
         seatService.generateSeats(saved.getId());
         return SeatMapMapper.toResponse(saved);

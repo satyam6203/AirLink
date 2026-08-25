@@ -28,10 +28,10 @@ public class FlightController {
     @PostMapping("/create")
     public ResponseEntity<FlightResponse> createFlight(
             @Valid @RequestBody FlightRequest request,
-            @RequestHeader("Airline-Id") Long airlineId
+            @RequestHeader("X-User-Id") Long userId
     ) throws Exception {
         return ResponseEntity.status(HttpStatus.CREATED).body(
-                flightService.createFLight(airlineId, request)
+                flightService.createFLight(userId, request)
         );
     }
 
@@ -44,13 +44,13 @@ public class FlightController {
 
     @GetMapping("/airline")
     public ResponseEntity<Page<FlightResponse>> getFlightByAirline(
-            @RequestHeader("Airline-Id") Long airlineId,
+            @RequestHeader("X-User-Id") Long userId,
             @RequestParam(required = false) Long departureAirportId,
             @RequestParam(required = false) Long arrivalAirportId,
             Pageable pageable
     ){
         return ResponseEntity.ok(flightService.getFlightByAirline(
-                airlineId,
+                userId,
                 departureAirportId,
                 arrivalAirportId,
                 pageable
@@ -76,9 +76,9 @@ public class FlightController {
 
     @DeleteMapping("delete/{id}")
     public ResponseEntity<Void> deleteFlight(@PathVariable Long id,
-                                             @RequestHeader("Airline-Id") Long airlineId
+                                             @RequestHeader("X-User-Id") Long userId
     ) throws Exception {
-        flightService.deleteFlight(airlineId, id);
+        flightService.deleteFlight(userId, id);
         return ResponseEntity.noContent().build();
     }
 }

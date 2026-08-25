@@ -1,9 +1,6 @@
 package com.AirLink.booking_service.Service.Impl;
 
-import com.AirLink.booking_service.Client.AncillaryClient;
-import com.AirLink.booking_service.Client.FlightClient;
-import com.AirLink.booking_service.Client.PaymentClient;
-import com.AirLink.booking_service.Client.SeatClient;
+import com.AirLink.booking_service.Client.*;
 import com.AirLink.booking_service.Integration.PricingIntegrationService;
 import com.AirLink.booking_service.Mapper.BookingMapper;
 import com.AirLink.booking_service.Model.Booking;
@@ -38,6 +35,7 @@ public class BookingServiceImpl implements BookingService {
     private final SeatClient seatClient;
     private final PricingIntegrationService pricingIntegrationService;
     private final FlightClient flightClient;
+    private final AirlineClient airlineClient;
 
     @Override
     public PaymentInitiateResponse createBooking(BookingRequest request, Long userId) throws Exception {
@@ -104,11 +102,12 @@ public class BookingServiceImpl implements BookingService {
     }
 
     @Override
-    public List<BookingResponse> getAllBookingsByAirline(Long airlineId,
+    public List<BookingResponse> getAllBookingsByAirline(Long userId,
                                                          String searchQuery,
                                                          BookingStatus status,
                                                          Long flightInstanceId,
                                                          String sortDirection) {
+        AirLineResponse response = airlineClient.getAirLineByOwner(userId);
 
         Sort.Direction direction = "acs".equalsIgnoreCase(sortDirection)
                 ? Sort.Direction.ASC
@@ -116,7 +115,7 @@ public class BookingServiceImpl implements BookingService {
         Sort sort = Sort.by(direction, "bookingDate");
 
         List<Booking> bookings = bookingRepo.findByAirlineWithFilters(
-                airlineId, searchQuery, status, flightInstanceId, sort
+                response.getId(), searchQuery, status, flightInstanceId, sort
         );
 
         return bookings.stream().map(

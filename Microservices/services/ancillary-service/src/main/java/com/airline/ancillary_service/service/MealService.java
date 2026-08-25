@@ -12,9 +12,9 @@ public interface MealService {
 
     MealResponse getById(Long id) throws Exception;
 
-    List<MealResponse> getByAirlineId(Long airlineId);
+    List<MealResponse> getByAirlineId(Long userId);
 
-    MealResponse update(Long airlineId, Long id, MealRequest request) throws Exception;
+    MealResponse update(Long userId, Long id, MealRequest request) throws Exception;
 
     void delete(Long id) throws Exception;
 
