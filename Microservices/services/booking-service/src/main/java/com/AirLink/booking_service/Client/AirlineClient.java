@@ -8,7 +8,7 @@ import payload.response.AirLineResponse;
 @FeignClient(name = "airline-core-service")
 public interface AirlineClient {
 
-    @GetMapping("/admin")
+    @GetMapping("/api/airlines/admin")
     AirLineResponse getAirLineByOwner(
             @RequestHeader("X-User-id") Long ownerId
     );

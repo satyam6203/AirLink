@@ -6,10 +6,10 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestHeader;
 import payload.response.AirLineResponse;
 
-@FeignClient
+@FeignClient(name = "airline-core-service")
 public interface AirlineClient {
 
-    @GetMapping("/admin")
+    @GetMapping("/api/airlines/admin")
     AirLineResponse getAirLineByOwner(
             @RequestHeader("X-User-id") Long ownerId
     );
