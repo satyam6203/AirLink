@@ -10,17 +10,17 @@ spring:
     username: root
     password: Golu@1234
     driver-class-name: com.mysql.cj.jdbc.Driver
-
   jpa:
     hibernate:
       ddl-auto: update
     show-sql: true
+  kafka:
+    bootstrap-servers: localhost:9092
 
 razorpay:
   api:
     key: rzp_test_TRGFLMVQqVNROk
     secret: CLUUkjbL2Dx8GCl4UbN8QDhs
-
   callback:
     base-url: https://airlink-air.vercel.app/
 
