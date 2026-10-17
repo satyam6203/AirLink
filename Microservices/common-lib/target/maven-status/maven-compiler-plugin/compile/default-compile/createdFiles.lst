@@ -27,6 +27,7 @@ payload\response\PaymentLinkResponse.class
 payload\response\SeatResponse$SeatResponseBuilder.class
 embeddable\FlexibilityBenefits.class
 domain\BaggageMetadata$BaggageMetadataBuilder.class
+Event\PaymentCompletedEvent.class
 payload\response\BaggagePolicyResponse$BaggagePolicyResponseBuilder.class
 payload\request\FlightInstanceRequest.class
 payload\request\SeatRequest.class
@@ -69,6 +70,7 @@ payload\request\PassengerRequest.class
 enums\TicketStatus.class
 payload\response\FlightCabinAncillaryResponse$FlightCabinAncillaryResponseBuilder.class
 payload\response\FlightInstanceResponse$FlightInstanceResponseBuilder.class
+Event\PaymentCompletedEvent$PaymentCompletedEventBuilder.class
 payload\request\CityRequest$CityRequestBuilder.class
 enums\AircraftStatus.class
 enums\BookingStatus.class
