@@ -1,5 +1,7 @@
 package com.AirLink.payment_service.Service.Impl;
 
+import com.AirLink.payment_service.Client.UserClient;
+import com.AirLink.payment_service.Event.PaymentEventProducer;
 import com.AirLink.payment_service.Mapper.PaymentMapper;
 import com.AirLink.payment_service.Model.Payment;
 import com.AirLink.payment_service.Repo.PaymentRepo;
@@ -31,6 +33,8 @@ public class PaymentServiceImpl implements PaymentService {
 
     private final PaymentRepo paymentRepo;
     private final RazorpayService razorpayService;
+    private final PaymentEventProducer paymentEventProducer;
+    private final UserClient userClient;
 
     @Override
     public PaymentInitiateResponse initiatePayment(PaymentInitiateRequest request) throws Exception {
@@ -64,11 +68,8 @@ public class PaymentServiceImpl implements PaymentService {
                 .build();
 
         if(request.getGateway() == PaymentGateway.RAZORPAY){
-            UserDTO userDTO = new UserDTO();
-            userDTO.setId(1L);
-            userDTO.setFullName("Satyam Singh");
-            userDTO.setEmail("satyam@gmail.com");
-            userDTO.setPhone("123456789");
+            
+            UserDTO userDTO = userClient.findUserById(request.getUserId());
 
             PaymentLinkResponse paymentLinkResponse = razorpayService.createPaymentLink(
                     userDTO, payment
@@ -103,11 +104,13 @@ public class PaymentServiceImpl implements PaymentService {
             payment1.setStatus(PaymentStatus.SUCCESS);
             payment1.setPaidAt(LocalDateTime.now());
             paymentRepo.save(payment1);
+            paymentEventProducer.paymentCompleted(payment1);
         }
         else{
             payment1.setStatus(PaymentStatus.FAILED);
             payment1.setFailureReason("Payment verification failed");
             paymentRepo.save(payment1);
+            paymentEventProducer.paymentFailed(payment1);
         }
         return PaymentMapper.toDTO(payment1);
     }

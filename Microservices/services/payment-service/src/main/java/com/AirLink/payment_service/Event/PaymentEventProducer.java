@@ -1,7 +1,12 @@
 package com.AirLink.payment_service.Event;
 
 import Event.PaymentCompletedEvent;
+import Event.PaymentFiledEvent;
+
 import com.AirLink.payment_service.Model.Payment;
+
+import java.time.LocalDateTime;
+
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Service;
 
@@ -27,6 +32,20 @@ public class PaymentEventProducer {
                 .paidAt(payment.getPaidAt())
                 .build();
 
-        kafkaTemplate.send(PAYMENT_COMPLETED_TOPIC, event.getTransactionId(), event);
+        kafkaTemplate.send("payment_compelted", event);
+    }
+
+    public void paymentFailed(Payment payment) {
+        PaymentFiledEvent event = PaymentFiledEvent.builder()
+                .paymentId(payment.getId())
+                .bookingId(payment.getBookingId())
+                .userId(payment.getUserId())
+                .amount(payment.getAmount())
+                .transactionId(payment.getTransactionId())
+                .failureReason(payment.getFailureReason())
+                .failedAt(LocalDateTime.now())
+                .build();
+
+        kafkaTemplate.send("Payment_Failed", event);
     }
 }

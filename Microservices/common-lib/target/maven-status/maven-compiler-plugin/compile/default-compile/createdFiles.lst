@@ -17,6 +17,7 @@ payload\response\BaggagePolicyResponse.class
 payload\response\AuthResponse.class
 payload\request\CityRequest.class
 payload\request\FlightCabinAncillaryRequest.class
+Event\PaymentFiledEvent$PaymentFiledEventBuilder.class
 payload\request\PaymentVerifyRequest$PaymentVerifyRequestBuilder.class
 payload\response\SeatMapResponse$SeatMapResponseBuilder.class
 payload\response\AircraftResponse$AircraftResponseBuilder.class
@@ -64,6 +65,7 @@ payload\response\MealResponse$MealResponseBuilder.class
 payload\response\FlightInstanceCabinResponse$FlightInstanceCabinResponseBuilder.class
 payload\response\AirLineResponse.class
 enums\FlightStatus.class
+Event\PaymentFiledEvent.class
 payload\response\PassengerResponse$PassengerResponseBuilder.class
 domain\AncillaryMetadata.class
 payload\request\PassengerRequest.class
