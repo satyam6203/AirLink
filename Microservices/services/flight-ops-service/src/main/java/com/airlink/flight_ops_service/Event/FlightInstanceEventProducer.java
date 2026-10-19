@@ -12,7 +12,7 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor 
 public class FlightInstanceEventProducer {
     
-    private final KafkaTemplate<String, FlightInstanceCreateEvent> kafkaTemplate;
+    private final KafkaTemplate<String, Object> kafkaTemplate;
 
     public void sendFlightInstanceCreated(FlightInstanceCreateEvent event) {
         kafkaTemplate.send("flight-instance-created", event);
