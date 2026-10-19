@@ -2,12 +2,15 @@ package com.airlink.flight_ops_service.Service.Impl;
 
 import com.airlink.flight_ops_service.Client.AirlineClient;
 import com.airlink.flight_ops_service.Client.LocationClient;
+import com.airlink.flight_ops_service.Event.FlightInstanceEventProducer;
 import com.airlink.flight_ops_service.Mapper.FlightInstanceMapper;
 import com.airlink.flight_ops_service.Model.Flight;
 import com.airlink.flight_ops_service.Model.FlightInstance;
 import com.airlink.flight_ops_service.Repository.FlightInstanceRepo;
 import com.airlink.flight_ops_service.Repository.FlightRepo;
 import com.airlink.flight_ops_service.Service.FlightInstanceService;
+
+import Event.FlightInstanceCreateEvent;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -29,6 +32,7 @@ public class FlightInstanceServiceImpl implements FlightInstanceService {
     private final AirlineClient airlineClient;
     private final LocationClient locationClient;
     private final FlightRepo flightRepo;
+    private final FlightInstanceEventProducer flightInstanceEventProducer;
 
     @Override
     public FlightInstanceResponse createFlightInstance(Long userId, FlightInstanceRequest request) throws Exception {
@@ -44,8 +48,13 @@ public class FlightInstanceServiceImpl implements FlightInstanceService {
         flightInstance.setAvailableSeats(aircraft.getTotalSeats());
         FlightInstance saved = flightInstanceRepo.save(flightInstance);
 
-        // create here seat instance
+        FlightInstanceCreateEvent event = FlightInstanceCreateEvent.builder()
+            .flightInstanceId(flightInstance.getId())
+            .aircraftId(flight.getAircraftId())
+            .flightId(flight.getId())
+            .build();
 
+        flightInstanceEventProducer.sendFlightInstanceCreated(event);
         return convertToFlightInstanceResponse(saved);
     }
 

@@ -16,6 +16,11 @@ spring:
       ddl-auto: update
     show-sql: true
 
+  kafka:
+    bootstrap-servers: localhost:9092
+    consumer:
+      group-id: seat-service-group
+
 eureka:
   client:
     register-with-eureka: true

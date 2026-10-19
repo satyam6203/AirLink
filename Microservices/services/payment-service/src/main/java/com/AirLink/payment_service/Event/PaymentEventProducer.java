@@ -13,8 +13,6 @@ import org.springframework.stereotype.Service;
 @Service
 public class PaymentEventProducer {
 
-    private static final String PAYMENT_COMPLETED_TOPIC = "payment-completed";
-
     private final KafkaTemplate<String, Object> kafkaTemplate;
 
     public PaymentEventProducer(KafkaTemplate<String, Object> kafkaTemplate) {

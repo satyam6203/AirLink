@@ -1,9 +1,14 @@
 package com.arilink.seat_service.Service.Impl;
 
+import com.arilink.seat_service.Mapper.SeatInstanceMapper;
 import com.arilink.seat_service.Model.SeatInstance;
 import com.arilink.seat_service.Repo.SeatInstanceRepo;
 import com.arilink.seat_service.Service.SeatInstanceService;
+
+import enums.SeatAvailabilityStatus;
 import lombok.RequiredArgsConstructor;
+import payload.response.SeatInstanceResponse;
+
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -23,5 +28,14 @@ public class SeatInstanceServiceImpl implements SeatInstanceService {
             price += premium;
         }
         return price;
+    }
+
+    @Override
+    public SeatInstanceResponse updateSeatInstanceStatus(Long seaInstanceId, SeatAvailabilityStatus status) {
+        SeatInstance seatInstance = seatInstanceRepo.findById(seaInstanceId).orElse(null);
+        if(seatInstance == null) return null;
+        seatInstance.setStatus(status);
+        seatInstanceRepo.save(seatInstance);
+        return SeatInstanceMapper.toResponse(seatInstance);
     }
 }
