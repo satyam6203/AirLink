@@ -76,9 +76,9 @@ public class RouteConfig {
     public RouterFunction<ServerResponse> seatServiceRoutes() {
         return GatewayRouterFunctions.route("seat-service-routes")
                 .route(RequestPredicates.path("/api/cabin-classes/**"), HandlerFunctions.http())
-                .route(RequestPredicates.path("/api/seat-maps/**"), HandlerFunctions.http())
+                .route(RequestPredicates.path("/api/seat-map/**"), HandlerFunctions.http())
                 .route(RequestPredicates.path("/api/seats/**"), HandlerFunctions.http())
-                .route(RequestPredicates.path("/api/seat-instances/**"), HandlerFunctions.http())
+                .route(RequestPredicates.path("/api/seat-instance/**"), HandlerFunctions.http())
                 .route(RequestPredicates.path("/api/flight-instance-cabins/**"), HandlerFunctions.http())
                 .filter(LoadBalancerFilterFunctions.lb("seat-service"))
                 .before(this :: JwtAuthFilter)
@@ -89,8 +89,8 @@ public class RouteConfig {
     public RouterFunction<ServerResponse> flightOpsServiceRoutes() {
         return GatewayRouterFunctions.route("flight-ops-routes")
                 .route(RequestPredicates.path("/api/flights/**"), HandlerFunctions.http())
-                .route(RequestPredicates.path("/api/flight-instances/**"), HandlerFunctions.http())
-                .route(RequestPredicates.path("/api/flight-schedules/**"), HandlerFunctions.http())
+                .route(RequestPredicates.path("/api/instance/**"), HandlerFunctions.http())
+                .route(RequestPredicates.path("/api/schedule/**"), HandlerFunctions.http())
                 .filter(LoadBalancerFilterFunctions.lb("flight-ops-service"))
                 .before(this :: JwtAuthFilter)
                 .build();
@@ -100,7 +100,7 @@ public class RouteConfig {
     public RouterFunction<ServerResponse> pricingServiceRoutes() {
         return GatewayRouterFunctions.route("pricing-service-routes")
                 .route(RequestPredicates.path("/api/fares/**"), HandlerFunctions.http())
-                .route(RequestPredicates.path("/api/fare-rules/**"), HandlerFunctions.http())
+                .route(RequestPredicates.path("/api/fare-rule/**"), HandlerFunctions.http())
                 .route(RequestPredicates.path("/api/baggage-policies/**"), HandlerFunctions.http())
                 .filter(LoadBalancerFilterFunctions.lb("pricing-service"))
                 .before(this :: JwtAuthFilter)
@@ -111,8 +111,8 @@ public class RouteConfig {
     public RouterFunction<ServerResponse> AncillaryServiceRoutes() {
         return GatewayRouterFunctions.route("ancillary-service-routes")
                 .route(RequestPredicates.path("/api/meals/**"), HandlerFunctions.http())
-                .route(RequestPredicates.path("/api/ancillaries/**"), HandlerFunctions.http())
-                .route(RequestPredicates.path("/api/insurance-coverages/**"), HandlerFunctions.http())
+                .route(RequestPredicates.path("/api/ancillary/**"), HandlerFunctions.http())
+                .route(RequestPredicates.path("/api/insurance-coverage/**"), HandlerFunctions.http())
                 .route(RequestPredicates.path("/api/flight-meals/**"), HandlerFunctions.http())
                 .route(RequestPredicates.path("/api/flight-cabin-ancillaries/**"), HandlerFunctions.http())
                 .filter(LoadBalancerFilterFunctions.lb("ancillary-service"))
@@ -134,7 +134,7 @@ public class RouteConfig {
     @Bean
     public RouterFunction<ServerResponse> bookingServiceRoutes() {
         return GatewayRouterFunctions.route("booking-service-routes")
-                .route(RequestPredicates.path("/api/bookings/**"), HandlerFunctions.http())
+                .route(RequestPredicates.path("/api/booking/**"), HandlerFunctions.http())
                 .filter(LoadBalancerFilterFunctions.lb("booking-service"))
                 .before(this :: JwtAuthFilter)
                 .build();

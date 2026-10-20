@@ -36,10 +36,10 @@ public class SeatMapper {
                 .seatRow(seat.getSeatRow())
                 .columnLetter(seat.getColumnLetter())
                 .seatType(seat.getSeatType())
-                .isAvailable(seat.getIsAvailable())
-                .isBlocked(seat.getIsBlocked())
-                .isEmergencyExit(seat.getIsEmergencyExit())
-                .isActive(seat.getIsActive())
+                .isAvailable(seat.getIsAvailable() != null ? seat.getIsAvailable() : true)
+                .isBlocked(seat.getIsBlocked() != null ? seat.getIsBlocked() : false)
+                .isEmergencyExit(seat.getIsEmergencyExit() != null ? seat.getIsEmergencyExit() : false)
+                .isActive(seat.getIsActive() != null ? seat.getIsActive() : true)
                 .basePrice(seat.getBasePrice())
                 .premiumSurcharge(seat.getPremiumSuperCharge())
                 .totalPrice(seat.getTotalPrice())
@@ -50,11 +50,12 @@ public class SeatMapper {
                 .seatMapId(seat.getSeatMap() != null ? seat.getSeatMap().getId() : null)
                 .seatMapName(seat.getSeatMap() != null ? seat.getSeatMap().getName() : null)
                 .cabinClassId(seat.getCabinClass() != null ? seat.getCabinClass().getId() : null)
-                .cabinClassName(seat.getCabinClass() != null ? seat.getCabinClass().getName().toString() : null)
+                .cabinClassName(seat.getCabinClass() != null && seat.getCabinClass().getName() != null
+                        ? seat.getCabinClass().getName().toString() : null)
                 .createdAt(seat.getCreatedAt())
                 .updatedAt(seat.getUpdatedAt())
                 .createdBy(seat.getCreatedBy())
-                .isBookable(seat.isBookable())
+                .isBookable(seat.getIsActive() != null && seat.getIsActive() && seat.getIsAvailable() != null && seat.getIsAvailable() && (seat.getIsBlocked() == null || !seat.getIsBlocked()))
                 .build();
     }
 }

@@ -1,5 +1,7 @@
 package com.arilink.seat_service.Service.Impl;
 
+import com.arilink.seat_service.Exception.BadRequestException;
+import com.arilink.seat_service.Exception.ResourceNotFoundException;
 import com.arilink.seat_service.Mapper.FlightInstanceCabinMapper;
 import com.arilink.seat_service.Model.CabinClass;
 import com.arilink.seat_service.Model.FlightInstanceCabin;
@@ -12,7 +14,6 @@ import com.arilink.seat_service.Repo.SeatMapRepo;
 import com.arilink.seat_service.Service.FlightInstanceService;
 import enums.SeatAvailabilityStatus;
 import enums.SeatType;
-import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -36,17 +37,17 @@ public class FlightInstanceCabinServiceImpl implements FlightInstanceService {
 
         CabinClass cabinClass = cabinClassRepo.findById(request.getCabinClassId())
                 .orElseThrow(
-                        () -> new Exception("Cabin class not found")
+                        () -> new ResourceNotFoundException("Cabin class not found with id " + request.getCabinClassId())
                 );
 
         SeatMap seatMap = seatMapRepo.findByCabinClassId(cabinClass.getId());
 
         if(seatMap == null){
-            throw new Exception("Seat Map not found");
+            throw new ResourceNotFoundException("Seat Map not found for cabin class " + cabinClass.getId());
         }
 
         if(seatMap.getSeats() == null || seatMap.getSeats().isEmpty()){
-            throw new Exception("no seats found in seat map");
+            throw new BadRequestException("no seats found in seat map");
         }
 
         int totalSeats = seatMap.getSeats().size();
@@ -91,7 +92,7 @@ public class FlightInstanceCabinServiceImpl implements FlightInstanceService {
     public FlightInstanceCabinResponse getFlightInstanceCabinById(Long id) throws Exception {
         FlightInstanceCabin flightInstanceCabin = flightInstanceCabinRepo.findById(id)
                 .orElseThrow(
-                        () -> new Exception("flight instance not found with this id")
+                        () -> new ResourceNotFoundException("flight instance cabin not found with this id " + id)
                 );
         return FlightInstanceCabinMapper.toResponse(flightInstanceCabin);
     }
@@ -108,6 +109,10 @@ public class FlightInstanceCabinServiceImpl implements FlightInstanceService {
                 id,
                 cabinClassId
         );
+        if(cabin == null){
+            throw new ResourceNotFoundException(
+                    "flight instance cabin not found for flight instance " + id + " and cabin class " + cabinClassId);
+        }
         return FlightInstanceCabinMapper.toResponse(cabin);
     }
 
@@ -115,12 +120,12 @@ public class FlightInstanceCabinServiceImpl implements FlightInstanceService {
     public FlightInstanceCabinResponse updateFlightInstanceCabin(Long id, FlightInstanceCabinRequest request) throws Exception {
         FlightInstanceCabin flightInstanceCabin = flightInstanceCabinRepo.findById(id)
                 .orElseThrow(
-                        () -> new Exception("flight instance not found with this id")
+                        () -> new ResourceNotFoundException("flight instance cabin not found with this id " + id)
                 );
 
-        if(request != null){
+        if(request != null && request.getCabinClassId() != null){
             CabinClass cabinClass = cabinClassRepo.findById(request.getCabinClassId()).orElseThrow(
-                    () -> new EntityNotFoundException("Cabin class not found")
+                    () -> new ResourceNotFoundException("Cabin class not found with id " + request.getCabinClassId())
             );
             flightInstanceCabin.setCabinClass(cabinClass);
         }
@@ -132,7 +137,7 @@ public class FlightInstanceCabinServiceImpl implements FlightInstanceService {
     public void deleteFlightInstanceCabin(Long id) throws Exception {
         FlightInstanceCabin flightInstanceCabin = flightInstanceCabinRepo.findById(id)
                 .orElseThrow(
-                        () -> new Exception("flight instance not found with this id")
+                        () -> new ResourceNotFoundException("flight instance cabin not found with this id " + id)
                 );
         flightInstanceCabinRepo.delete(flightInstanceCabin);
     }

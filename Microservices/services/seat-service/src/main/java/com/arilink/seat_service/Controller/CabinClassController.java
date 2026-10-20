@@ -20,8 +20,8 @@ public class CabinClassController {
     private final CabinClassService cabinClassService;
 
     @PostMapping("/create")
-    private ResponseEntity<CabinClassResponse> createCabinClass(
-            @RequestBody CabinClassRequest request
+    public ResponseEntity<CabinClassResponse> createCabinClass(
+            @Valid @RequestBody CabinClassRequest request
     ) throws Exception {
         return ResponseEntity.status(HttpStatus.CREATED).body(
                 cabinClassService.createCabinClass(request)

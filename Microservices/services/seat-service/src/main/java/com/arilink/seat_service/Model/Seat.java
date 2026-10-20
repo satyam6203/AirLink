@@ -38,11 +38,11 @@ public class Seat {
 
     private Boolean isAvailable = true;
 
-    private Boolean isBlocked = true;
+    private Boolean isBlocked = false;
 
     private Boolean isEmergencyExit = false;
 
-    private Boolean isActive  = false;
+    private Boolean isActive  = true;
 
     private Boolean hasExtraLegRoom = false;
 
@@ -74,12 +74,12 @@ public class Seat {
     private LocalDateTime updatedAt;
 
     @CreatedBy
-    @Column(name = "created_by", nullable = false)
-    private String createdBy;
+    @Column(name = "created_by")
+    private String createdBy = "system";
 
     @LastModifiedBy
     @Column(name = "updated_by")
-    private String updatedBy;
+    private String updatedBy = "system";
 
     @Version
     @Column(name = "version")

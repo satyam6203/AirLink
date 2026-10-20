@@ -34,11 +34,11 @@ public class SeatMapMapper {
                         !Boolean.TRUE.equals(seat.getIsBlocked())).count() : 0;
 
         int windowSeats = seats != null ? (int) seats.stream().filter(seat ->
-                seat.getSeatType().name().contains("WINDOW")).count() : 0;
+                seat.getSeatType() != null && seat.getSeatType().name().contains("WINDOW")).count() : 0;
         int aisleSeats = seats != null ? (int) seats.stream().filter(seat ->
-                seat.getSeatType().name().contains("AISLE")).count() : 0;
+                seat.getSeatType() != null && seat.getSeatType().name().contains("AISLE")).count() : 0;
         int middleSeats = seats != null ? (int) seats.stream().filter(seat ->
-                seat.getSeatType().name().contains("MIDDLE")).count() : 0;
+                seat.getSeatType() != null && seat.getSeatType().name().contains("MIDDLE")).count() : 0;
 
         return SeatMapResponse.builder()
                 .id(seatMap.getId())
@@ -48,7 +48,8 @@ public class SeatMapMapper {
                 .rightSeatsPerRow(seatMap.getRightSeatsPerRow())
                 .airlineId(seatMap.getAirlineId())
                 .cabinClassId(seatMap.getCabinClass() != null ? seatMap.getCabinClass().getId() : null)
-                .cabinClassName(seatMap.getCabinClass() != null ? seatMap.getCabinClass().getName().toString() : null)
+                .cabinClassName(seatMap.getCabinClass() != null && seatMap.getCabinClass().getName() != null
+                        ? seatMap.getCabinClass().getName().toString() : null)
                 .cabinClassCode(seatMap.getCabinClass() != null ? seatMap.getCabinClass().getCode() : null)
                 .totalSeats(totalSeats)
                 .availableSeats(availableSeats)

@@ -9,10 +9,10 @@ import com.arilink.seat_service.Service.SeatService;
 import enums.SeatType;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import payload.request.SeatMapRequest;
 import payload.response.SeatResponse;
 
-import java.lang.invoke.CallSite;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -25,6 +25,7 @@ public class SeatServiceImpl implements SeatService {
     private final SeatMapRepo seatMapRepo;
 
     @Override
+    @Transactional
     public void generateSeats(Long seaMapId) throws Exception {
         boolean exists = seatRepo.existsBySeatMapId(seaMapId);
 
@@ -53,6 +54,11 @@ public class SeatServiceImpl implements SeatService {
                         .columnLetter(getSeatLetter(col).charAt(0))
                         .seatType(type)
                         .seatMap(seatMap)
+                        .isActive(true)
+                        .isAvailable(true)
+                        .isBlocked(false)
+                        .createdBy("system")
+                        .updatedBy("system")
                         .build();
                 seats.add(seat);
             }

@@ -10,4 +10,6 @@ public interface SeatMapRepo extends JpaRepository<SeatMap, Long> {
     SeatMap findByCabinClassId(Long cabinClassId);
 
     boolean existsByAirlineIdAndCabinClassIdAndName(Long airlineId, Long cabinClassId, String name);
+
+    boolean existsByCabinClassId(Long cabinClassId);
 }

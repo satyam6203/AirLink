@@ -20,7 +20,7 @@ public class CabinClassMapper {
                 .isActive(request.getIsActive() != null ? request.getIsActive() : true)
                 .isBookable(request.getIsBookable() != null ? request.getIsBookable() : true)
                 .typicalSeatPitch(request.getTypicalSeatPitch())
-                .typicalSeatWith(request.getTypicalSeatPitch())
+                .typicalSeatWith(request.getTypicalSeatWidth())
                 .seatType(request.getSeatType())
                 .build();
     }
@@ -30,7 +30,7 @@ public class CabinClassMapper {
 
         return CabinClassResponse.builder()
                 .id(cabinClass.getId())
-                .name(cabinClass.getName().name())
+                .name(cabinClass.getName() != null ? cabinClass.getName().name() : null)
                 .code(cabinClass.getCode())
                 .description(cabinClass.getDescription())
                 .aircraftId(cabinClass.getAircraftId())

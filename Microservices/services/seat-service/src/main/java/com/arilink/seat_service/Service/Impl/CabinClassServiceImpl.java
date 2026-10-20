@@ -1,5 +1,7 @@
 package com.arilink.seat_service.Service.Impl;
 
+import com.arilink.seat_service.Exception.BadRequestException;
+import com.arilink.seat_service.Exception.ResourceNotFoundException;
 import com.arilink.seat_service.Mapper.CabinClassMapper;
 import com.arilink.seat_service.Model.CabinClass;
 import com.arilink.seat_service.Repo.CabinClassRepo;
@@ -22,10 +24,10 @@ public class CabinClassServiceImpl implements CabinClassService {
     @Override
     public CabinClassResponse createCabinClass(CabinClassRequest request) throws Exception {
         if(cabinClassRepo.existsByCodeAndAircraftId(
-                request.getCode(),
+                request.getCode().toUpperCase(),
                 request.getAircraftId()
         )){
-            throw new Exception("cabin class with code already exist");
+            throw new BadRequestException("cabin class with code already exist");
         }
         CabinClass cabinClass = CabinClassMapper.toEntity(request);
         CabinClass saved = cabinClassRepo.save(cabinClass);
@@ -35,9 +37,9 @@ public class CabinClassServiceImpl implements CabinClassService {
     @Override
     public CabinClassResponse getCabinClassById(Long id) throws Exception {
         CabinClass cabinClass = cabinClassRepo.findById(id).orElseThrow(
-                () -> new Exception("cabin class not found with this id " + id)
+                () -> new ResourceNotFoundException("cabin class not found with this id " + id)
         );
-        return CabinClassMapper.toResponse(cabinClass, null);
+        return CabinClassMapper.toResponse(cabinClass, cabinClass.getSeatMap());
     }
 
     @Override
@@ -51,20 +53,24 @@ public class CabinClassServiceImpl implements CabinClassService {
     @Override
     public CabinClassResponse getByAircraftIdAndName(Long aircraftId, CabinClassType name) {
         CabinClass cabinClass = cabinClassRepo.findByAircraftIdAndName(aircraftId, name);
-        return CabinClassMapper.toResponse(cabinClass, null);
+        if(cabinClass == null){
+            throw new ResourceNotFoundException(
+                    "cabin class not found for aircraft " + aircraftId + " and name " + name);
+        }
+        return CabinClassMapper.toResponse(cabinClass, cabinClass.getSeatMap());
     }
 
     @Override
     public CabinClassResponse updatedCabinClass(Long id, CabinClassRequest request) throws Exception {
         CabinClass cabinClass = cabinClassRepo.findById(id).orElseThrow(
-                () -> new Exception("cabin class not found with this id " + id)
+                () -> new ResourceNotFoundException("cabin class not found with this id " + id)
         );
-        if(cabinClassRepo.existsByCodeAndAircraftIdAndIdNot(
+        if(request.getCode() != null && cabinClassRepo.existsByCodeAndAircraftIdAndIdNot(
                 request.getCode().toUpperCase(),
-                request.getAircraftId(),
+                request.getAircraftId() != null ? request.getAircraftId() : cabinClass.getAircraftId(),
                 cabinClass.getId()
         )){
-            throw new Exception("Cabin class with code already exists ");
+            throw new BadRequestException("Cabin class with code already exists ");
         }
         CabinClassMapper.updateEntity(request, cabinClass);
         CabinClass updatedClass = cabinClassRepo.save(cabinClass);
@@ -74,7 +80,7 @@ public class CabinClassServiceImpl implements CabinClassService {
     @Override
     public void deleteCabinClass(Long id) throws Exception {
         CabinClass cabinClass = cabinClassRepo.findById(id).orElseThrow(
-                () -> new Exception("cabin class not found with this id " + id)
+                () -> new ResourceNotFoundException("cabin class not found with this id " + id)
         );
         cabinClassRepo.delete(cabinClass);
     }
