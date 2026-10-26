@@ -9,7 +9,7 @@ export const createFare = createAsyncThunk(
   "fare/create",
   async (fareData, { rejectWithValue }) => {
     try {
-      const res = await api.post(API_URL, fareData, { headers: getHeaders() });
+      const res = await api.post(`${API_URL}/create`, fareData, { headers: getHeaders() });
       console.log("✅ createFare success:", res.data);
       return res.data;
     } catch (err) {
@@ -40,7 +40,7 @@ export const updateFare = createAsyncThunk(
   "fare/update",
   async ({ id, fareData }, { rejectWithValue }) => {
     try {
-      const res = await api.put(`${API_URL}/${id}`, fareData, { headers: getHeaders() });
+      const res = await api.put(`${API_URL}/update/${id}`, fareData, { headers: getHeaders() });
       console.log("✅ updateFare success:", res.data);
       return res.data;
     } catch (err) {
@@ -55,7 +55,7 @@ export const deleteFare = createAsyncThunk(
   "fare/delete",
   async (id, { rejectWithValue }) => {
     try {
-      await api.delete(`${API_URL}/${id}`, { headers: getHeaders() });
+      await api.delete(`${API_URL}/delete/${id}`, { headers: getHeaders() });
       console.log("✅ deleteFare success:", id);
       return id;
     } catch (err) {

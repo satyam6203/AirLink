@@ -36,6 +36,8 @@ public class Airline {
 
     @Column(unique = true, nullable = false)
     private Long ownerId;
+    @Lob
+    @Column(columnDefinition = "LONGTEXT")
     private String logoUrl;
     private String website;
 

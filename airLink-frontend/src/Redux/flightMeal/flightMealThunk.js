@@ -9,7 +9,7 @@ export const createFlightMeal = createAsyncThunk(
   "flightMeal/create",
   async (flightMealData, { rejectWithValue }) => {
     try {
-      const response = await api.post("/api/flight-meals", flightMealData, {
+      const response = await api.post("/api/flight-meals/create", flightMealData, {
         headers: getHeaders(),
       });
       return response.data;
@@ -68,7 +68,7 @@ export const updateFlightMeal = createAsyncThunk(
   "flightMeal/update",
   async ({ flightMealId, flightMealData }, { rejectWithValue }) => {
     try {
-      const response = await api.put(`/api/flight-meals/${flightMealId}`, flightMealData, {
+      const response = await api.put(`/api/flight-meals/update/${flightMealId}`, flightMealData, {
         headers: getHeaders(),
       });
       return response.data;
@@ -111,7 +111,7 @@ export const deleteFlightMeal = createAsyncThunk(
   "flightMeal/delete",
   async (flightMealId, { rejectWithValue }) => {
     try {
-      await api.delete(`/api/flight-meals/${flightMealId}`, {
+      await api.delete(`/api/flight-meals/delete/${flightMealId}`, {
         headers: getHeaders(),
       });
       return flightMealId;

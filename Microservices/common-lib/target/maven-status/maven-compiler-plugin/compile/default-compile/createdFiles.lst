@@ -64,6 +64,7 @@ payload\response\FlightMealResponse$FlightMealResponseBuilder.class
 payload\response\MealResponse$MealResponseBuilder.class
 payload\response\FlightInstanceCabinResponse$FlightInstanceCabinResponseBuilder.class
 payload\response\AirLineResponse.class
+Event\FlightInstanceCreateEvent$FlightInstanceCreateEventBuilder.class
 enums\FlightStatus.class
 Event\PaymentFiledEvent.class
 payload\response\PassengerResponse$PassengerResponseBuilder.class
@@ -112,6 +113,7 @@ payload\request\BaggagePolicyRequest$BaggagePolicyRequestBuilder.class
 payload\request\CabinClassRequest$CabinClassRequestBuilder.class
 enums\SeatType.class
 embeddable\InFlightBenefits$InFlightBenefitsBuilder.class
+Event\FlightInstanceCreateEvent.class
 payload\response\FareResponse$FareResponseBuilder.class
 payload\response\SeatInstanceResponse.class
 CommonLibApplication.class

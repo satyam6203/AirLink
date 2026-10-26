@@ -45,16 +45,20 @@ import TravellerBookingCard from "./TravellerBookingCard"
 
 
 const BookingHistory = () => {
-  const {bookings}=useSelector(state=>state.booking)
+  const { bookings, loading, error } = useSelector((state) => state.booking)
   const navigate = useNavigate()
   const [filteredBookings, setFilteredBookings] = React.useState(bookings)
 
   const [activeTab, setActiveTab] = React.useState("all")
-  const dispatch=useDispatch();
+  const dispatch = useDispatch();
 
-  useEffect(()=>{
+  const loadBookings = React.useCallback(() => {
     dispatch(getBookingsByUser())
-  },[])
+  }, [dispatch])
+
+  useEffect(() => {
+    loadBookings()
+  }, [loadBookings])
 
   // Filter and sort logic
   React.useEffect(() => {
@@ -125,7 +129,7 @@ const BookingHistory = () => {
                 <h1 className="text-2xl font-bold text-foreground">My Bookings</h1>
                 <p className="text-muted-foreground">Manage your flight bookings and travel history</p>
               </div>
-              <Button className="flex items-center gap-2">
+              <Button className="flex items-center gap-2" onClick={() => navigate("/traveler")}>
                 <Plane className="h-4 w-4" />
                 Book New Flight
               </Button>
@@ -164,12 +168,41 @@ const BookingHistory = () => {
           {/* Main Content */}
           <div className="">
             <div className="space-y-4">
-              {filteredBookings.length === 0 ? (
+              {loading && bookings.length === 0 ? (
+                <Card>
+                  <CardContent className="py-12 flex flex-col items-center gap-3">
+                    <Loader2 className="h-8 w-8 animate-spin text-primary" />
+                    <p className="text-muted-foreground">Loading your bookings…</p>
+                  </CardContent>
+                </Card>
+              ) : error && bookings.length === 0 ? (
+                <Card>
+                  <CardContent className="py-12 text-center">
+                    <AlertCircle className="h-12 w-12 text-destructive mx-auto mb-4" />
+                    <h3 className="text-lg font-medium text-foreground mb-2">
+                      Could not load bookings
+                    </h3>
+                    <p className="text-muted-foreground mb-4">{error}</p>
+                    <Button variant="outline" onClick={loadBookings}>
+                      <RefreshCw className="h-4 w-4 mr-2" />
+                      Try again
+                    </Button>
+                  </CardContent>
+                </Card>
+              ) : filteredBookings.length === 0 ? (
                 <Card>
                   <CardContent className="py-12 text-center">
                     <Plane className="h-12 w-12 text-muted-foreground mx-auto mb-4" />
                     <h3 className="text-lg font-medium text-foreground mb-2">No bookings found</h3>
-                    <p className="text-muted-foreground">Try adjusting your filters or search criteria</p>
+                    <p className="text-muted-foreground mb-4">
+                      {activeTab === "all"
+                        ? "Book a flight to see it here."
+                        : "No bookings match this filter."}
+                    </p>
+                    <Button onClick={() => navigate("/traveler")}>
+                      <Plane className="h-4 w-4 mr-2" />
+                      Search flights
+                    </Button>
                   </CardContent>
                 </Card>
               ) : (

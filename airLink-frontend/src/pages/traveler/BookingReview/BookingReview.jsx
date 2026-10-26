@@ -62,6 +62,7 @@ const BookingReview = () => {
   const [totalPassengers, setTotalPassagners] = useState(1);
 
   const [flightInstanceId, setFlightInstanceId] = useState(null);
+  const [cabinClassId, setCabinClassId] = useState(null);
 
   // Helper function to calculate seat price
   const getSeatPrice = (seat) => {
@@ -145,6 +146,8 @@ const BookingReview = () => {
         const parsedData = JSON.parse(storedBookingData);
 
         console.log("Loaded Booking Data:", parsedData);
+        const cId = searchParams.get("cabinClassId") || parsedData?.fare?.cabinClassId || parsedData?.flight?.selectedCabinClass?.id;
+        if (cId) setCabinClassId(cId);
       } else {
         console.warn(
           "No booking data found in sessionStorage, using mock data",

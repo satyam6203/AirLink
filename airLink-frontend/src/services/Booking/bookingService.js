@@ -55,6 +55,7 @@ export const buildBookingPayload = ({
       xflt,
       numberOfTravellers: String(numberOfTravellers),
       cabinClass: selectedCabinClass.name,
+      cabinClassId: selectedFare?.cabinClassId || selectedCabinClass?.id,
       flightInstanceId: flight.id,
       flightId: flight.flightId,
       fareId: selectedFare.id,

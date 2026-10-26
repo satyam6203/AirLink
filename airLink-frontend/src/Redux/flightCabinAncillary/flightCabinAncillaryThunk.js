@@ -10,7 +10,7 @@ export const createFlightCabinAncillary = createAsyncThunk(
   "flightCabinAncillary/create",
   async (data, { rejectWithValue }) => {
     try {
-      const res = await api.post(API_URL, data, { headers: getHeaders() });
+      const res = await api.post(`${API_URL}/create`, data, { headers: getHeaders() });
       console.log("✅ createFlightCabinAncillary success:", res.data);
       return res.data;
     } catch (err) {
@@ -70,7 +70,7 @@ export const updateFlightCabinAncillary = createAsyncThunk(
   "flightCabinAncillary/update",
   async ({ id, data }, { rejectWithValue }) => {
     try {
-      const res = await api.put(`${API_URL}/${id}`, data, { headers: getHeaders() });
+      const res = await api.put(`${API_URL}/update/${id}`, data, { headers: getHeaders() });
       console.log("✅ updateFlightCabinAncillary success:", res.data);
       return res.data;
     } catch (err) {
@@ -85,7 +85,7 @@ export const deleteFlightCabinAncillary = createAsyncThunk(
   "flightCabinAncillary/delete",
   async (id, { rejectWithValue }) => {
     try {
-      await api.delete(`${API_URL}/${id}`, { headers: getHeaders() });
+      await api.delete(`${API_URL}/delete/${id}`, { headers: getHeaders() });
       console.log("✅ deleteFlightCabinAncillary success:", id);
       return id;
     } catch (err) {

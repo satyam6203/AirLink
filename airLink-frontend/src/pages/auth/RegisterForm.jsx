@@ -42,22 +42,24 @@ const Register = () => {
   const handleSubmit = async (values,  setSubmitting ) => {
     try {
 
-      values.role="ROLE_CUSTOMER"
-      
-      const result = await dispatch(signup(values)).unwrap();
-      
-      if (signup.fulfilled.match(result)) {
-        // Registration successful, redirect to appropriate dashboard based on role
-        const user = result.payload.user;
-        if (user && user.role === 'ROLE_USER') {
-          navigate('/traveler/dashboard');
-        } else if (user && user.role === 'ROLE_AIRLINE_OWNER') {
-          navigate('/airline/dashboard');
-        } else if (user && user.role === 'ROLE_SYSTEM_ADMIN') {
-          navigate('/super-admin/dashboard');
-        } else {
-          navigate('/');
-        }
+      const payload = {
+        ...values,
+        role: "ROLE_USER",
+        phone: values.mobile,
+      };
+
+      const result = await dispatch(signup(payload)).unwrap();
+
+      // Registration successful, redirect to appropriate dashboard based on role
+      const user = result.user;
+      if (user && user.role === 'ROLE_USER') {
+        navigate('/traveler');
+      } else if (user && user.role === 'ROLE_AIRLINE_OWNER') {
+        navigate('/airline/dashboard');
+      } else if (user && user.role === 'ROLE_SYSTEM_ADMIN') {
+        navigate('/super-admin/dashboard');
+      } else {
+        navigate('/');
       }
     } catch (err) {
       console.error('Registration failed:', err);

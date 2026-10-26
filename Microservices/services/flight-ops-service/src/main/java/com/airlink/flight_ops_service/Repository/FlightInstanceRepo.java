@@ -9,7 +9,6 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.time.LocalDateTime;
-import java.util.List;
 
 @Repository
 public interface FlightInstanceRepo extends JpaRepository<FlightInstance, Long> {
@@ -33,4 +32,22 @@ public interface FlightInstanceRepo extends JpaRepository<FlightInstance, Long> 
             Pageable pageable
     );
 
+    @Query("""
+            select fi from FlightInstance fi
+            where (:departureAirportId is null or fi.departureAirportId = :departureAirportId)
+              and (:arrivalAirportId is null or fi.arrivalAirportId = :arrivalAirportId)
+              and (:airlineId is null or fi.airlineId = :airlineId)
+              and (:dayStart is null or fi.departureDateTime >= :dayStart)
+              and (:dayEnd is null or fi.departureDateTime < :dayEnd)
+              and fi.isActive = true
+              and fi.status <> enums.FlightStatus.CANCELLED
+            """)
+    Page<FlightInstance> searchPublic(
+            @Param("departureAirportId") Long departureAirportId,
+            @Param("arrivalAirportId") Long arrivalAirportId,
+            @Param("airlineId") Long airlineId,
+            @Param("dayStart") LocalDateTime dayStart,
+            @Param("dayEnd") LocalDateTime dayEnd,
+            Pageable pageable
+    );
 }

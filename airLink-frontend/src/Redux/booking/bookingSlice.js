@@ -174,8 +174,7 @@ const bookingSlice = createSlice({
 
     // ---------- GET BY USER ----------
     builder.addCase(getBookingsByUser.pending, (state) => {
-      console.log("⏳ getBookingsByUser pending");
-      state.routePerformanceLoading = true;
+      state.loading = true;
       state.error = null;
     });
     builder.addCase(getBookingsByUser.fulfilled, (state, action) => {
@@ -210,10 +209,10 @@ const bookingSlice = createSlice({
     // ---------- GET COUNT BY FLIGHT ----------
     builder.addCase(getBookingCountByFlight.pending, (state) => {
       console.log("⏳ getBookingCountByFlight pending");
-      state.routePerformanceLoading = true;
+      state.loading = true;
       state.error = null;
     });
-    builder.addCase(getBookingCountByFlight.fulfilled, (state, action) => {
+    builder.addCase(getBookingCountByFlight.fulfilled, (state) => {
       console.log("✅ getBookingCountByFlight fulfilled");
       state.loading = false;
     });

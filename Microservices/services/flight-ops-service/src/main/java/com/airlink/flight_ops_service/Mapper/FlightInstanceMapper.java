@@ -29,7 +29,7 @@ public class FlightInstanceMapper {
                 .status(request.getStatus())
                 .minAdvanceBookingDays(request.getMinAdvanceBookingDays())
                 .maxAdvanceBookingDays(request.getMaxAdvanceBookingDays())
-                .isActive(request.getIsActive())
+                .isActive(request.getIsActive() != null ? request.getIsActive() : Boolean.TRUE)
                 .build();
     }
 

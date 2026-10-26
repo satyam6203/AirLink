@@ -24,6 +24,13 @@ public interface FlightInstanceService {
                                                 Pageable pageable
     );
 
+    Page<FlightInstanceResponse> searchFlightInstances(Long departureAirportId,
+                                                       Long arrivalAirportId,
+                                                       Long airlineId,
+                                                       LocalDate onDate,
+                                                       Pageable pageable
+    );
+
     FlightInstanceResponse updateLightInstance(Long id, FlightInstanceRequest request) throws Exception;
 
     void deleteLightInstance(Long id) throws Exception;

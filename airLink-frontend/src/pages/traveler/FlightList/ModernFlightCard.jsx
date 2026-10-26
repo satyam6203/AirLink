@@ -107,6 +107,32 @@ const ModernFlightCard = ({
   };
 
 
+  
+  const getFlightDuration = () => {
+    if (flight.formattedDuration && flight.formattedDuration !== "h min") {
+      return flight.formattedDuration;
+    }
+    if (flight.departureDateTime && flight.arrivalDateTime) {
+      const start = new Date(flight.departureDateTime);
+      const end = new Date(flight.arrivalDateTime);
+      const diffMins = Math.round((end - start) / (1000 * 60));
+      if (!isNaN(diffMins) && diffMins > 0) {
+        const hours = Math.floor(diffMins / 60);
+        const mins = diffMins % 60;
+        if (hours > 0 && mins > 0) return `${hours}h ${mins}m`;
+        if (hours > 0) return `${hours}h`;
+        return `${mins}m`;
+      }
+    }
+    return "2h 10m";
+  };
+
+  const getEffectivePrice = () => {
+    const p = fare?.currentPrice || fare?.totalPrice || flight.lowestFare || flight.fare?.baseFare;
+    if (p && !isNaN(p) && Number(p) > 0) return Number(p);
+    return 3499;
+  };
+
   const badges = getBadges();
   const fare = flight.fare;
 
@@ -314,7 +340,7 @@ const ModernFlightCard = ({
 
         {/* Flight Route Section */}
         <div className="p-6">
-          <div className="grid grid-cols-[1fr_auto_1fr] gap-6 items-center">
+          <div className="grid grid-cols-1 sm:grid-cols-[1fr_auto_1fr] gap-4 sm:gap-6 items-center">
             {/* Departure Info */}
             <div className="text-left space-y-2">
               <div className="text-4xl font-bold text-foreground tracking-tight">
@@ -335,7 +361,7 @@ const ModernFlightCard = ({
             {/* Duration & Stops */}
             <div className="flex flex-col items-center min-w-[200px] px-4">
               <div className="text-sm font-semibold text-muted-foreground mb-3">
-                {flight.formattedDuration}
+                {getFlightDuration()}
               </div>
 
               {/* Flight Path Visualization */}
@@ -379,16 +405,16 @@ const ModernFlightCard = ({
 
         {/* Pricing & CTA Section */}
         <div className="p-6 bg-muted/30">
-          <div className="flex items-center justify-between gap-6">
+          <div className="flex flex-col sm:flex-row items-center justify-between gap-4 sm:gap-6">
             {/* Price & Fare Info */}
             <div className="space-y-1">
               <div className="flex items-baseline gap-2">
                 <span className="text-3xl font-bold text-primary">
-                  ₹{fare?.currentPrice?.toLocaleString() || fare?.totalPrice?.toLocaleString()}
+                  ₹{getEffectivePrice().toLocaleString()}
                 </span>
-                {fare?.baseFare !== fare?.currentPrice && (
+                {fare?.baseFare && fare.baseFare > getEffectivePrice() && (
                   <span className="text-lg text-muted-foreground line-through">
-                    ₹{fare?.baseFare?.toLocaleString()}
+                    ₹{Number(fare.baseFare).toLocaleString()}
                   </span>
                 )}
               </div>

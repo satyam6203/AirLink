@@ -10,7 +10,7 @@ export const createSeatMap = createAsyncThunk(
   "seatMap/create",
   async (data, { rejectWithValue }) => {
     try {
-      const res = await api.post("/api/seat-maps", data, { headers: getHeaders() });
+      const res = await api.post("/api/seat-map/create", data, { headers: getHeaders() });
       console.log("✅ createSeatMap success:", res.data);
       return res.data;
     } catch (err) {
@@ -25,7 +25,7 @@ export const updateSeatMap = createAsyncThunk(
   "seatMap/update",
   async ({ id, data }, { rejectWithValue }) => {
     try {
-      const res = await api.put(`/api/seat-maps/${id}`, data, { headers: getHeaders() });
+      const res = await api.put(`/api/seat-map/update/${id}`, data, { headers: getHeaders() });
       console.log("✅ updateSeatMap success:", res.data);
       return res.data;
     } catch (err) {
@@ -40,7 +40,7 @@ export const getSeatMapsByCabinClass = createAsyncThunk(
   "seatMap/getByCabinClass",
   async (cabinClassId, { rejectWithValue }) => {
     try {
-      const res = await api.get(`/api/seat-maps/cabin-class/${cabinClassId}`, { headers: getHeaders() });
+      const res = await api.get(`/api/seat-map/cabin-class/${cabinClassId}`, { headers: getHeaders() });
       console.log("✅ getSeatMapsByCabinClass success:", res.data);
       return res.data;
     } catch (err) {
@@ -55,7 +55,7 @@ export const deleteSeatMap = createAsyncThunk(
   "seatMap/delete",
   async (id, { rejectWithValue }) => {
     try {
-      await api.delete(`/api/seat-maps/${id}`, { headers: getHeaders() });
+      await api.delete(`/api/seat-map/delete/${id}`, { headers: getHeaders() });
       console.log("✅ deleteSeatMap success:", id);
       return id;
     } catch (err) {

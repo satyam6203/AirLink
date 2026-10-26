@@ -9,7 +9,7 @@ const authSlice = createSlice({
     user: null,
     loading: false,
     error: null,
-    isAuthenticated: false,
+    isAuthenticated: Boolean(localStorage.getItem("jwt")),
     forgotPasswordLoading: false,
     forgotPasswordError: null,
     forgotPasswordSuccess: false,
@@ -37,7 +37,7 @@ const authSlice = createSlice({
       })
       .addCase(signup.fulfilled, (state, action) => {
         state.loading = false;
-        state.user = action.payload;
+        state.user = action.payload.user;
         state.isAuthenticated = true;
       })
       .addCase(signup.rejected, (state, action) => {
@@ -102,7 +102,7 @@ const authSlice = createSlice({
       })
       // Get User Profile to maintain auth state
       .addCase(getUserProfile.pending, (state) => {
-        state.isAuthenticated = false;
+        state.loading = true;
       })
       .addCase(getUserProfile.fulfilled, (state, action) => {
         state.loading = false;

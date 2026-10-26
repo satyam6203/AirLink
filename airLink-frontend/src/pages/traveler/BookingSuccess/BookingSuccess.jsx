@@ -40,11 +40,16 @@ const BookingSuccess = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const { booking, loading, error } = useSelector((state) => state.booking);
-  const { callbackResponse, loading: paymentLoading } = useSelector(
-    (state) => state.payment
-  );
-  const [emailSent, setEmailSent] = useState(false);
+  const { loading: paymentLoading } = useSelector((state) => state.payment);
   const [downloadingPDF, setDownloadingPDF] = useState(false);
+
+  const isPaymentConfirmed =
+    ["CONFIRMED", "COMPLETED"].includes(
+      String(booking?.status || "").toUpperCase(),
+    ) ||
+    ["COMPLETED", "SUCCESS", "PAID"].includes(
+      String(booking?.paymentStatus || "").toUpperCase(),
+    );
 
   const processPayment = async () => {
     const razorpayPaymentId = searchParams.get("razorpay_payment_id");
@@ -122,9 +127,15 @@ const BookingSuccess = () => {
   };
 
   const handleSendEmail = () => {
-    // TODO: Implement email sending
-    setEmailSent(true);
-    setTimeout(() => setEmailSent(false), 3000);
+    const subject = encodeURIComponent(
+      `AirLink booking ${booking?.bookingReference || ""}`,
+    );
+    const body = encodeURIComponent(
+      `Booking reference: ${booking?.bookingReference || "N/A"}\nFlight: ${
+        booking?.flightNumber || "N/A"
+      }\nPassengers: ${booking?.totalPassengers || 1}`,
+    );
+    window.location.href = `mailto:?subject=${subject}&body=${body}`;
   };
 
   const formatDate = (dateString) => {
@@ -198,16 +209,29 @@ const BookingSuccess = () => {
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-purple-50">
       {/* Success Header */}
-      <div className="bg-gradient-to-r from-green-500 to-emerald-600 text-white py-12 px-4">
+      <div
+        className={cn(
+          "text-white py-12 px-4",
+          isPaymentConfirmed
+            ? "bg-gradient-to-r from-green-500 to-emerald-600"
+            : "bg-gradient-to-r from-amber-500 to-orange-600",
+        )}
+      >
         <div className="max-w-4xl mx-auto text-center">
           <div className="inline-flex items-center justify-center w-20 h-20 bg-white rounded-full mb-6 shadow-lg animate-bounce">
-            <CheckCircle2 className="h-12 w-12 text-green-500" />
+            {isPaymentConfirmed ? (
+              <CheckCircle2 className="h-12 w-12 text-green-500" />
+            ) : (
+              <AlertCircle className="h-12 w-12 text-amber-500" />
+            )}
           </div>
           <h1 className="text-4xl md:text-5xl font-bold mb-4">
-            Booking Confirmed!
+            {isPaymentConfirmed ? "Booking Confirmed!" : "Payment Pending"}
           </h1>
           <p className="text-xl md:text-2xl mb-2">
-            Your flight is booked successfully
+            {isPaymentConfirmed
+              ? "Your flight is booked successfully"
+              : "Your booking is saved, but payment has not been confirmed yet."}
           </p>
           <div className="inline-flex items-center gap-2 bg-white/20 backdrop-blur-sm px-6 py-3 rounded-full">
             <Ticket className="h-5 w-5" />
@@ -246,10 +270,9 @@ const BookingSuccess = () => {
                 variant="outline"
                 className="w-full"
                 size="lg"
-                disabled={emailSent}
               >
                 <Mail className="mr-2 h-5 w-5" />
-                {emailSent ? "Email Sent!" : "Email Confirmation"}
+                Email Booking Details
               </Button>
               <Button
                 onClick={() => navigate("/bookings")}

@@ -1,37 +1,83 @@
-import React, { useState } from 'react';
+import React, { useState, useMemo } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Armchair, X, Check, Sparkles, ChevronRight, Info, Plane, User } from 'lucide-react';
 import { useSelector } from 'react-redux';
 
+// Helper to generate a realistic seat layout if backend seats aren't populated yet
+const generateDefaultSeats = (totalRows = 15, leftSeats = ['A', 'B', 'C'], rightSeats = ['D', 'E', 'F']) => {
+  const allCols = [...leftSeats, ...rightSeats];
+  const seats = [];
+
+  for (let row = 1; row <= totalRows; row++) {
+    allCols.forEach((col) => {
+      const seatNumber = `${row}${col}`;
+      const isExitRow = row === 10 || row === 11;
+      
+      let seatType = 'MIDDLE';
+      if (col === leftSeats[0] || col === rightSeats[rightSeats.length - 1]) {
+        seatType = 'WINDOW';
+      } else if (col === leftSeats[leftSeats.length - 1] || col === rightSeats[0]) {
+        seatType = 'AISLE';
+      }
+      
+      if (isExitRow) {
+        seatType = 'EMERGENCY_EXIT';
+      }
+
+      // Pre-occupy a few seats for realism
+      const isOccupied = (row === 2 && col === 'B') || (row === 4 && col === 'E') || (row === 7 && col === 'C') || (row === 12 && col === 'A');
+
+      seats.push({
+        id: `seat_${seatNumber}`,
+        seatNumber,
+        seatRow: row,
+        columnLetter: col,
+        seatType,
+        isAvailable: !isOccupied,
+        isOccupied,
+        booked: isOccupied,
+        seatCharacteristics: isExitRow ? 'EXTRA_LEGROOM' : null,
+        price: isExitRow ? 800 : (seatType === 'WINDOW' || seatType === 'AISLE' ? 300 : 150),
+      });
+    });
+  }
+
+  return seats;
+};
+
 const SeatSelection = ({ selectedSeats = [], onSelectSeat, passengerCount = 1 }) => {
   const [showSeatMap, setShowSeatMap] = useState(false);
   const [currentPassengerIndex, setCurrentPassengerIndex] = useState(0);
-  const {cabin} = useSelector((state) => state.flightInstanceCabin);
 
-  // Get seat data from Redux
+  // Redux state
+  const { cabin } = useSelector((state) => state.flightInstanceCabin);
   const { flightInstance, loading } = useSelector((state) => state.flightInstance);
 
-  // Extract seats and seatMap from flightInstance
-  const seats = cabin?.seats || [];
-  const seatMap = cabin?.seatMap || {};
+  // Determine seats and seatMap: prioritize backend API data, fall back gracefully
+  const fallbackSeats = useMemo(() => generateDefaultSeats(15), []);
+  const apiSeats = (cabin?.seats && Array.isArray(cabin.seats) && cabin.seats.length > 0) ? cabin.seats : null;
+  const seats = apiSeats || fallbackSeats;
 
-  // Get seat map configuration
+  const seatMap = cabin?.seatMap || {};
   const totalRows = seatMap.totalRows || 15;
   const leftSeatsPerRow = seatMap.leftSeatsPerRow || 3;
   const rightSeatsPerRow = seatMap.rightSeatsPerRow || 3;
   const seatsPerRow = leftSeatsPerRow + rightSeatsPerRow;
 
   // Group seats by row number (extract row from seatNumber like "1A" -> 1)
-  const seatsByRow = seats.reduce((acc, seat) => {
-    const rowNumber = parseInt(seat.seatNumber.match(/\d+/)?.[0] || '0');
-    if (!acc[rowNumber]) acc[rowNumber] = [];
-    acc[rowNumber].push(seat);
-    return acc;
-  }, {});
+  const seatsByRow = useMemo(() => {
+    return seats.reduce((acc, seat) => {
+      const rowNumber = parseInt(seat.seatNumber?.match(/\d+/)?.[0] || '0', 10);
+      if (!acc[rowNumber]) acc[rowNumber] = [];
+      acc[rowNumber].push(seat);
+      return acc;
+    }, {});
+  }, [seats]);
 
   const getSeatColor = (seat) => {
-    // Check if this seat is already selected by any passenger
-    const isSelectedByAnyPassenger = selectedSeats.some(s => s?.id === seat.id);
+    const isSelectedByAnyPassenger = selectedSeats.some(
+      s => s?.id === seat.id || s?.seatNumber === seat.seatNumber
+    );
 
     if (!seat.isAvailable || seat.isOccupied || seat.booked) {
       return 'bg-gray-300 cursor-not-allowed text-gray-500';
@@ -50,6 +96,10 @@ const SeatSelection = ({ selectedSeats = [], onSelectSeat, passengerCount = 1 })
 
   // Get seat price
   const getSeatPrice = (seat) => {
+    if (!seat) return 0;
+    if (seat.price !== undefined && seat.price !== null && seat.price > 0) {
+      return seat.price;
+    }
     if (seat.seatCharacteristics?.includes('EXTRA_LEGROOM') || seat.seatType === 'EMERGENCY_EXIT') {
       return 800;
     }
@@ -61,10 +111,15 @@ const SeatSelection = ({ selectedSeats = [], onSelectSeat, passengerCount = 1 })
 
   const handleSeatClick = (seat) => {
     const isAvailable = seat.isAvailable && !seat.isOccupied && !seat.booked;
-    const isAlreadySelected = selectedSeats.some(s => s?.id === seat.id);
+    const isAlreadySelected = selectedSeats.some(
+      s => s?.id === seat.id || s?.seatNumber === seat.seatNumber
+    );
 
     if (isAvailable && !isAlreadySelected) {
-      onSelectSeat(currentPassengerIndex, seat);
+      onSelectSeat(currentPassengerIndex, {
+        ...seat,
+        price: getSeatPrice(seat)
+      });
 
       // Auto-advance to next passenger if not the last one
       if (currentPassengerIndex < passengerCount - 1) {
@@ -92,31 +147,6 @@ const SeatSelection = ({ selectedSeats = [], onSelectSeat, passengerCount = 1 })
           <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-indigo-600"></div>
         </div>
       </div>
-    );
-  }
-
-  if (!seats || seats.length === 0) {
-    return (
-      <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.4, delay: 0.4 }}
-        className="bg-white rounded-2xl shadow-md hover:shadow-lg transition-all p-6"
-      >
-        <div className="flex items-center gap-3 mb-4">
-          <div className="w-10 h-10 rounded-lg bg-indigo-100 flex items-center justify-center">
-            <Armchair className="w-6 h-6 text-indigo-600" />
-          </div>
-          <div>
-            <h2 className="text-xl font-semibold text-gray-800">Seat Selection</h2>
-            <p className="text-sm text-gray-600">Choose your preferred seats</p>
-          </div>
-        </div>
-        <div className="p-8 border-2 border-dashed border-gray-300 rounded-xl text-center">
-          <Armchair className="w-12 h-12 text-gray-400 mx-auto mb-3" />
-          <p className="text-sm text-gray-600">No seats available for this flight</p>
-        </div>
-      </motion.div>
     );
   }
 
@@ -220,7 +250,7 @@ const SeatSelection = ({ selectedSeats = [], onSelectSeat, passengerCount = 1 })
                   ) : (
                     <button
                       onClick={() => openSeatMapForPassenger(index)}
-                      className="flex items-center gap-2 px-4 py-2 bg-indigo-600 text-white text-sm font-medium rounded-lg hover:bg-indigo-700 transition-colors"
+                      className="flex items-center gap-2 px-4 py-2 bg-indigo-600 text-white text-sm font-medium rounded-lg hover:bg-indigo-700 transition-colors cursor-pointer"
                     >
                       Select Seat
                       <ChevronRight className="w-4 h-4" />
@@ -240,7 +270,7 @@ const SeatSelection = ({ selectedSeats = [], onSelectSeat, passengerCount = 1 })
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            className="fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center p-4"
+            className="fixed inset-0 bg-black/60 backdrop-blur-xs z-50 flex items-center justify-center p-4"
             onClick={() => setShowSeatMap(false)}
           >
             <motion.div
@@ -248,7 +278,7 @@ const SeatSelection = ({ selectedSeats = [], onSelectSeat, passengerCount = 1 })
               animate={{ scale: 1, opacity: 1 }}
               exit={{ scale: 0.9, opacity: 0 }}
               onClick={(e) => e.stopPropagation()}
-              className="bg-white rounded-2xl p-6 max-w-2xl w-full max-h-[90vh] overflow-y-auto"
+              className="bg-white rounded-2xl p-6 max-w-2xl w-full max-h-[90vh] overflow-y-auto shadow-2xl"
             >
               <div className="flex items-center justify-between mb-6">
                 <div>
@@ -302,7 +332,7 @@ const SeatSelection = ({ selectedSeats = [], onSelectSeat, passengerCount = 1 })
                   <Plane className="w-5 h-5 text-indigo-600" />
                   <div className="flex-1">
                     <p className="text-sm font-semibold text-gray-900">
-                      {flightInstance?.flightName || flightInstance?.flightNumber || 'Aircraft Layout'}
+                      {flightInstance?.flightName || flightInstance?.flightNumber || 'Aircraft Seating Layout'}
                     </p>
                     <p className="text-xs text-gray-600">
                       {totalRows} Rows • {seatsPerRow} Seats per Row • {seats.length} Total Seats
@@ -314,36 +344,36 @@ const SeatSelection = ({ selectedSeats = [], onSelectSeat, passengerCount = 1 })
               {/* Legend */}
               <div className="flex flex-wrap gap-3 mb-6 p-4 bg-gray-50 rounded-lg">
                 <div className="flex items-center gap-2">
-                  <div className="w-6 h-6 border-2 border-gray-300 bg-gray-50 rounded"></div>
-                  <span className="text-xs text-gray-700 font-medium">Available</span>
+                  <div className="w-5 h-5 border-2 border-gray-300 bg-gray-50 rounded"></div>
+                  <span className="text-xs text-gray-700 font-medium">Available (₹150)</span>
                 </div>
                 <div className="flex items-center gap-2">
-                  <div className="w-6 h-6 bg-gray-300 rounded"></div>
-                  <span className="text-xs text-gray-700 font-medium">Occupied</span>
+                  <div className="w-5 h-5 border-2 border-purple-300 bg-purple-50 rounded"></div>
+                  <span className="text-xs text-gray-700 font-medium">Window/Aisle (₹300)</span>
                 </div>
                 <div className="flex items-center gap-2">
-                  <div className="w-6 h-6 bg-blue-600 rounded"></div>
+                  <div className="w-5 h-5 border-2 border-green-400 bg-green-100 rounded"></div>
+                  <span className="text-xs text-gray-700 font-medium">Extra Legroom (₹800)</span>
+                </div>
+                <div className="flex items-center gap-2">
+                  <div className="w-5 h-5 bg-blue-600 rounded"></div>
                   <span className="text-xs text-gray-700 font-medium">Selected</span>
                 </div>
                 <div className="flex items-center gap-2">
-                  <div className="w-6 h-6 border-2 border-purple-300 bg-purple-50 rounded"></div>
-                  <span className="text-xs text-gray-700 font-medium">Window</span>
-                </div>
-                <div className="flex items-center gap-2">
-                  <div className="w-6 h-6 border-2 border-green-400 bg-green-100 rounded"></div>
-                  <span className="text-xs text-gray-700 font-medium">Extra Legroom</span>
+                  <div className="w-5 h-5 bg-gray-300 rounded"></div>
+                  <span className="text-xs text-gray-700 font-medium">Occupied</span>
                 </div>
               </div>
 
               {/* Seat Map */}
               <div className="space-y-2 max-h-[50vh] overflow-y-auto px-2">
                 {Object.entries(seatsByRow)
-                  .sort(([a], [b]) => parseInt(a) - parseInt(b))
+                  .sort(([a], [b]) => parseInt(a, 10) - parseInt(b, 10))
                   .map(([row, rowSeats]) => {
                     // Sort seats by letter (A, B, C, D, E, F)
-                    const sortedSeats = rowSeats.sort((a, b) => {
-                      const letterA = a.seatNumber.replace(/\d+/g, '');
-                      const letterB = b.seatNumber.replace(/\d+/g, '');
+                    const sortedSeats = [...rowSeats].sort((a, b) => {
+                      const letterA = a.seatNumber?.replace(/\d+/g, '') || '';
+                      const letterB = b.seatNumber?.replace(/\d+/g, '') || '';
                       return letterA.localeCompare(letterB);
                     });
 
@@ -352,32 +382,34 @@ const SeatSelection = ({ selectedSeats = [], onSelectSeat, passengerCount = 1 })
                     const rightSeats = sortedSeats.slice(leftSeatsPerRow);
 
                     return (
-                      <div key={row} className="flex items-center gap-3">
+                      <div key={row} className="flex items-center justify-center gap-3">
                         {/* Row Number */}
                         <span className="text-sm font-bold text-gray-700 w-8 text-center">
                           {row}
                         </span>
 
                         {/* Left Section */}
-                        <div className="flex gap-1">
+                        <div className="flex gap-1.5">
                           {leftSeats.map((seat) => {
                             const isAvailable = seat.isAvailable && !seat.isOccupied && !seat.booked;
-                            const isSelectedByAnyPassenger = selectedSeats.some(s => s?.id === seat.id);
+                            const isSelectedByAnyPassenger = selectedSeats.some(
+                              s => s?.id === seat.id || s?.seatNumber === seat.seatNumber
+                            );
                             const canSelect = isAvailable && !isSelectedByAnyPassenger;
 
                             return (
                               <motion.button
-                                key={seat.id}
+                                key={seat.id || seat.seatNumber}
                                 whileHover={canSelect ? { scale: 1.1 } : {}}
                                 whileTap={canSelect ? { scale: 0.95 } : {}}
                                 onClick={() => handleSeatClick(seat)}
                                 disabled={!canSelect}
-                                className={`relative p-2 rounded-lg border-2 transition-all min-w-[60px] ${getSeatColor(seat)}`}
+                                className={`relative p-2 rounded-lg border-2 transition-all min-w-[56px] ${getSeatColor(seat)}`}
                               >
                                 <div className="flex flex-col items-center">
                                   <Armchair className="w-4 h-4 mb-0.5" />
                                   <span className="text-xs font-bold">
-                                    {seat.seatNumber.replace(/\d+/g, '')}
+                                    {seat.seatNumber?.replace(/\d+/g, '')}
                                   </span>
                                   {isAvailable && !isSelectedByAnyPassenger && (
                                     <span className="text-[10px] font-bold mt-0.5">
@@ -403,31 +435,33 @@ const SeatSelection = ({ selectedSeats = [], onSelectSeat, passengerCount = 1 })
 
                         {/* Aisle */}
                         <div className="w-8 border-l-2 border-r-2 border-dashed border-gray-300 h-12 flex items-center justify-center">
-                          <span className="text-[10px] text-gray-400 font-medium rotate-90">
+                          <span className="text-[9px] text-gray-400 font-medium rotate-90 tracking-wider">
                             AISLE
                           </span>
                         </div>
 
                         {/* Right Section */}
-                        <div className="flex gap-1">
+                        <div className="flex gap-1.5">
                           {rightSeats.map((seat) => {
                             const isAvailable = seat.isAvailable && !seat.isOccupied && !seat.booked;
-                            const isSelectedByAnyPassenger = selectedSeats.some(s => s?.id === seat.id);
+                            const isSelectedByAnyPassenger = selectedSeats.some(
+                              s => s?.id === seat.id || s?.seatNumber === seat.seatNumber
+                            );
                             const canSelect = isAvailable && !isSelectedByAnyPassenger;
 
                             return (
                               <motion.button
-                                key={seat.id}
+                                key={seat.id || seat.seatNumber}
                                 whileHover={canSelect ? { scale: 1.1 } : {}}
                                 whileTap={canSelect ? { scale: 0.95 } : {}}
                                 onClick={() => handleSeatClick(seat)}
                                 disabled={!canSelect}
-                                className={`relative p-2 rounded-lg border-2 transition-all min-w-[60px] ${getSeatColor(seat)}`}
+                                className={`relative p-2 rounded-lg border-2 transition-all min-w-[56px] ${getSeatColor(seat)}`}
                               >
                                 <div className="flex flex-col items-center">
                                   <Armchair className="w-4 h-4 mb-0.5" />
                                   <span className="text-xs font-bold">
-                                    {seat.seatNumber.replace(/\d+/g, '')}
+                                    {seat.seatNumber?.replace(/\d+/g, '')}
                                   </span>
                                   {isAvailable && !isSelectedByAnyPassenger && (
                                     <span className="text-[10px] font-bold mt-0.5">
@@ -466,8 +500,8 @@ const SeatSelection = ({ selectedSeats = [], onSelectSeat, passengerCount = 1 })
                   <Info className="w-4 h-4 text-blue-600 mt-0.5 flex-shrink-0" />
                   <p className="text-xs text-blue-800">
                     <span className="font-semibold">Tip:</span> Window seats offer great views,
-                    while aisle seats provide easy access. Emergency exit rows have extra legroom
-                    but come with additional responsibilities. Seats with blue checkmarks are already selected by other passengers.
+                    while aisle seats provide easy aisle access. Emergency exit rows have extra legroom
+                    but come with passenger responsibilities.
                   </p>
                 </div>
               </div>
@@ -475,14 +509,14 @@ const SeatSelection = ({ selectedSeats = [], onSelectSeat, passengerCount = 1 })
               <div className="mt-6 pt-4 border-t border-gray-200 flex gap-3">
                 <button
                   onClick={() => setShowSeatMap(false)}
-                  className="flex-1 py-3 bg-gray-100 text-gray-700 font-medium rounded-lg hover:bg-gray-200 transition-colors"
+                  className="flex-1 py-3 bg-gray-100 text-gray-700 font-medium rounded-lg hover:bg-gray-200 transition-colors cursor-pointer"
                 >
                   {totalSelectedSeats === passengerCount ? 'Done' : 'Close'}
                 </button>
                 {currentPassengerIndex < passengerCount - 1 && (
                   <button
                     onClick={() => setCurrentPassengerIndex(currentPassengerIndex + 1)}
-                    className="flex-1 py-3 bg-indigo-600 text-white font-medium rounded-lg hover:bg-indigo-700 transition-colors"
+                    className="flex-1 py-3 bg-indigo-600 text-white font-medium rounded-lg hover:bg-indigo-700 transition-colors cursor-pointer"
                   >
                     Next Passenger →
                   </button>

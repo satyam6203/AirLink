@@ -20,4 +20,5 @@ public class UserDTO {
     private UserRole role;
     private String phone;
     private LocalDateTime lastLogin;
+    private LocalDateTime createdAt;
 }

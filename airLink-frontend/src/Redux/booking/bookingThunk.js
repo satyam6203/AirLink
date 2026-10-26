@@ -3,14 +3,14 @@ import { createAsyncThunk } from "@reduxjs/toolkit";
 import api from "@/utils/api";
 import { getHeaders } from "@/utils/getHeaders";
 
-const API_URL = "/api/bookings";
+const API_URL = "/api/booking";
 
 // ---------- CREATE ----------
 export const createBooking = createAsyncThunk(
   "booking/create",
   async (data, { rejectWithValue }) => {
     try {
-      const res = await api.post(API_URL, data, { headers: getHeaders() });
+      const res = await api.post(`${API_URL}/create`, data, { headers: getHeaders() });
       console.log("✅ createBooking success:", res.data);
 
       // Check for checkout URL in the response (checkoutUrl or payment_link_url)
@@ -23,7 +23,8 @@ export const createBooking = createAsyncThunk(
           transactionId: res.data.transactionId,
           razorpayOrderId: res.data.razorpayOrderId,
           amount: res.data.amount,
-          gateway: res.data.gateway
+          gateway: res.data.gateway,
+          checkoutUrl
         }));
 
         // Redirect to payment gateway
@@ -149,7 +150,7 @@ export const deleteBooking = createAsyncThunk(
   "booking/delete",
   async (id, { rejectWithValue }) => {
     try {
-      await api.delete(`${API_URL}/${id}`, { headers: getHeaders() });
+      await api.delete(`${API_URL}/delete/${id}`, { headers: getHeaders() });
       console.log("✅ deleteBooking success:", id);
       return id;
     } catch (err) {

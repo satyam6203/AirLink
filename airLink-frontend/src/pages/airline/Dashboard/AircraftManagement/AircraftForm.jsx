@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+﻿import React, { useState, useEffect } from 'react';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Button } from '@/components/ui/button';
@@ -11,9 +11,9 @@ import { useNavigate } from 'react-router-dom';
 // AircraftStatus enum values from the DTO
 const AIRCRAFT_STATUS = [
   { value: 'ACTIVE', label: 'Active' },
-  { value: 'IN_MAINTENANCE', label: 'In Maintenance' },
-  { value: 'GROUNDED', label: 'Grounded' },
-  { value: 'DELIVERED', label: 'Delivered' },
+  { value: 'MAINTENANCE', label: 'In Maintenance' },
+  { value: 'INACTIVE', label: 'Inactive' },
+  { value: 'RETIRED', label: 'Retired' },
 ];
 
 const AircraftForm = ({ 
@@ -179,9 +179,19 @@ const AircraftForm = ({
       console.log("Form data on submit:", formData, onSave);
         // Handle create aircraft
         
-          console.log("Creating aircraft with data:", formData);
+          const payload = {
+            ...formData,
+            firstClassSeat: formData.firstClassSeats,
+            registrationDate: formData.registrationDate instanceof Date 
+              ? formData.registrationDate.toISOString().split('T')[0] 
+              : (formData.registrationDate || null),
+            nextMaintenanceDate: formData.nextMaintenanceDate instanceof Date 
+              ? formData.nextMaintenanceDate.toISOString().split('T')[0] 
+              : (formData.nextMaintenanceDate || null),
+          };
+          console.log("Creating aircraft with data:", payload);
           try {
-            await dispatch(createAircraft(formData)).unwrap();
+            await dispatch(createAircraft(payload)).unwrap();
             
             setSuccessMessage("Aircraft created successfully");
             // dispatch(listAllAircrafts({ page: currentPage, limit: itemsPerPage }));

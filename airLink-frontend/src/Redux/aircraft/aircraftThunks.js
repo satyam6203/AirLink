@@ -7,7 +7,7 @@ export const createAircraft = createAsyncThunk(
   "aircraft/create",
   async (aircraftData, { rejectWithValue }) => {
     try {
-      const res = await api.post("/api/aircrafts", aircraftData, {
+      const res = await api.post("/api/aircraft/create", aircraftData, {
         headers: getHeaders()
       });
       console.log("Create aircraft success:", res.data);
@@ -26,7 +26,7 @@ export const getAircraftById = createAsyncThunk(
   "aircraft/getById",
   async (aircraftId, { rejectWithValue }) => {
     try {
-      const res = await api.get(`/api/aircrafts/${aircraftId}`, {
+      const res = await api.get(`/api/aircraft/${aircraftId}`, {
         headers: getHeaders()
       });
       console.log("Get aircraft by ID success:", res.data);
@@ -45,7 +45,7 @@ export const listAllAircrafts = createAsyncThunk(
   "aircraft/listAll",
   async (params = {}, { rejectWithValue }) => {
     try {
-      const res = await api.get("/api/aircrafts", {
+      const res = await api.get("/api/aircraft/list", {
         params,
         headers: getHeaders()
       });
@@ -69,7 +69,7 @@ export const updateAircraft = createAsyncThunk(
   "aircraft/update",
   async ({ aircraftId, aircraftData }, { rejectWithValue }) => {
     try {
-      const res = await api.put(`/api/aircrafts/${aircraftId}`, aircraftData, {
+      const res = await api.put(`/api/aircraft/update/${aircraftId}`, aircraftData, {
         headers: getHeaders()
       });
       console.log("Update aircraft success:", res.data);
@@ -88,7 +88,7 @@ export const deleteAircraft = createAsyncThunk(
   "aircraft/delete",
   async (aircraftId, { rejectWithValue }) => {
     try {
-      const res = await api.delete(`/api/aircrafts/${aircraftId}`, {
+      const res = await api.delete(`/api/aircraft/delete/${aircraftId}`, {
         headers: getHeaders()
       });
       console.log("Delete aircraft success:", res.data);

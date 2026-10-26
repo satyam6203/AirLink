@@ -11,5 +11,4 @@ public class AirlineCoreServiceApplication {
 	public static void main(String[] args) {
 		SpringApplication.run(AirlineCoreServiceApplication.class, args);
 	}
-
 }

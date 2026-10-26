@@ -29,16 +29,17 @@ public class AircraftRequest {
     @Positive(message = "Seating capacity must be positive")
     private Integer seatingCapacity;
 
-    @Positive(message = "Economy seats must be positive")
+    @jakarta.validation.constraints.PositiveOrZero(message = "Economy seats must be positive or zero")
     private Integer economySeats;
 
-    @Positive(message = "Premium economy seats must be positive")
+    @jakarta.validation.constraints.PositiveOrZero(message = "Premium economy seats must be positive or zero")
     private Integer premiumEconomySeats;
 
-    @Positive(message = "Business seats must be positive")
+    @jakarta.validation.constraints.PositiveOrZero(message = "Business seats must be positive or zero")
     private Integer businessSeats;
 
-    @Positive(message = "First class seats must be positive")
+    @jakarta.validation.constraints.PositiveOrZero(message = "First class seats must be positive or zero")
+    @com.fasterxml.jackson.annotation.JsonAlias({"firstClassSeats"})
     private Integer firstClassSeat;
 
     @Positive(message = "Range must be positive")

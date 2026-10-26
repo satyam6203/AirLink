@@ -10,7 +10,7 @@ export const createAirport = createAsyncThunk(
   "airport/create",
   async (airportData, { rejectWithValue }) => {
     try {
-      const res = await api.post("/api/airports", airportData, {
+      const res = await api.post("/api/airports/create", airportData, {
         headers: getHeaders()
       });
       console.log("Create airport success:", res.data);
@@ -50,7 +50,7 @@ export const listAllAirports = createAsyncThunk(
   "airport/listAll",
   async (_, { rejectWithValue }) => {
     try {
-      const res = await api.get("/api/airports", {
+      const res = await api.get("/api/airports/all", {
         headers: getHeaders()
       });
       console.log("List all airports success:", res.data);
@@ -88,7 +88,7 @@ export const deleteAirport = createAsyncThunk(
   "airport/delete",
   async (airportId, { rejectWithValue }) => {
     try {
-      await api.delete(`/api/airports/${airportId}`, {
+      await api.delete(`/api/airports/delete/${airportId}`, {
         headers: getHeaders()
       });
       console.log("Delete airport success:", airportId);

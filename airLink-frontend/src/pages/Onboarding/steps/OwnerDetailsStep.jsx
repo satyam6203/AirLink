@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+﻿import React, { useState, useEffect } from 'react';
 import { Formik, Form, Field, ErrorMessage } from 'formik';
 import * as Yup from 'yup';
 import { useDispatch } from 'react-redux';
@@ -9,112 +9,42 @@ import { User, Mail, Phone, Lock, Loader2, Eye, EyeOff, CheckCircle, AlertCircle
 import { signup } from '@/Redux/auth/authThunk';
 import { getUserProfile } from '@/Redux/user/userThunks';
 
-  const validationSchema = Yup.object({
-    fullName: Yup.string()
-      .required('Full name is required')
-      .min(2, 'Full name must be at least 2 characters'),
-    email: Yup.string()
-      .email('Invalid email format')
-      .required('Email is required'),
-    phone: Yup.string()
-      .required('Phone number is required')
-      .matches(/^\+?[\d\s\-\(\)]+$/, 'Invalid phone number format'),
-    password: Yup.string()
-      .required('Password is required')
-      .min(8, 'Password must be at least 8 characters')
-      .matches(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)/, 'Password must contain at least one uppercase letter, one lowercase letter, and one number'),
-    confirmPassword: Yup.string()
-      .required('Please confirm your password')
-      .oneOf([Yup.ref('password')], 'Passwords must match')
-  });
-const OwnerDetailsStep = ({ data, onDataChange, onNext }) => {
-  const dispatch = useDispatch();
-  const [isSubmitting, setIsSubmitting] = useState(false);
-  const [submitError, setSubmitError] = useState('');
+const validationSchema = Yup.object({
+  fullName: Yup.string()
+    .required('Full name is required')
+    .min(2, 'Full name must be at least 2 characters'),
+  email: Yup.string()
+    .email('Invalid email format')
+    .required('Email is required'),
+  phone: Yup.string()
+    .required('Phone number is required')
+    .matches(/^\+?[\d\s\-\(\)]+$/, 'Invalid phone number format'),
+  password: Yup.string()
+    .required('Password is required')
+    .min(8, 'Password must be at least 8 characters')
+    .matches(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)/, 'Password must contain at least one uppercase letter, one lowercase letter, and one number'),
+  confirmPassword: Yup.string()
+    .required('Please confirm your password')
+    .oneOf([Yup.ref('password')], 'Passwords must match')
+});
+
+// Password strength calculator
+const calculatePasswordStrength = (password) => {
+  if (!password) return 0;
+  let strength = 0;
+  if (password.length >= 8) strength += 1;
+  if (/[a-z]/.test(password)) strength += 1;
+  if (/[A-Z]/.test(password)) strength += 1;
+  if (/\d/.test(password)) strength += 1;
+  if (/[^\w\s]/.test(password)) strength += 1;
+  return strength;
+};
+
+// FormField defined outside OwnerDetailsStep to prevent unmounting and focus loss on keystrokes
+const FormField = ({ name, label, type = 'text', icon: Icon, isPassword = false, passwordStrength = 0, ...props }) => {
   const [showPassword, setShowPassword] = useState(false);
-  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
-  const [passwordStrength, setPasswordStrength] = useState(0);
 
-
-
-  const initialValues = {
-    fullName: data?.fullName || '',
-    email: data?.email || '',
-    phone: data?.phone || '',
-    password: data?.password || '',
-    confirmPassword: data?.confirmPassword || ''
-  };
-
-  const handleSubmit = async (values, { setFieldError }) => {
-    setIsSubmitting(true);
-    setSubmitError('');
-
-    try {
-      // Dispatch signup thunk
-      const signupResult = await dispatch(signup({
-        fullName: values.fullName,
-        email: values.email,
-        phone: values.phone,
-        password: values.password,
-        role: 'ROLE_AIRLINE_OWNER'
-      })).unwrap();
-
-      if (signupResult.jwt) {
-        // Fetch user profile using thunk
-        const profileResult = await dispatch(getUserProfile(signupResult.jwt)).unwrap();
-        localStorage.setItem("jwt",signupResult.jwt)
-        // Update form data
-        onDataChange({
-          ...values,
-          userId: profileResult.id,
-          jwt: signupResult.jwt
-        });
-
-        // Proceed to next step
-        onNext();
-      }
-    } catch (error) {
-      setIsSubmitting(false);
-
-      if (error.includes('already registered') || error.includes('email already exists')) {
-        setFieldError('email', 'This email is already registered');
-      } else {
-        setSubmitError(error || 'An error occurred during registration. Please try again.');
-      }
-    }
-  };
-
-  const fetchUserProfile = async () => {  
-    const jwt = localStorage.getItem('jwt');
-    if (jwt) {
-      const response = await dispatch(getUserProfile(jwt)).unwrap();
-      if (response && response.id) {
-        console.log("User profile fetched successfully", response);
-        onNext();
-      }
-    }
-  };
-
-  
-  useEffect( () => {
-    const jwt = localStorage.getItem('jwt');
-    if (jwt) {
-      fetchUserProfile();
-    }
-  }, [data]);
-
-  // Password strength calculator
-  const calculatePasswordStrength = (password) => {
-    let strength = 0;
-    if (password.length >= 8) strength += 1;
-    if (/[a-z]/.test(password)) strength += 1;
-    if (/[A-Z]/.test(password)) strength += 1;
-    if (/\d/.test(password)) strength += 1;
-    if (/[^\w\s]/.test(password)) strength += 1;
-    return strength;
-  };
-
-  const FormField = ({ name, label, type = 'text', icon: Icon, isPassword = false, ...props }) => (
+  return (
     <div className="space-y-2">
       <Label htmlFor={name} className="text-gray-700 flex items-center gap-2 font-medium">
         {Icon && <Icon className="w-4 h-4 text-gray-500" />}
@@ -143,13 +73,13 @@ const OwnerDetailsStep = ({ data, onDataChange, onNext }) => {
         )}
       </Label>
       <Field name={name}>
-        {({ field, meta, form }) => (
+        {({ field, meta }) => (
           <div className="relative">
             <Input
               {...field}
               {...props}
               id={name}
-              type={isPassword ? (name === 'password' ? (showPassword ? 'text' : 'password') : (showConfirmPassword ? 'text' : 'password')) : type}
+              type={isPassword ? (showPassword ? 'text' : 'password') : type}
               className={`transition-all duration-300 hover:shadow-md focus:shadow-lg pr-10 ${
                 meta.touched && meta.error
                   ? 'border-red-500 focus:border-red-500 focus:ring-red-500/20'
@@ -157,21 +87,15 @@ const OwnerDetailsStep = ({ data, onDataChange, onNext }) => {
                   ? 'border-green-500 focus:border-green-500 focus:ring-green-500/20'
                   : 'border-gray-300 focus:border-blue-500 focus:ring-blue-500/20'
               }`}
-              onChange={(e) => {
-                field.onChange(e);
-                if (name === 'password') {
-                  setPasswordStrength(calculatePasswordStrength(e.target.value));
-                }
-              }}
             />
             {/* Password visibility toggle */}
             {isPassword && (
               <button
                 type="button"
-                onClick={() => name === 'password' ? setShowPassword(!showPassword) : setShowConfirmPassword(!showConfirmPassword)}
+                onClick={() => setShowPassword(!showPassword)}
                 className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-gray-600 transition-colors"
               >
-                {(name === 'password' ? showPassword : showConfirmPassword) ? (
+                {showPassword ? (
                   <EyeOff className="w-4 h-4" />
                 ) : (
                   <Eye className="w-4 h-4" />
@@ -199,6 +123,77 @@ const OwnerDetailsStep = ({ data, onDataChange, onNext }) => {
       )}
     </div>
   );
+};
+
+const OwnerDetailsStep = ({ data, onDataChange, onNext }) => {
+  const dispatch = useDispatch();
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [submitError, setSubmitError] = useState('');
+
+  const initialValues = {
+    fullName: data?.fullName || '',
+    email: data?.email || '',
+    phone: data?.phone || '',
+    password: data?.password || '',
+    confirmPassword: data?.confirmPassword || ''
+  };
+
+  const handleSubmit = async (values, { setFieldError }) => {
+    setIsSubmitting(true);
+    setSubmitError('');
+
+    try {
+      // Dispatch signup thunk
+      const signupResult = await dispatch(signup({
+        fullName: values.fullName,
+        email: values.email,
+        phone: values.phone,
+        password: values.password,
+        role: 'ROLE_AIRLINE_OWNER'
+      })).unwrap();
+
+      if (signupResult.jwt) {
+        // Fetch user profile using thunk
+        const profileResult = await dispatch(getUserProfile(signupResult.jwt)).unwrap();
+        localStorage.setItem("jwt", signupResult.jwt);
+        // Update form data
+        onDataChange({
+          ...values,
+          userId: profileResult.id,
+          jwt: signupResult.jwt
+        });
+
+        // Proceed to next step
+        onNext();
+      }
+    } catch (error) {
+      setIsSubmitting(false);
+
+      if (error && (error.includes('already registered') || error.includes('email already exists'))) {
+        setFieldError('email', 'This email is already registered');
+      } else {
+        setSubmitError(error || 'An error occurred during registration. Please try again.');
+      }
+    }
+  };
+
+  const fetchUserProfile = async () => {  
+    const jwt = localStorage.getItem('jwt');
+    if (jwt) {
+      const response = await dispatch(getUserProfile(jwt)).unwrap();
+      if (response && response.id) {
+        console.log("User profile fetched successfully", response);
+        onNext();
+      }
+    }
+  };
+
+  useEffect(() => {
+    const jwt = localStorage.getItem('jwt');
+    if (jwt) {
+      fetchUserProfile();
+    }
+  }, [data]);
 
   return (
     <div className="space-y-8">
@@ -223,6 +218,8 @@ const OwnerDetailsStep = ({ data, onDataChange, onNext }) => {
         enableReinitialize
       >
         {({ values, isValid, dirty }) => {
+          const passwordStrength = calculatePasswordStrength(values.password || '');
+
           return (
             <Form className="space-y-4">
               <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
@@ -257,6 +254,7 @@ const OwnerDetailsStep = ({ data, onDataChange, onNext }) => {
                   placeholder="Create a secure password"
                   icon={Lock}
                   isPassword={true}
+                  passwordStrength={passwordStrength}
                 />
 
                 <FormField

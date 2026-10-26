@@ -1,15 +1,41 @@
-import axios from 'axios';
+import axios from "axios";
 
-const localHost="http://localhost:9000"
-// const vpsIP="http://194.164.148.89:5000"
-// const deployed="https://codewithzosh.tech"
+const baseURL =
+  import.meta.env.VITE_API_BASE_URL?.replace(/\/$/, "") ||
+  "http://localhost:9000";
 
 const api = axios.create({
-  baseURL: localHost,
+  baseURL,
+  timeout: 30000,
   headers: {
-    'Content-Type': 'application/json',
+    "Content-Type": "application/json",
   },
 });
 
-export default api;
+api.interceptors.request.use((config) => {
+  const token = localStorage.getItem("jwt");
+  if (token) {
+    config.headers = config.headers || {};
+    config.headers.Authorization = `Bearer ${token}`;
+  }
+  return config;
+});
 
+api.interceptors.response.use(
+  (response) => response,
+  (error) => {
+    const data = error.response?.data;
+    const message =
+      (typeof data === "string" && data) ||
+      data?.message ||
+      data?.error ||
+      (Array.isArray(data?.errors) ? data.errors.join(", ") : null) ||
+      error.message ||
+      "Request failed";
+
+    error.normalizedMessage = message;
+    return Promise.reject(error);
+  },
+);
+
+export default api;

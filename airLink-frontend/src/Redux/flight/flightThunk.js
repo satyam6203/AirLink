@@ -9,7 +9,7 @@ export const createFlight = createAsyncThunk(
   "flight/create",
   async (flightData, { rejectWithValue }) => {
     try {
-      const res = await api.post(API_URL, flightData, { headers: getHeaders() });
+      const res = await api.post(`${API_URL}/create`, flightData, { headers: getHeaders() });
       console.log("✅ createFlight success:", res.data);
       return res.data;
     } catch (err) {
@@ -41,7 +41,7 @@ export const updateFlight = createAsyncThunk(
   "flight/update",
   async ({ id, flightData }, { rejectWithValue }) => {
     try {
-      const res = await api.put(`${API_URL}/${id}`, flightData, { headers: getHeaders() });
+      const res = await api.put(`${API_URL}/update/${id}`, flightData, { headers: getHeaders() });
       console.log("✅ updateFlight success:", res.data);
       return res.data;
     } catch (err) {
@@ -56,7 +56,7 @@ export const deleteFlight = createAsyncThunk(
   "flight/delete",
   async (id, { rejectWithValue }) => {
     try {
-      await api.delete(`${API_URL}/${id}`, { headers: getHeaders() });
+      await api.delete(`${API_URL}/delete/${id}`, { headers: getHeaders() });
       console.log("✅ deleteFlight success:", id);
       return id;
     } catch (err) {

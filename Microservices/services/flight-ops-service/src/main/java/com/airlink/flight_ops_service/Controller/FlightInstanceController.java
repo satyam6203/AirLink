@@ -1,12 +1,10 @@
 package com.airlink.flight_ops_service.Controller;
 
 import com.airlink.flight_ops_service.Service.FlightInstanceService;
-import jakarta.persistence.EntityListeners;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -14,7 +12,6 @@ import payload.request.FlightInstanceRequest;
 import payload.response.FlightInstanceResponse;
 
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 
 @RestController
 @RequiredArgsConstructor
@@ -31,6 +28,23 @@ public class FlightInstanceController {
         return ResponseEntity.status(HttpStatus.CREATED).body(
                 flightInstanceService.createFlightInstance(userId,request)
         );
+    }
+
+    @GetMapping("/search")
+    public ResponseEntity<Page<FlightInstanceResponse>> searchFlightInstances(
+            @RequestParam(required = false) Long departureAirportId,
+            @RequestParam(required = false) Long arrivalAirportId,
+            @RequestParam(required = false) Long airlineId,
+            @RequestParam(required = false) LocalDate onDate,
+            Pageable pageable
+    ) {
+        return ResponseEntity.ok(flightInstanceService.searchFlightInstances(
+                departureAirportId,
+                arrivalAirportId,
+                airlineId,
+                onDate,
+                pageable
+        ));
     }
 
     @GetMapping("/{id}")

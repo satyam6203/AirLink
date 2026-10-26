@@ -9,7 +9,7 @@ export const createMeal = createAsyncThunk(
   "meal/create",
   async (mealData, { rejectWithValue }) => {
     try {
-      const response = await api.post("/api/meals", mealData, {
+      const response = await api.post("/api/meals/create", mealData, {
         headers: getHeaders(),
       });
       return response.data;
@@ -71,7 +71,7 @@ export const searchMeals = createAsyncThunk(
   "meal/search",
   async ({ keyword, page = 0, size = 20 }, { rejectWithValue }) => {
     try {
-      const response = await api.get("/api/meals/search", {
+      const response = await api.get("/api/meals/all", {
         params: { keyword, page, size },
         headers: getHeaders(),
       });
@@ -91,7 +91,7 @@ export const updateMeal = createAsyncThunk(
   "meal/update",
   async ({ mealId, mealData }, { rejectWithValue }) => {
     try {
-      const response = await api.put(`/api/meals/${mealId}`, mealData, {
+      const response = await api.put(`/api/meals/update/${mealId}`, mealData, {
         headers: getHeaders(),
       });
       return response.data;
@@ -134,7 +134,7 @@ export const deleteMeal = createAsyncThunk(
   "meal/delete",
   async (mealId, { rejectWithValue }) => {
     try {
-      await api.delete(`/api/meals/${mealId}`, {
+      await api.delete(`/api/meals/delete/${mealId}`, {
         headers: getHeaders(),
       });
       return mealId;

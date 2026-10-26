@@ -176,8 +176,8 @@ public class RouteConfig {
     }
 
     private ServerRequest requiredRole(ServerRequest request, String role){
-        String roles = request.headers().firstHeader("X-User-Role");
-        if(role == null || !roles.contains(role)){
+        String roles = request.headers().firstHeader("X-User-Roles");
+        if(roles == null || !roles.contains(role)){
             throw new ResponseStatusException(HttpStatus.UNAUTHORIZED,
                     "access denied, required role" + role + " ");
         }

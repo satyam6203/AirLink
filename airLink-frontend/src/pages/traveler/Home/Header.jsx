@@ -24,11 +24,19 @@ const Header = () => {
   const { isAuthenticated, user } = useSelector((state) => state.auth);
 
   useEffect(() => {
-    dispatch(getUserProfile(localStorage.getItem("jwt")));
-  }, []);
+    const token = localStorage.getItem("jwt");
+    if (token && !user) {
+      dispatch(getUserProfile(token));
+    }
+  }, [dispatch, user]);
 
   const navigationLinks = [
     { name: "Home", href: "/", current: location.pathname === "/" },
+    {
+      name: "Search Flights",
+      href: "/traveler",
+      current: location.pathname === "/traveler",
+    },
     {
       name: "My Bookings",
       href: "/bookings",
@@ -142,7 +150,7 @@ const Header = () => {
                   <Link to="/login">Login</Link>
                 </Button>
                 <Button asChild>
-                  <Link to="/signup">Sign Up</Link>
+                  <Link to="/register">Sign Up</Link>
                 </Button>
               </>
             )}
@@ -244,7 +252,7 @@ const Header = () => {
                       </Button>
                       <Button asChild className="w-full">
                         <Link
-                          to="/signup"
+                          to="/register"
                           onClick={() => setIsMobileMenuOpen(false)}
                         >
                           Sign Up

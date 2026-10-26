@@ -168,12 +168,12 @@ const FlightSearchBar = ({ onSearch, className }) => {
       className
     )}>
       {/* Trip Type Tabs */}
-      <div className="bg-gradient-to-br from-slate-50 via-white to-blue-50/30 dark:from-slate-800 dark:via-slate-800 dark:to-slate-800 px-8 py-6 border-b border-gray-200 dark:border-slate-700">
-        <div className="flex space-x-2 bg-white dark:bg-slate-800 rounded-2xl p-2 shadow-sm border border-gray-200 dark:border-slate-700">
+      <div className="bg-gradient-to-br from-slate-50 via-white to-blue-50/30 dark:from-slate-800 dark:via-slate-800 dark:to-slate-800 px-4 sm:px-8 py-4 sm:py-6 border-b border-gray-200 dark:border-slate-700">
+        <div className="grid grid-cols-3 gap-1 sm:gap-2 bg-white dark:bg-slate-800 rounded-2xl p-1.5 sm:p-2 shadow-sm border border-gray-200 dark:border-slate-700">
           <button
             onClick={() => setTripType("roundTrip")}
             className={cn(
-              "px-8 py-3 rounded-xl text-sm font-bold transition-all duration-300 relative overflow-hidden",
+              "px-2 sm:px-8 py-2.5 sm:py-3 rounded-xl text-xs sm:text-sm font-bold transition-all duration-300 relative overflow-hidden",
               tripType === "roundTrip"
                 ? "bg-gradient-to-r from-blue-600 to-indigo-600 text-white shadow-lg shadow-blue-500/30"
                 : "text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white hover:bg-gray-50 dark:hover:bg-slate-700"
@@ -184,7 +184,7 @@ const FlightSearchBar = ({ onSearch, className }) => {
           <button
             onClick={() => setTripType("oneWay")}
             className={cn(
-              "px-8 py-3 rounded-xl text-sm font-bold transition-all duration-300",
+              "px-2 sm:px-8 py-2.5 sm:py-3 rounded-xl text-xs sm:text-sm font-bold transition-all duration-300",
               tripType === "oneWay"
                 ? "bg-gradient-to-r from-blue-600 to-indigo-600 text-white shadow-lg shadow-blue-500/30"
                 : "text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white hover:bg-gray-50 dark:hover:bg-slate-700"
@@ -195,7 +195,7 @@ const FlightSearchBar = ({ onSearch, className }) => {
           <button
             onClick={() => setTripType("multiCity")}
             className={cn(
-              "px-8 py-3 rounded-xl text-sm font-bold transition-all duration-300",
+              "px-2 sm:px-8 py-2.5 sm:py-3 rounded-xl text-xs sm:text-sm font-bold transition-all duration-300",
               tripType === "multiCity"
                 ? "bg-gradient-to-r from-blue-600 to-indigo-600 text-white shadow-lg shadow-blue-500/30"
                 : "text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white hover:bg-gray-50 dark:hover:bg-slate-700"
@@ -206,10 +206,10 @@ const FlightSearchBar = ({ onSearch, className }) => {
         </div>
       </div>
 
-      <div className="p-8">
+      <div className="p-4 sm:p-8">
         {/* Combined Flight Search Section - All in One Line */}
         <div className="bg-gradient-to-r from-gray-50 to-blue-50/30 dark:from-slate-800 dark:to-slate-800 rounded-2xl p-1 mb-6">
-          <div className="flex items-center justify-between ">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:flex lg:items-stretch gap-2">
             {/* From */}
             <div className="relative group">
               <div className="p-4 rounded-2xl bg-white dark:bg-slate-900 hover:shadow-lg transition-all duration-300 border-2 border-transparent hover:border-blue-400 dark:hover:border-blue-600 h-full">
@@ -233,7 +233,7 @@ const FlightSearchBar = ({ onSearch, className }) => {
                           </div>
                         </div>
                       </SelectTrigger>
-                      <SelectContent className="w-[450px] max-h-[400px]">
+                      <SelectContent className="w-[min(450px,calc(100vw-2rem))] max-h-[400px]">
                         {airports.map((airport) => (
                           <SelectItem key={airport.id} value={airport.id.toString()} className="py-4 cursor-pointer">
                             
@@ -298,7 +298,7 @@ const FlightSearchBar = ({ onSearch, className }) => {
                           </div>
                         </div>
                       </SelectTrigger>
-                      <SelectContent className="w-[450px] max-h-[400px]">
+                      <SelectContent className="w-[min(450px,calc(100vw-2rem))] max-h-[400px]">
                         {airports.filter(airport => airport.id !== searchData.departureAirportId).map((airport) => (
                           <SelectItem key={airport.id} value={airport.id.toString()} className="py-4 cursor-pointer">
                             <div className="flex items-center gap-4">

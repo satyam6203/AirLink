@@ -29,7 +29,7 @@ export const getAllUsers = createAsyncThunk(
   "user/getAll",
   async (_, { rejectWithValue }) => {
     try {
-      const res = await api.get("/api/users", { headers: getHeaders() });
+      const res = await api.get("/api/users/all", { headers: getHeaders() });
       console.log("Get all users success:", res.data);
       return res.data;
     } catch (err) {
@@ -46,7 +46,7 @@ export const getUserById = createAsyncThunk(
   "user/getById",
   async (userId, { rejectWithValue }) => {
     try {
-      const res = await api.get(`/users/${userId}`);
+      const res = await api.get(`/api/users/${userId}`);
       console.log("Get user by ID success:", res.data);
       return res.data;
     } catch (err) {

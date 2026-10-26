@@ -1,4 +1,4 @@
-import * as React from "react"
+﻿import * as React from "react"
 import { useLocation, useNavigate } from "react-router-dom"
 import {
   Plus,
@@ -17,6 +17,8 @@ import AirlineSidebar from "../Sidebar/AirlineSidebar"
 import AirlineRoutes from "../routes/AirlineRoutes"
 import { useSelector, useDispatch } from "react-redux"
 import { getFlightsByAirline } from "@/Redux/flight/flightThunk"
+import { listAllAircrafts } from "@/Redux/aircraft/aircraftThunks"
+import { getBookingsByAirline } from "@/Redux/booking/bookingThunk"
 
 
 
@@ -51,38 +53,62 @@ const AirlineDashboard = () => {
   const activeSection = getActiveSectionFromPath(location.pathname)
   const [isSidebarCollapsed, setIsSidebarCollapsed] = React.useState(false)
   
-  // Existing flight management state
-  const {flights}=useSelector(state=>state.flight)
- 
+  // Existing flight, aircraft, and booking management state
+  const { flights = [] } = useSelector(state => state.flight || {})
+  const { aircrafts = [] } = useSelector(state => state.aircraft || {})
+  const { bookings = [] } = useSelector(state => state.booking || {})
 
   const [statusFilter, setStatusFilter] = React.useState("all")
   const [routeFilter, setRouteFilter] = React.useState("all")
 
-
-
-  // Load flights on component mount
+  // Load flights, fleet aircraft, and bookings on component mount
   React.useEffect(() => {
     dispatch(getFlightsByAirline());
+    dispatch(listAllAircrafts());
+    dispatch(getBookingsByAirline());
   }, [dispatch])
 
-
-console.log("flightList ",flights)
-
-
- 
-
   const dashboardStats = React.useMemo(() => {
-    const flightList = flights|| [];
+    const flightList = Array.isArray(flights) ? flights : [];
+    const aircraftList = Array.isArray(aircrafts) ? aircrafts : [];
+    const bookingList = Array.isArray(bookings) ? bookings : [];
+
+    const totalFlights = flightList.length;
+    const activeFlights = flightList.filter(f => {
+      const s = String(f.status || "").toUpperCase();
+      return !f.status || s === "SCHEDULED" || s === "ACTIVE" || s === "IN_AIR" || s === "BOARDING" || s === "0";
+    }).length;
+    const totalAircraft = aircraftList.length;
+    const totalBookings = bookingList.length;
+
+    // Calculate revenue from bookings
+    const revenue = bookingList.reduce((sum, b) => {
+      return sum + Number(b.totalAmount || b.totalPrice || b.amount || 0);
+    }, 0);
+
+    // Calculate average occupancy
+    let totalCap = 0;
+    let totalBooked = 0;
+    flightList.forEach(f => {
+      const cap = Number(f.aircraft?.seatingCapacity || f.aircraft?.totalSeats || 0);
+      const avail = Number(f.totalAvailableSeats ?? cap);
+      if (cap > 0) {
+        totalCap += cap;
+        totalBooked += Math.max(0, cap - avail);
+      }
+    });
+
+    const avgOccupancy = totalCap > 0 ? Math.round((totalBooked / totalCap) * 100) : (totalFlights > 0 ? 75 : 0);
+
     return {
-      totalFlights: flightList.length,
-      activeFlights: flightList.filter(f => f.status === "Active").length,
-      totalBookings: flightList.reduce((sum, f) => sum + (f.bookings || 0), 0),
-      avgOccupancy: flightList.length > 0
-        ? Math.round(flightList.reduce((sum, f) => sum + (f.occupancy || 0), 0) / flightList.length)
-        : 0,
-      revenue: flightList.reduce((sum, f) => sum + ((f.bookings || 0) * (f.pricing?.economy || 0)), 0)
+      totalFlights,
+      activeFlights,
+      totalAircraft,
+      totalBookings,
+      avgOccupancy,
+      revenue
     };
-  }, [flights])
+  }, [flights, aircrafts, bookings])
 
   // Handle sidebar section changes
   const handleSectionChange = (sectionId) => {
@@ -302,25 +328,29 @@ console.log("flightList ",flights)
             {/* Quick Stats - Show on overview */}
             {activeSection === "overview" && (
               <div className="grid grid-cols-1 md:grid-cols-5 gap-4 mt-6">
-                <div className="bg-gradient-to-br from-blue-50 to-blue-100 p-4 rounded-xl border border-blue-200">
-                  <div className="text-2xl font-bold text-blue-600">{dashboardStats.totalFlights}</div>
-                  <div className="text-sm text-blue-800">Total Flights</div>
+                <div className="bg-gradient-to-br from-blue-50 to-blue-100 dark:from-blue-950/40 dark:to-blue-900/30 p-4 rounded-xl border border-blue-200 dark:border-blue-800">
+                  <div className="text-2xl font-bold text-blue-600 dark:text-blue-400">{dashboardStats.totalFlights}</div>
+                  <div className="text-sm font-medium text-blue-800 dark:text-blue-300">Total Flights</div>
                 </div>
-                <div className="bg-gradient-to-br from-green-50 to-green-100 p-4 rounded-xl border border-green-200">
-                  <div className="text-2xl font-bold text-green-600">{dashboardStats.activeFlights}</div>
-                  <div className="text-sm text-green-800">Active Flights</div>
+                <div className="bg-gradient-to-br from-green-50 to-green-100 dark:from-green-950/40 dark:to-green-900/30 p-4 rounded-xl border border-green-200 dark:border-green-800">
+                  <div className="text-2xl font-bold text-green-600 dark:text-green-400">{dashboardStats.activeFlights}</div>
+                  <div className="text-sm font-medium text-green-800 dark:text-green-300">Active Flights</div>
                 </div>
-                <div className="bg-gradient-to-br from-purple-50 to-purple-100 p-4 rounded-xl border border-purple-200">
-                  <div className="text-2xl font-bold text-purple-600">{dashboardStats.totalBookings}</div>
-                  <div className="text-sm text-purple-800">Total Bookings</div>
+                <div className="bg-gradient-to-br from-purple-50 to-purple-100 dark:from-purple-950/40 dark:to-purple-900/30 p-4 rounded-xl border border-purple-200 dark:border-purple-800">
+                  <div className="text-2xl font-bold text-purple-600 dark:text-purple-400">{dashboardStats.totalAircraft}</div>
+                  <div className="text-sm font-medium text-purple-800 dark:text-purple-300">Fleet Aircraft</div>
                 </div>
-                <div className="bg-gradient-to-br from-orange-50 to-orange-100 p-4 rounded-xl border border-orange-200">
-                  <div className="text-2xl font-bold text-orange-600">{dashboardStats.avgOccupancy}%</div>
-                  <div className="text-sm text-orange-800">Avg Occupancy</div>
+                <div className="bg-gradient-to-br from-orange-50 to-orange-100 dark:from-orange-950/40 dark:to-orange-900/30 p-4 rounded-xl border border-orange-200 dark:border-orange-800">
+                  <div className="text-2xl font-bold text-orange-600 dark:text-orange-400">{dashboardStats.avgOccupancy}%</div>
+                  <div className="text-sm font-medium text-orange-800 dark:text-orange-300">Avg Occupancy</div>
                 </div>
-                <div className="bg-gradient-to-br from-indigo-50 to-indigo-100 p-4 rounded-xl border border-indigo-200">
-                  <div className="text-2xl font-bold text-indigo-600">₹{(dashboardStats.revenue / 100000).toFixed(1)}L</div>
-                  <div className="text-sm text-indigo-800">Revenue</div>
+                <div className="bg-gradient-to-br from-indigo-50 to-indigo-100 dark:from-indigo-950/40 dark:to-indigo-900/30 p-4 rounded-xl border border-indigo-200 dark:border-indigo-800">
+                  <div className="text-2xl font-bold text-indigo-600 dark:text-indigo-400">
+                    {dashboardStats.revenue >= 100000
+                        ? "\u20B9" + ((dashboardStats.revenue || 0) / 100000).toFixed(1) + "L"
+                        : "\u20B9" + (dashboardStats.revenue || 0).toLocaleString("en-IN")}
+                  </div>
+                  <div className="text-sm font-medium text-indigo-800 dark:text-indigo-300">Revenue</div>
                 </div>
               </div>
             )}
@@ -330,11 +360,13 @@ console.log("flightList ",flights)
         {/* Main Content */}
         <ScrollArea className="flex-1 p-6">
           <AirlineRoutes
+            flights={flights}
+            filteredFlights={flights}
+            dashboardStats={dashboardStats}
             statusFilter={statusFilter}
             setStatusFilter={setStatusFilter}
             routeFilter={routeFilter}
             setRouteFilter={setRouteFilter}
-          
           />
         </ScrollArea>
       </div>

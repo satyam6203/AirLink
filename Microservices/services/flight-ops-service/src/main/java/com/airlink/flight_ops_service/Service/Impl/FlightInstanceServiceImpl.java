@@ -82,6 +82,19 @@ public class FlightInstanceServiceImpl implements FlightInstanceService {
         ).map(this::convertToFlightInstanceResponse);
     }
 
+
+    @Override
+    public Page<FlightInstanceResponse> searchFlightInstances(Long departureAirportId,
+                                                              Long arrivalAirportId,
+                                                              Long airlineId,
+                                                              LocalDate onDate,
+                                                              Pageable pageable) {
+        LocalDateTime start = onDate != null ? onDate.atStartOfDay() : null;
+        LocalDateTime end = onDate != null ? onDate.plusDays(1).atStartOfDay() : null;
+        return flightInstanceRepo.searchPublic(
+                departureAirportId, arrivalAirportId, airlineId, start, end, pageable
+        ).map(this::convertToFlightInstanceResponse);
+    }
     @Override
     public FlightInstanceResponse updateLightInstance(Long id, FlightInstanceRequest request) throws Exception {
         FlightInstance existing = flightInstanceRepo.findById(id).orElseThrow(

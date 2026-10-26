@@ -8,7 +8,7 @@ export const createPolicy = createAsyncThunk(
   "baggagePolicy/create",
   async (data, { rejectWithValue }) => {
     try {
-      const res = await api.post("/api/baggage-policies", data, { headers: getHeaders() });
+      const res = await api.post("/api/baggage-policies/create", data, { headers: getHeaders() });
       console.log("✅ createPolicy success:", res.data);
       return res.data;
     } catch (err) {
@@ -38,7 +38,7 @@ export const updatePolicy = createAsyncThunk(
   "baggagePolicy/update",
   async ({ id, data }, { rejectWithValue }) => {
     try {
-      const res = await api.put(`/api/baggage-policies/${id}`, data, { headers: getHeaders() });
+      const res = await api.put(`/api/baggage-policies/update/${id}`, data, { headers: getHeaders() });
       console.log("✅ updatePolicy success:", res.data);
       return res.data;
     } catch (err) {
@@ -53,7 +53,7 @@ export const deletePolicy = createAsyncThunk(
   "baggagePolicy/delete",
   async (id, { rejectWithValue }) => {
     try {
-      await api.delete(`/api/baggage-policies/${id}`, { headers: getHeaders() });
+      await api.delete(`/api/baggage-policies/delete/${id}`, { headers: getHeaders() });
       console.log("✅ deletePolicy success:", id);
       return id;
     } catch (err) {

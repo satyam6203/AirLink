@@ -55,7 +55,7 @@ public class AircraftResponse {
 
     private Integer totalSeats;
 
-    private boolean isOperational;
+    private boolean operational;
 
     private String requiresMaintenance;
 

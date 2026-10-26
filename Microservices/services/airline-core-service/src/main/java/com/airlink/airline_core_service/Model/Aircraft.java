@@ -82,7 +82,10 @@ public class Aircraft {
     private Instant updatedAt;
 
     public Integer getTotalSeats(){
-        return economySeats + premiumEconomySeats + businessSeats + firstClassSeat;
+        return (economySeats != null ? economySeats : 0)
+                + (premiumEconomySeats != null ? premiumEconomySeats : 0)
+                + (businessSeats != null ? businessSeats : 0)
+                + (firstClassSeat != null ? firstClassSeat : 0);
     }
 
     public boolean isOperational(){

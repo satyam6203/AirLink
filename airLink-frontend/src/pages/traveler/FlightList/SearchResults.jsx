@@ -59,12 +59,9 @@ const SearchResults = () => {
   const [sortBy, setSortBy] = React.useState("price");
   const [sortOrder, setSortOrder] = React.useState("asc");
   const [viewMode, setViewMode] = React.useState("list");
-  const [isLoading, setIsLoading] = React.useState(false);
+  const [isLoading] = React.useState(false);
   const [showMobileFilters, setShowMobileFilters] = React.useState(false);
   const [bookmarkedFlights, setBookmarkedFlights] = React.useState(new Set());
-
-  // Track initial mount to prevent double search
-  const isInitialMount = React.useRef(true);
 
   // Enhanced filters state
   const [filters, setFilters] = React.useState({
@@ -167,7 +164,9 @@ const SearchResults = () => {
     dispatch(getAirlinesForDropdown());
   }, []);
 
-  // Search on component mount with URL params
+  // Re-search only when the route (URL search params) changes. Filtering and
+  // sorting are applied client-side below because the instance search endpoint
+  // does not accept filter/sort parameters.
   React.useEffect(() => {
     if (
       searchData.departureAirportId &&
@@ -180,50 +179,12 @@ const SearchResults = () => {
         passengers: searchData.passengers,
         cabinClass: searchData.cabinClass,
         departureDate: searchData.departureDate?.toISOString().split("T")[0],
-        ...buildFilterParams(filters),
         ...buildSortParams(),
       };
 
-      // console.log("search data with filters and sorting", data);
-
       dispatch(searchFlightsAvailability(data));
     }
-  }, []);
-
-  // Re-search when filters or sorting change
-  React.useEffect(() => {
-    // Skip the initial render (already searched on mount)
-    if (isInitialMount.current) {
-      isInitialMount.current = false;
-      return;
-    }
-
-    if (
-      searchData.departureAirportId &&
-      searchData.arrivalAirportId &&
-      searchData.departureDate
-    ) {
-      // Debounce the search to avoid too many requests
-      const timeoutId = setTimeout(() => {
-        const data = {
-          departureAirportId: searchData.departureAirportId,
-          arrivalAirportId: searchData.arrivalAirportId,
-          passengers: searchData.passengers,
-          cabinClass: searchData.cabinClass,
-          departureDate: searchData.departureDate?.toISOString().split("T")[0],
-          ...buildFilterParams(filters),
-          ...buildSortParams(),
-        };
-
-        console.log("re-searching with filters and sorting", data);
-
-        dispatch(searchFlightsAvailability(data));
-      }, 500); // 500ms debounce
-
-      return () => clearTimeout(timeoutId);
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [filters, sortBy, sortOrder]);
+  }, [searchParams.toString()]);
 
   // Handler functions
   const handleBookmark = (flight) => {
@@ -249,6 +210,99 @@ const SearchResults = () => {
     });
   };
 
+  const matchesTimeRange = (dateTime, range) => {
+    if (!range || range === "any" || !dateTime) return true;
+    const hour = new Date(dateTime).getHours();
+    switch (range) {
+      case "morning":
+        return hour >= 6 && hour < 12;
+      case "afternoon":
+        return hour >= 12 && hour < 18;
+      case "evening":
+        return hour >= 18 && hour < 24;
+      case "night":
+        return hour >= 0 && hour < 6;
+      default:
+        return true;
+    }
+  };
+
+  const displayedFlights = React.useMemo(() => {
+    const flights = searchResults?.content || [];
+
+    const filtered = flights.filter((flight) => {
+      if (
+        filters.airlines.length > 0 &&
+        !filters.airlines.some(
+          (id) =>
+            String(id) === String(flight.airlineId) ||
+            String(id) === String(flight.flight?.airlineId),
+        )
+      ) {
+        return false;
+      }
+
+      const price = flight.lowestFare ?? flight.fare?.totalPrice;
+      if (price != null) {
+        if (
+          price < filters.priceRange.min ||
+          price > filters.priceRange.max
+        ) {
+          return false;
+        }
+      }
+
+      if (!matchesTimeRange(flight.departureDateTime, filters.departureTimeRange)) {
+        return false;
+      }
+
+      if (!matchesTimeRange(flight.arrivalDateTime, filters.arrivalTimeRange)) {
+        return false;
+      }
+
+      if (filters.maxDuration < 1440) {
+        const minutes =
+          (new Date(flight.arrivalDateTime) -
+            new Date(flight.departureDateTime)) /
+          60000;
+        if (Number.isFinite(minutes) && minutes > filters.maxDuration) {
+          return false;
+        }
+      }
+
+      if (
+        filters.alliance &&
+        filters.alliance !== "any" &&
+        flight.alliance &&
+        String(flight.alliance).toLowerCase() !==
+          String(filters.alliance).toLowerCase()
+      ) {
+        return false;
+      }
+
+      return true;
+    });
+
+    const direction = sortOrder === "desc" ? -1 : 1;
+    const valueOf = (flight) => {
+      switch (sortBy) {
+        case "duration":
+          return (
+            new Date(flight.arrivalDateTime) -
+            new Date(flight.departureDateTime)
+          );
+        case "departureTime":
+        case "departure":
+          return new Date(flight.departureDateTime).getTime();
+        case "price":
+        default:
+          return flight.lowestFare ?? Number.MAX_SAFE_INTEGER;
+      }
+    };
+
+    return [...filtered].sort((a, b) => (valueOf(a) - valueOf(b)) * direction);
+  }, [searchResults, filters, sortBy, sortOrder]);
+
   // Get unique airlines for filter from flights data
 
   // Get airport names for search data display
@@ -262,7 +316,7 @@ const SearchResults = () => {
   }
 
   // Show error state if search failed
-  if (error && searchResults?.content?.length === 0) {
+  if (error && !searchLoading) {
     return (
       <div className="min-h-screen bg-background flex items-center justify-center">
         <div className="text-center space-y-4 max-w-md mx-auto px-4">
@@ -421,7 +475,7 @@ const SearchResults = () => {
                   sortOrder={sortOrder}
                   onSortChange={setSortBy}
                   onSortOrderChange={setSortOrder}
-                  resultsCount={searchResults?.content?.length}
+                  resultsCount={displayedFlights.length}
                   viewMode={viewMode}
                   onViewModeChange={setViewMode}
                   className="animate-slide-in-top bg-white/90 dark:bg-slate-800/90 backdrop-blur-md shadow-lg"
@@ -432,7 +486,7 @@ const SearchResults = () => {
             {/* Flight Results with enhanced cards */}
             {isLoading ? (
               <SearchResultsLoading count={5} />
-            ) : searchResults?.content?.length === 0 ? (
+            ) : displayedFlights.length === 0 ? (
               <NoResultsFound onClearFilters={clearAllFilters} />
             ) : (
               <div
@@ -442,7 +496,7 @@ const SearchResults = () => {
                     : "space-y-4",
                 )}
               >
-                {searchResults?.content?.map((flight, index) => (
+                {displayedFlights.map((flight, index) => (
                   <div
                     key={flight.id}
                     className="animate-fade-in relative group"
@@ -465,19 +519,11 @@ const SearchResults = () => {
               </div>
             )}
 
-            {/* Load More Button - for pagination simulation */}
-            {searchResults?.content?.length > 0 && !isLoading && (
-              <div className="flex justify-center pt-8">
-                <div className="relative group">
-                  <div className="absolute -inset-1 bg-gradient-to-r from-blue-500 to-purple-500 rounded-xl blur opacity-30 group-hover:opacity-60 transition-opacity duration-300"></div>
-                  <Button
-                    variant="outline"
-                    className="relative px-8 py-3 bg-white dark:bg-slate-800 backdrop-blur-sm hover:bg-white dark:hover:bg-slate-800 transition-all duration-200 shadow-lg hover:shadow-xl border-blue-200 dark:border-blue-800 font-semibold"
-                  >
-                    Load more flights
-                  </Button>
-                </div>
-              </div>
+            {displayedFlights.length > 0 && (
+              <p className="text-center text-sm text-muted-foreground pt-6">
+                Showing {displayedFlights.length} of{" "}
+                {searchResults?.totalResults || displayedFlights.length} flights
+              </p>
             )}
           </div>
         </div>

@@ -23,7 +23,7 @@ public class AircraftServiceImpl implements AircraftService {
     @Override
     public AircraftResponse createAircraft(AircraftRequest request, Long ownerId) throws Exception {
 
-        Airline airline = airLineRepo.findById(ownerId).orElseThrow(
+        Airline airline = airLineRepo.findByOwnerId(ownerId).orElseThrow(
                 () -> new Exception("Airline not found for this ownerId")
         );
 

@@ -55,9 +55,10 @@ const FlightPricingModal = ({ isOpen, onClose, flight, onSelectFare }) => {
     }
   }, [flight]);
 
-  // Reset page when cabin class changes
+  // Reset page and selected fare when cabin class changes
   useEffect(() => {
     setCurrentPage(0);
+    setSelectedFare(null);
   }, [selectedCabinClass]);
 
   // Cabin class definitions (static UI data)
@@ -157,7 +158,12 @@ const FlightPricingModal = ({ isOpen, onClose, flight, onSelectFare }) => {
     if (cabinClasses.length) {
       setSelectedCabinClass(cabinClasses[0]);
     }
-  }, cabinClasses);
+  }, [cabinClasses]);
+
+  const handleCabinChange = (code) => {
+    const cabin = cabinClasses.find((item) => item.code === code);
+    if (cabin) setSelectedCabinClass(cabin);
+  };
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
@@ -219,33 +225,29 @@ const FlightPricingModal = ({ isOpen, onClose, flight, onSelectFare }) => {
         </div>
 
         {/* Cabin Class Tabs */}
-        <Tabs value={selectedCabinClass} onValueChange={setSelectedCabinClass}>
+        <Tabs
+          value={selectedCabinClass?.code || ""}
+          onValueChange={handleCabinChange}
+        >
           <TabsList
-            className="grid grid-cols-4 h-auto p-1 bg-muted/50
+            className="grid grid-cols-2 sm:grid-cols-4 h-auto p-1 bg-muted/50
           w-full"
           >
             {cabinClasses.map((cabin) => {
-              const Icon = cabin.icon;
-
               return (
                 <TabsTrigger
                   key={cabin.code}
-                  value={cabin}
+                  value={cabin.code}
                   className="flex flex-col items-center gap-1 py-3 data-[state=active]:bg-white data-[state=active]:shadow-md"
                 >
-                  <div className="flex items-center gap-2">
-                    <div
-                      className={cn(
-                        "p-2 rounded-lg bg-gradient-to-br",
-                        cabin.color,
-                      )}
-                    >
-                      {/* <Icon className="h-4 w-4 text-white" /> */}
-                    </div>
-                    <div>
-                      <p className="text-xs font-semibold">{cabin.name}</p>
-                    </div>
-                  </div>
+                  <p className="text-xs font-semibold">
+                    {String(cabin.name || "").replace("_", " ")}
+                  </p>
+                  {cabin.code && (
+                    <span className="text-[10px] text-muted-foreground">
+                      {cabin.code}
+                    </span>
+                  )}
                 </TabsTrigger>
               );
             })}

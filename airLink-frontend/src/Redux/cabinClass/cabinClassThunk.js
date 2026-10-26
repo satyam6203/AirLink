@@ -11,7 +11,7 @@ export const createCabinClass = createAsyncThunk(
   "cabinClass/create",
   async (cabinClassData, { rejectWithValue }) => {
     try {
-      const res = await api.post("/api/cabin-classes", cabinClassData, { headers: getHeaders() });
+      const res = await api.post("/api/cabin-classes/create", cabinClassData, { headers: getHeaders() });
       console.log("✅ createCabinClass success:", res.data);
       return res.data;
     } catch (err) {
@@ -56,7 +56,7 @@ export const updateCabinClass = createAsyncThunk(
   "cabinClass/update",
   async ({ id, data }, { rejectWithValue }) => {
     try {
-      const res = await api.put(`/api/cabin-classes/${id}`, data, { headers: getHeaders() });
+      const res = await api.put(`/api/cabin-classes/update/${id}`, data, { headers: getHeaders() });
       console.log("✅ updateCabinClass success:", res.data);
       return res.data;
     } catch (err) {
@@ -71,7 +71,7 @@ export const deleteCabinClass = createAsyncThunk(
   "cabinClass/delete",
   async (id, { rejectWithValue }) => {
     try {
-      await api.delete(`/api/cabin-classes/${id}`, { headers: getHeaders() });
+      await api.delete(`/api/cabin-classes/delete/${id}`, { headers: getHeaders() });
       console.log("✅ deleteCabinClass success:", id);
       return id;
     } catch (err) {

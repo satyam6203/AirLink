@@ -2,14 +2,14 @@ import { createAsyncThunk } from "@reduxjs/toolkit";
 import api from "@/utils/api";
 import { getHeaders } from "@/utils/getHeaders";
 
-const API_URL = "/api/flight-schedules";
+const API_URL = "/api/schedule";
 
 // ---------- CREATE ----------
 export const createFlightSchedule = createAsyncThunk(
   "flightSchedule/create",
   async (data, { rejectWithValue }) => {
     try {
-      const res = await api.post(API_URL, data, { headers: getHeaders() });
+      const res = await api.post(`${API_URL}/create`, data, { headers: getHeaders() });
       console.log("✅ createFlightSchedule success:", res.data);
       return res.data;
     } catch (err) {

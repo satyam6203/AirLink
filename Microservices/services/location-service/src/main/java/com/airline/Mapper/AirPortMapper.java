@@ -6,6 +6,8 @@ import payload.request.AirportRequest;
 import payload.request.CityRequest;
 import payload.response.AirportResponse;
 
+import java.time.ZoneId;
+
 public class AirPortMapper {
 
     public static Airport toEntity(AirportRequest request){
@@ -13,7 +15,7 @@ public class AirPortMapper {
         return Airport.builder()
                 .iataCode(request.getIataCode())
                 .name(request.getName())
-//                .timeZone(request.getIataCode())
+                .timeZone(request.getTimeZone() != null ? request.getTimeZone().getId() : null)
                 .address(request.getAddress())
                 .geoCode(request.getGeoCode())
                 .build();
@@ -24,11 +26,12 @@ public class AirPortMapper {
         return AirportResponse.builder()
                 .id(airport.getId())
                 .iataCode(airport.getIataCode())
-                .name(airport.getIataCode())
+                .name(airport.getName())
                 .detailedName(airport.getDetailedName())
                 .address(airport.getAddress())
                 .city(CityMapper.toResponse(airport.getCity()))
                 .geoCode(airport.getGeoCode())
+                .timeZone(airport.getTimeZone() != null ? ZoneId.of(airport.getTimeZone()) : null)
                 .build();
     }
 
@@ -43,6 +46,9 @@ public class AirPortMapper {
         }
         if (request.getName() != null) {
             existingAirport.setName(request.getName());
+        }
+        if (request.getTimeZone() != null) {
+            existingAirport.setTimeZone(request.getTimeZone().getId());
         }
         if (request.getAddress() != null) {
             existingAirport.setAddress(request.getAddress());

@@ -4,6 +4,8 @@ import {
   Routes,
   Route,
   useNavigate,
+  useLocation,
+  Navigate,
 } from "react-router-dom";
 import { ThemeProvider } from "./components/theme-provider.jsx";
 import { Toaster } from "./components/ui/sonner.jsx";
@@ -40,8 +42,11 @@ function App() {
     const dispatch = useDispatch();
     
     useEffect(() => {
-      dispatch(getUserProfile(localStorage.getItem("jwt")));
-    }, []);
+      const token = localStorage.getItem("jwt");
+      if (token && !user) {
+        dispatch(getUserProfile(token));
+      }
+    }, [dispatch, user]);
 
 
     console.log("Auth State:", { isAuthenticated, user });
@@ -79,6 +84,35 @@ function App() {
       }
     }, [isAuthenticated, navigate]);
 
+    return children;
+  }
+  // Protected route component for signed-in users
+  function ProtectedRoute({ children }) {
+    const { isAuthenticated } = useSelector((state) => state.auth);
+    const navigate = useNavigate();
+    const location = useLocation();
+    const hasToken = Boolean(localStorage.getItem("jwt"));
+
+    useEffect(() => {
+      if (!hasToken) {
+        navigate("/login", {
+          replace: true,
+          state: { from: `${location.pathname}${location.search}` },
+        });
+      }
+    }, [hasToken, navigate, location.pathname, location.search]);
+
+    if (!hasToken) return null;
+    if (!isAuthenticated) {
+      return (
+        <div className="min-h-screen flex items-center justify-center bg-background">
+          <div className="flex flex-col items-center gap-3 text-muted-foreground">
+            <div className="h-8 w-8 animate-spin rounded-full border-2 border-primary border-t-transparent" />
+            <p className="text-sm">Restoring your session…</p>
+          </div>
+        </div>
+      );
+    }
     return children;
   }
   return (
@@ -146,56 +180,68 @@ function App() {
             <Route
               path="/traveler"
               element={
-                <div>
-                  <Header />
-                  <HomePage />
-                </div>
+                <ProtectedRoute>
+                  <div>
+                    <Header />
+                    <HomePage />
+                  </div>
+                </ProtectedRoute>
               }
             />
             <Route
               path="/search"
               element={
-                <div>
-                  <Header />
-                  <SearchResults />
-                </div>
+                <ProtectedRoute>
+                  <div>
+                    <Header />
+                    <SearchResults />
+                  </div>
+                </ProtectedRoute>
               }
             />
             <Route
               path="/search-results"
               element={
-                <div>
-                  <Header />
-                  <SearchResults />
-                </div>
+                <ProtectedRoute>
+                  <div>
+                    <Header />
+                    <SearchResults />
+                  </div>
+                </ProtectedRoute>
               }
             />
             
             <Route
               path="/booking-review"
               element={
-                <div>
-                  <Header />
-                  <BookingReview />
-                </div>
+                <ProtectedRoute>
+                  <div>
+                    <Header />
+                    <BookingReview />
+                  </div>
+                </ProtectedRoute>
               }
             />
             <Route
               path="/payment"
               element={
-                <div>
-                  <Header />
-                  <PaymentPage />
-                </div>
+                <ProtectedRoute>
+                  <div>
+                    <Header />
+                    <PaymentPage />
+                  </div>
+                </ProtectedRoute>
               }
             />
             <Route
               path="/bookings"
               element={
-                <div>
-                  <Header />
-                  <BookingHistory />
-                </div>
+                <ProtectedRoute>
+                  <div>
+                    <Header />
+                    <BookingHistory />
+                  </div>
+                </ProtectedRoute>
               }
             />
             <Route
@@ -205,10 +251,12 @@ function App() {
             <Route
               path="/view-ticket/:bookingId"
               element={
-                <div>
-                  <Header />
-                  <Ticket />
-                </div>
+                <ProtectedRoute>
+                  <div>
+                    <Header />
+                    <Ticket />
+                  </div>
+                </ProtectedRoute>
               }
             />
             <Route
@@ -232,10 +280,12 @@ function App() {
             <Route
               path="/profile"
               element={
-                <div>
-                  <Header />
-                  <UserProfile />
-                </div>
+                <ProtectedRoute>
+                  <div>
+                    <Header />
+                    <UserProfile />
+                  </div>
+                </ProtectedRoute>
               }
             />
 
@@ -244,6 +294,9 @@ function App() {
 
             {/* Super Admin Dashboard Routes */}
             <Route path="/super-admin/*" element={<SuperAdminDashboard />} />
+
+            {/* Unknown routes go back to landing */}
+            <Route path="*" element={<Navigate to="/" replace />} />
           </Routes>
         </div>
       </Router>

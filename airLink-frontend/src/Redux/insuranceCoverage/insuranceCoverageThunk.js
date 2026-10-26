@@ -7,7 +7,7 @@ export const createInsuranceCoverage = createAsyncThunk(
   "insuranceCoverage/create",
   async (data, { rejectWithValue }) => {
     try {
-      const res = await api.post("/api/insurance-coverages", data, { headers: getHeaders() });
+      const res = await api.post("/api/insurance-coverage/create", data, { headers: getHeaders() });
       console.log("✅ createInsuranceCoverage success:", res.data);
       return res.data;
     } catch (err) {
@@ -22,7 +22,7 @@ export const updateInsuranceCoverage = createAsyncThunk(
   "insuranceCoverage/update",
   async ({ id, data }, { rejectWithValue }) => {
     try {
-      const res = await api.put(`/api/insurance-coverages/${id}`, data, { headers: getHeaders() });
+      const res = await api.put(`/api/insurance-coverage/update/${id}`, data, { headers: getHeaders() });
       console.log("✅ updateInsuranceCoverage success:", res.data);
       return res.data;
     } catch (err) {
@@ -37,7 +37,7 @@ export const deleteInsuranceCoverage = createAsyncThunk(
   "insuranceCoverage/delete",
   async (id, { rejectWithValue }) => {
     try {
-      await api.delete(`/api/insurance-coverages/${id}`, { headers: getHeaders() });
+      await api.delete(`/api/insurance-coverage/delete/${id}`, { headers: getHeaders() });
       console.log("✅ deleteInsuranceCoverage success:", id);
       return id;
     } catch (err) {
@@ -52,7 +52,7 @@ export const getAllInsuranceCoverages = createAsyncThunk(
   "insuranceCoverage/getAll",
   async (_, { rejectWithValue }) => {
     try {
-      const res = await api.get("/api/insurance-coverages", { headers: getHeaders() });
+      const res = await api.get("/api/insurance-coverage/all", { headers: getHeaders() });
       console.log("✅ getAllInsuranceCoverages success:", res.data);
       return res.data;
     } catch (err) {
@@ -67,7 +67,7 @@ export const getInsuranceCoveragesByAncillaryId = createAsyncThunk(
   "insuranceCoverage/getByAncillaryId",
   async (ancillaryId, { rejectWithValue }) => {
     try {
-      const res = await api.get(`/api/insurance-coverages/ancillary/${ancillaryId}`, { headers: getHeaders() });
+      const res = await api.get(`/api/insurance-coverage/${ancillaryId}`, { headers: getHeaders() });
       console.log("✅ getInsuranceCoveragesByAncillaryId success:", res.data);
       return res.data;
     } catch (err) {
@@ -82,7 +82,7 @@ export const getActiveInsuranceCoveragesByAncillaryId = createAsyncThunk(
   "insuranceCoverage/getActiveByAncillaryId",
   async (ancillaryId, { rejectWithValue }) => {
     try {
-      const res = await api.get(`/api/insurance-coverages/ancillary/${ancillaryId}/active`, { headers: getHeaders() });
+      const res = await api.get(`/api/insurance-coverage/active-coverages/${ancillaryId}`, { headers: getHeaders() });
       console.log("✅ getActiveInsuranceCoveragesByAncillaryId success:", res.data);
       return res.data;
     } catch (err) {
