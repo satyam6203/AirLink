@@ -144,8 +144,18 @@ const aircraftSlice = createSlice({
       })
       .addCase(listAllAircrafts.fulfilled, (state, action) => {
         state.loading = false;
-        state.paginatedAircrafts = action.payload;
-        state.aircrafts = action.payload || action.payload;
+        const list = Array.isArray(action.payload) ? action.payload : (action.payload?.content || []);
+        state.aircrafts = list;
+        state.paginatedAircrafts = {
+          content: list,
+          totalElements: list.length,
+          totalPages: Math.max(1, Math.ceil(list.length / (state.pageSize || 10))),
+          size: state.pageSize || 10,
+          number: state.currentPage || 0,
+          first: (state.currentPage || 0) === 0,
+          last: true,
+          numberOfElements: list.length
+        };
       })
       .addCase(listAllAircrafts.rejected, (state, action) => {
         state.loading = false;
@@ -173,9 +183,11 @@ const aircraftSlice = createSlice({
           state.aircrafts[index] = action.payload;
         }
         // Update in paginated aircrafts
-        const paginatedIndex = state.paginatedAircrafts.content.findIndex(aircraft => aircraft.id === action.payload.id);
-        if (paginatedIndex !== -1) {
-          state.paginatedAircrafts.content[paginatedIndex] = action.payload;
+        if (Array.isArray(state.paginatedAircrafts?.content)) {
+          const paginatedIndex = state.paginatedAircrafts.content.findIndex(aircraft => aircraft.id === action.payload.id);
+          if (paginatedIndex !== -1) {
+            state.paginatedAircrafts.content[paginatedIndex] = action.payload;
+          }
         }
       })
       .addCase(updateAircraft.rejected, (state, action) => {
@@ -196,9 +208,10 @@ const aircraftSlice = createSlice({
         // Remove from aircrafts array
         state.aircrafts = state.aircrafts.filter(aircraft => aircraft.id !== action.payload);
         // Remove from paginated aircrafts
-        state.paginatedAircrafts.content = state.paginatedAircrafts.content.filter(aircraft => aircraft.id !== action.payload);
-        if (state.paginatedAircrafts.numberOfElements > 0) {
-          state.paginatedAircrafts.numberOfElements -= 1;
+        if (Array.isArray(state.paginatedAircrafts?.content)) {
+          state.paginatedAircrafts.content = state.paginatedAircrafts.content.filter(aircraft => aircraft.id !== action.payload);
+          state.paginatedAircrafts.totalElements = state.paginatedAircrafts.content.length;
+          state.paginatedAircrafts.numberOfElements = state.paginatedAircrafts.content.length;
         }
       })
       .addCase(deleteAircraft.rejected, (state, action) => {

@@ -121,7 +121,14 @@ public class FlightCabinAncillaryServiceImpl implements FlightCabinAncillaryServ
 
     @Override
     public Double calculateAncillaryPrice(List<Long> ancillaryIds) {
-        List<FlightCabinAncillary> ancillaries = flightCabinAncillaryRepository.findAllById(ancillaryIds);
+        if (ancillaryIds == null || ancillaryIds.isEmpty()) {
+            return 0.0;
+        }
+        List<Long> validIds = ancillaryIds.stream().filter(java.util.Objects::nonNull).toList();
+        if (validIds.isEmpty()) {
+            return 0.0;
+        }
+        List<FlightCabinAncillary> ancillaries = flightCabinAncillaryRepository.findAllById(validIds);
         double totalPrice = 0;
         for(FlightCabinAncillary ancillary : ancillaries){
             totalPrice += ancillary.getPrice();

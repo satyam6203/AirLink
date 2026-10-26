@@ -4,9 +4,9 @@ import { Label } from '@/components/ui/label';
 import { Button } from '@/components/ui/button';
 import { Checkbox } from '@/components/ui/checkbox';
 import { ScrollArea } from '@/components/ui/scroll-area';
-import { createAircraft } from '@/Redux/aircraft/aircraftThunks';
-import { useDispatch } from 'react-redux';
-import { useNavigate } from 'react-router-dom';
+import { createAircraft, updateAircraft, getAircraftById } from '@/Redux/aircraft/aircraftThunks';
+import { useDispatch, useSelector } from 'react-redux';
+import { useNavigate, useParams } from 'react-router-dom';
 
 // AircraftStatus enum values from the DTO
 const AIRCRAFT_STATUS = [
@@ -21,9 +21,15 @@ const AircraftForm = ({
   onCancel, 
   isEditMode = false, 
   aircraftData = null,
-  loading = false,
-  error = null
+  loading: externalLoading = false,
+  error: externalError = null
 }) => {
+  const { aircraftId: urlAircraftId } = useParams();
+  const effectiveEditMode = isEditMode || Boolean(urlAircraftId);
+  const targetAircraftId = urlAircraftId || aircraftData?.id;
+  const { currentAircraft, loading: reduxLoading, error: reduxError } = useSelector(state => state.aircraft || {});
+  const loading = externalLoading || reduxLoading;
+  const error = externalError || reduxError;
   const [formData, setFormData] = useState({
     code: '',
     model: '',
@@ -49,9 +55,40 @@ const AircraftForm = ({
 
   const [errors, setErrors] = useState({});
 
+  useEffect(() => {
+    if (urlAircraftId && !aircraftData) {
+      dispatch(getAircraftById(urlAircraftId));
+    }
+  }, [dispatch, urlAircraftId, aircraftData]);
+
   // Initialize form with data when editing
   useEffect(() => {
-    if (isEditMode && aircraftData) {
+    const dataToUse = aircraftData || (urlAircraftId && currentAircraft?.id === Number(urlAircraftId) ? currentAircraft : null);
+    if (effectiveEditMode && dataToUse) {
+      setFormData({
+        code: dataToUse.code || '',
+        model: dataToUse.model || '',
+        manufacturer: dataToUse.manufacturer || '',
+        seatingCapacity: dataToUse.seatingCapacity || dataToUse.totalSeats || 0,
+        economySeats: dataToUse.economySeats || 0,
+        premiumEconomySeats: dataToUse.premiumEconomySeats || 0,
+        businessSeats: dataToUse.businessSeats || 0,
+        firstClassSeats: dataToUse.firstClassSeats || dataToUse.firstClassSeat || 0,
+        rangeKm: dataToUse.rangeKm || 0,
+        cruisingSpeedKmh: dataToUse.cruisingSpeedKmh || 0,
+        maxAltitudeFt: dataToUse.maxAltitudeFt || 0,
+        yearOfManufacture: dataToUse.yearOfManufacture || 0,
+        registrationDate: dataToUse.registrationDate ? new Date(dataToUse.registrationDate) : null,
+        nextMaintenanceDate: dataToUse.nextMaintenanceDate ? new Date(dataToUse.nextMaintenanceDate) : null,
+        status: dataToUse.status || 'ACTIVE',
+        isAvailable: dataToUse.isAvailable !== undefined ? dataToUse.isAvailable : true,
+        currentAirportId: dataToUse.currentAirportId || null,
+      });
+    }
+  }, [effectiveEditMode, aircraftData, urlAircraftId, currentAircraft]);
+
+  useEffect(() => {
+    if (false) {
       setFormData({
         code: aircraftData.code || '',
         model: aircraftData.model || '',
@@ -189,17 +226,19 @@ const AircraftForm = ({
               ? formData.nextMaintenanceDate.toISOString().split('T')[0] 
               : (formData.nextMaintenanceDate || null),
           };
-          console.log("Creating aircraft with data:", payload);
+          console.log("Saving aircraft with data:", payload);
           try {
-            await dispatch(createAircraft(payload)).unwrap();
-            
-            setSuccessMessage("Aircraft created successfully");
-            // dispatch(listAllAircrafts({ page: currentPage, limit: itemsPerPage }));
-            // Clear success message after 3 seconds
+            if (effectiveEditMode && targetAircraftId) {
+              await dispatch(updateAircraft({ aircraftId: targetAircraftId, aircraftData: payload })).unwrap();
+              setSuccessMessage("Aircraft updated successfully");
+            } else {
+              await dispatch(createAircraft(payload)).unwrap();
+              setSuccessMessage("Aircraft created successfully");
+            }
             navigate('/airline/aircraft');
             setTimeout(() => setSuccessMessage(""), 3000);
           } catch (error) {
-            console.error("Error creating aircraft:", error);
+            console.error("Error saving aircraft:", error);
           }
         
     }
@@ -505,11 +544,11 @@ const AircraftForm = ({
 
             {/* Form Actions */}
             <div className="flex justify-end gap-3 pt-4 border-t">
-              <Button type="button" variant="outline" onClick={onCancel} disabled={loading}>
+              <Button type="button" variant="outline" onClick={onCancel || (() => navigate('/airline/aircraft'))} disabled={loading}>
                 Cancel
               </Button>
               <Button type="submit" disabled={loading}>
-                {loading ? 'Saving...' : isEditMode ? 'Update Aircraft' : 'Create Aircraft'}
+                {loading ? 'Saving...' : effectiveEditMode ? 'Update Aircraft' : 'Create Aircraft'}
               </Button>
             </div>
           </form>

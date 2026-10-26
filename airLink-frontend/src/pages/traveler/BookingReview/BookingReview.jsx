@@ -341,7 +341,7 @@ const BookingReview = () => {
         seatNumber: selectedSeats[index]
           ? selectedSeats[index].seatNumber
           : null,
-        seatInstanceId: selectedSeats[index] ? selectedSeats[index].id : null,
+        seatInstanceId: (selectedSeats[index] && !isNaN(Number(selectedSeats[index].id))) ? Number(selectedSeats[index].id) : null,
         passportNumber: t.passportNumber || null,
         nationality: t.nationality || "IN",
         frequentFlyerNumber: t.frequentFlyerNumber || null,

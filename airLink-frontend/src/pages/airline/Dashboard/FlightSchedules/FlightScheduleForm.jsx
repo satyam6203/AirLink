@@ -146,10 +146,23 @@ const FlightScheduleForm = () => {
 
   const handleSubmit = async (values, { setSubmitting, setFieldError }) => {
     try {
+      const allDays = ["MONDAY", "TUESDAY", "WEDNESDAY", "THURSDAY", "FRIDAY", "SATURDAY", "SUNDAY"];
+      const operatingDays = values.recurrenceType === "DAILY" ? allDays : (values.operatingDays || []);
+
+      const formatFormDate = (d) => {
+        if (!d) return "";
+        if (d instanceof Date) return d.toISOString().split("T")[0];
+        if (typeof d === "string") return d.split("T")[0];
+        return String(d);
+      };
+
       const formData = {
         ...values,
-        totalSeats: parseInt(values.totalSeats),
-        availableSeats: parseInt(values.availableSeats),
+        operatingDays,
+        startDate: formatFormDate(values.startDate),
+        endDate: formatFormDate(values.endDate),
+        totalSeats: parseInt(values.totalSeats) || undefined,
+        availableSeats: parseInt(values.availableSeats) || undefined,
       };
 
       console.log("flight shedule form data ", formData)

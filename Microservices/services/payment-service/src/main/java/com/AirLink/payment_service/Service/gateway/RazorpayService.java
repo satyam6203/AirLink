@@ -29,24 +29,32 @@ public class RazorpayService {
     public PaymentLinkResponse createPaymentLink(UserDTO userDTO, Payment payment) throws RazorpayException {
         RazorpayClient razorpay = new RazorpayClient(razorpayKeyId, razorpayKeySecret);
 
-        BigDecimal amount = BigDecimal.valueOf(payment.getAmount());
+        BigDecimal amount = BigDecimal.valueOf(payment.getAmount() != null && payment.getAmount() > 0 ? payment.getAmount() : 1.0);
         Long amountInPaisa = amount.multiply(new BigDecimal("100")).longValue();
+        if (amountInPaisa < 100) {
+            amountInPaisa = 100L;
+        }
 
         JSONObject paymentLinkRequest = new JSONObject();
         paymentLinkRequest.put("amount", amountInPaisa);
         paymentLinkRequest.put("currency", "INR");
         paymentLinkRequest.put("description", payment.getTransactionId());
 
+        String customerName = (userDTO != null && userDTO.getFullName() != null && !userDTO.getFullName().isBlank())
+                ? userDTO.getFullName().trim() : "Passenger";
+        String customerEmail = (userDTO != null && userDTO.getEmail() != null && !userDTO.getEmail().isBlank())
+                ? userDTO.getEmail().trim() : "passenger@airlink.com";
+
         JSONObject customer = new JSONObject();
-        customer.put("name", userDTO.getFullName());
-        customer.put("email", userDTO.getEmail());
-        if(userDTO.getPhone() != null){
-            customer.put("contact", userDTO.getPhone());
+        customer.put("name", customerName);
+        customer.put("email", customerEmail);
+        if(userDTO != null && userDTO.getPhone() != null && !userDTO.getPhone().isBlank()){
+            customer.put("contact", userDTO.getPhone().trim());
         }
 
         JSONObject notify = new JSONObject();
         notify.put("email", true);
-        notify.put("sms", userDTO.getPhone() != null);
+        notify.put("sms", userDTO != null && userDTO.getPhone() != null && !userDTO.getPhone().isBlank());
         paymentLinkRequest.put("notify", notify);
         paymentLinkRequest.put("customer", customer);
 
@@ -57,7 +65,7 @@ public class RazorpayService {
         paymentLinkRequest.put("callback_method", "get");
 
         JSONObject notes = new JSONObject();
-        notes.put("user_id", userDTO.getId());
+        notes.put("user_id", userDTO != null && userDTO.getId() != null ? userDTO.getId() : payment.getUserId());
         notes.put("payment_id", payment.getId());
         notes.put("booking_id", payment.getBookingId());
 

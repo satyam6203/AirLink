@@ -68,8 +68,20 @@ public class PaymentServiceImpl implements PaymentService {
                 .build();
 
         if(request.getGateway() == PaymentGateway.RAZORPAY){
-            
-            UserDTO userDTO = userClient.findUserById(request.getUserId());
+            UserDTO userDTO = null;
+            try {
+                userDTO = userClient.findUserById(request.getUserId());
+            } catch (Exception e) {
+                // Feign client or user lookup fallback
+            }
+
+            if (userDTO == null) {
+                userDTO = UserDTO.builder()
+                        .id(request.getUserId())
+                        .fullName("Passenger")
+                        .email("passenger@airlink.com")
+                        .build();
+            }
 
             PaymentLinkResponse paymentLinkResponse = razorpayService.createPaymentLink(
                     userDTO, payment

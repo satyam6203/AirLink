@@ -29,8 +29,8 @@ public class BookingMapper {
                 .contactInfo(request.getContactInfo())
                 .passengers(passengers)
                 .cabinClass(request.getCabinClass())
-                .ancillaryIds(request.getAncillaryIds())
-                .mealIds(request.getMealIds())
+                .ancillaryIds(request.getAncillaryIds() != null ? request.getAncillaryIds() : java.util.Collections.emptyList())
+                .mealIds(request.getMealIds() != null ? request.getMealIds() : java.util.Collections.emptyList())
                 .status(BookingStatus.PENDING)
                 .build();
     }

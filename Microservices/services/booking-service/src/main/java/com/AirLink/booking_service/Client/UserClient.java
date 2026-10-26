@@ -9,6 +9,6 @@ import payload.dto.UserDTO;
 @FeignClient(name = "user-service")
 public interface UserClient {
     
-    @GetMapping("/api/user/{userId}")
+    @GetMapping("/api/users/{userId}")
     UserDTO findUserById(@PathVariable Long userId);
 }

@@ -1,5 +1,6 @@
 package payload.request;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import embeddable.ContactInfo;
 import enums.CabinClassType;
 import enums.TripType;
@@ -8,14 +9,15 @@ import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
-import lombok.RequiredArgsConstructor;
+import lombok.NoArgsConstructor;
 
 import java.util.List;
 
 @Data
-@RequiredArgsConstructor
+@NoArgsConstructor
 @AllArgsConstructor
 @Builder
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class BookingRequest {
 
     @NotNull(message = "Flight ID is required")
@@ -26,6 +28,8 @@ public class BookingRequest {
 
     @NotNull(message = "Cabin class is required")
     private CabinClassType cabinClass;
+
+    private TripType tripType;
 
     @NotNull(message = "Fare ID is required")
     private Long fareId;
@@ -40,4 +44,5 @@ public class BookingRequest {
     private List<Long> mealIds;
 
     private List<String> seatNumbers;
+    private String promoCode;
 }

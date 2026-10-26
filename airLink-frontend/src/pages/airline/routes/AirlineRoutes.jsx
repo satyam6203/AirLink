@@ -97,7 +97,7 @@ const AirlineRoutes = ({
       <Route path="/aircraft/:aircraftId" element={<AircraftDetail />} />
       <Route
         path="/aircraft/:aircraftId/edit"
-        element={<div>Aircraft Edit Form (To be implemented)</div>}
+        element={<AircraftForm />}
       />
       <Route path="/aircraft/new" element={<AircraftForm />} />
 

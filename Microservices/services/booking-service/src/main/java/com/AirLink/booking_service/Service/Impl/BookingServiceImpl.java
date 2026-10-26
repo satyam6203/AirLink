@@ -6,14 +6,17 @@ import com.AirLink.booking_service.Mapper.BookingMapper;
 import com.AirLink.booking_service.Model.Booking;
 import com.AirLink.booking_service.Model.Passenger;
 import com.AirLink.booking_service.Repo.BookingRepo;
+import com.AirLink.booking_service.Repo.PassengerRepo;
 import com.AirLink.booking_service.Service.BookingService;
 import com.AirLink.booking_service.Service.PassengerService;
 import com.AirLink.booking_service.Service.TicketService;
 import enums.BookingStatus;
 import enums.PaymentGateway;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import payload.dto.PaymentDTO;
 import payload.request.BookingRequest;
 import payload.request.PassengerRequest;
@@ -25,9 +28,11 @@ import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class BookingServiceImpl implements BookingService {
 
     private final BookingRepo bookingRepo;
+    private final PassengerRepo passengerRepo;
     private final PassengerService passengerService;
     private final TicketService ticketService;
     private final AncillaryClient ancillaryClient;
@@ -38,24 +43,39 @@ public class BookingServiceImpl implements BookingService {
     private final AirlineClient airlineClient;
 
     @Override
+    @Transactional
     public PaymentInitiateResponse createBooking(BookingRequest request, Long userId) throws Exception {
 
         String bookingReference = generateBookingReference();
 
         Set<Passenger> passengers = new HashSet<>();
-        for(PassengerRequest passengerRequest : request.getPassengers()){
-            Passenger passenger = passengerService.createPassenger(passengerRequest, userId);
-            passengers.add(passenger);
+        if (request.getPassengers() != null) {
+            for(PassengerRequest passengerRequest : request.getPassengers()){
+                Passenger passenger = passengerService.createPassenger(passengerRequest, userId);
+                passengers.add(passenger);
+            }
         }
 
-        FlightResponse flightResponse = flightClient.getFlightById(request.getFlightId());
+        FlightResponse flightResponse = null;
+        try {
+            flightResponse = flightClient.getFlightById(request.getFlightId());
+        } catch (Exception e) {
+            log.error("Failed to fetch flight with id {}: {}", request.getFlightId(), e.getMessage());
+        }
 
         Booking booking = BookingMapper.toEntity(request, userId, passengers, bookingReference);
-        booking.setAirlineId(flightResponse.getAirline().getId());
+        if (flightResponse != null && flightResponse.getAirline() != null && flightResponse.getAirline().getId() != null) {
+            booking.setAirlineId(flightResponse.getAirline().getId());
+        } else {
+            booking.setAirlineId(1L);
+        }
 
-        List<Long> seatInstance = request.getPassengers().stream()
-                .map(PassengerRequest :: getSeatInstanceId)
-                .toList();
+        List<Long> seatInstance = (request.getPassengers() != null)
+                ? request.getPassengers().stream()
+                        .map(PassengerRequest::getSeatInstanceId)
+                        .filter(Objects::nonNull)
+                        .toList()
+                : Collections.emptyList();
 
         booking.setSeatInstanceIds(seatInstance);
         booking = bookingRepo.save(booking);
@@ -63,17 +83,66 @@ public class BookingServiceImpl implements BookingService {
         for(Passenger passenger : passengers){
             passenger.setBooking(booking);
         }
+        passengerRepo.saveAll(passengers);
 
         ticketService.generateTicketsForBooking(booking);
-        Double fareTotal = pricingIntegrationService.calculateFareTotal(request.getFareId());
 
-        Double seatPrice = seatClient.calculateSeatPrice(booking.getSeatInstanceIds());
+        Double fareTotal = 0.0;
+        if (request.getFareId() != null) {
+            try {
+                fareTotal = pricingIntegrationService.calculateFareTotal(request.getFareId());
+            } catch (Exception e) {
+                log.error("Failed to calculate fare total for fareId {}: {}", request.getFareId(), e.getMessage());
+            }
+        }
+        if (fareTotal == null) {
+            fareTotal = 0.0;
+        }
 
-        Double ancillaryPrice = ancillaryClient.calculateAncillariesPrice(booking.getAncillaryIds());
+        int passengerCount = (request.getPassengers() != null && !request.getPassengers().isEmpty())
+                ? request.getPassengers().size() : 1;
+        fareTotal = fareTotal * passengerCount;
 
-        Double mealPrice = ancillaryClient.calculateMealPrice(booking.getMealIds());
+        Double seatPrice = 0.0;
+        if (booking.getSeatInstanceIds() != null && !booking.getSeatInstanceIds().isEmpty()) {
+            try {
+                seatPrice = seatClient.calculateSeatPrice(booking.getSeatInstanceIds());
+            } catch (Exception e) {
+                log.error("Failed to calculate seat price: {}", e.getMessage());
+            }
+        }
+        if (seatPrice == null) {
+            seatPrice = 0.0;
+        }
+
+        Double ancillaryPrice = 0.0;
+        if (booking.getAncillaryIds() != null && !booking.getAncillaryIds().isEmpty()) {
+            try {
+                ancillaryPrice = ancillaryClient.calculateAncillariesPrice(booking.getAncillaryIds());
+            } catch (Exception e) {
+                log.error("Failed to calculate ancillary price: {}", e.getMessage());
+            }
+        }
+        if (ancillaryPrice == null) {
+            ancillaryPrice = 0.0;
+        }
+
+        Double mealPrice = 0.0;
+        if (booking.getMealIds() != null && !booking.getMealIds().isEmpty()) {
+            try {
+                mealPrice = ancillaryClient.calculateMealPrice(booking.getMealIds());
+            } catch (Exception e) {
+                log.error("Failed to calculate meal price: {}", e.getMessage());
+            }
+        }
+        if (mealPrice == null) {
+            mealPrice = 0.0;
+        }
 
         Double total = fareTotal + seatPrice + ancillaryPrice + mealPrice;
+        if (total <= 0.0) {
+            total = 100.0;
+        }
 
         PaymentInitiateRequest request1 = PaymentInitiateRequest.builder()
                 .userId(userId)

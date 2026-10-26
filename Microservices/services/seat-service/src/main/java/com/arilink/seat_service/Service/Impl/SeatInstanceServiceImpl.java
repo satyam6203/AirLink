@@ -21,7 +21,16 @@ public class SeatInstanceServiceImpl implements SeatInstanceService {
 
     @Override
     public Double calculateSeatPrice(List<Long> seatInstanceId) {
-        List<SeatInstance> seatInstances = seatInstanceRepo.findAllById(seatInstanceId);
+        if (seatInstanceId == null || seatInstanceId.isEmpty()) {
+            return 0.0;
+        }
+        List<Long> validIds = seatInstanceId.stream()
+                .filter(java.util.Objects::nonNull)
+                .toList();
+        if (validIds.isEmpty()) {
+            return 0.0;
+        }
+        List<SeatInstance> seatInstances = seatInstanceRepo.findAllById(validIds);
         double price = 0.0;
         for(SeatInstance s : seatInstances){
             double premium = s.getPremiumSurcharge() != null ? s.getPremiumSurcharge() : 0;

@@ -113,7 +113,14 @@ public class FlightMealImpl implements FlightMealService {
 
     @Override
     public Double calculateMealPrice(List<Long> mealIds) {
-        List<FlightMeal> meals = flightMealRepository.findAllById(mealIds);
+        if (mealIds == null || mealIds.isEmpty()) {
+            return 0.0;
+        }
+        List<Long> validIds = mealIds.stream().filter(java.util.Objects::nonNull).toList();
+        if (validIds.isEmpty()) {
+            return 0.0;
+        }
+        List<FlightMeal> meals = flightMealRepository.findAllById(validIds);
         double price = 0.0;
         for(FlightMeal meal : meals){
             price += meal.getPrice();

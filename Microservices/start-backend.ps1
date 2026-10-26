@@ -37,10 +37,8 @@ function Start-Microservice($svc) {
     Write-Host "Starting $($svc.Name) on port $($svc.Port)..." -ForegroundColor Cyan
     $logFile = Join-Path $logsDir "$($svc.Name).log"
     
-    $jvmArgs = "-Dspring-boot.run.jvmArguments=-Xms128m -Xmx256m"
-    $mvnCmd = "mvn -pl $($svc.Path) spring-boot:run `"$jvmArgs`""
-    
-    Start-Process -FilePath "powershell.exe" -ArgumentList "-NoProfile -Command `"$mvnCmd *>&1 | Tee-Object -FilePath '$logFile'`"" -WindowStyle Hidden
+    $mvnCmd = "mvn -pl $($svc.Path) spring-boot:run `'-Dspring-boot.run.jvmArguments=-Xms128m -Xmx256m`'"
+    Start-Process -FilePath "powershell.exe" -WorkingDirectory $rootDir -ArgumentList @("-NoProfile", "-Command", "$mvnCmd *>&1 | Tee-Object -FilePath '$logFile'") -WindowStyle Hidden
 }
 
 # 1. Check MySQL

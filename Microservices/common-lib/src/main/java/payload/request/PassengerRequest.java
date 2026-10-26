@@ -1,18 +1,20 @@
 package payload.request;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import enums.Gender;
 import jakarta.validation.constraints.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
-import lombok.RequiredArgsConstructor;
+import lombok.NoArgsConstructor;
 
 import java.time.LocalDate;
 
 @Data
-@RequiredArgsConstructor
+@NoArgsConstructor
 @AllArgsConstructor
 @Builder
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class PassengerRequest {
 
     @NotBlank(message = "First name is required")
@@ -26,7 +28,7 @@ public class PassengerRequest {
     private String email;
 
     @NotBlank(message = "Phone number is required")
-    @Pattern(regexp = "^\\+[0-9]{1,3}[0-9]{4,14}$", message = "Phone number should be in international format")
+    @Pattern(regexp = "^(\\+)?[0-9]{7,15}$", message = "Phone number should be valid")
     private String phone;
 
     @NotNull(message = "Date of birth is required")
@@ -36,8 +38,40 @@ public class PassengerRequest {
     @NotNull(message = "Gender is required")
     private Gender gender;
 
-    @NotNull(message = "Seat instance ID is required")
-    private Long seatInstanceId;
+    private Object seatInstanceId;
+
+    private String seatNumber;
 
     private String nationality;
+
+    public Long getSeatInstanceId() {
+        if (seatInstanceId == null) {
+            return null;
+        }
+        if (seatInstanceId instanceof Number num) {
+            return num.longValue();
+        }
+        try {
+            return Long.parseLong(seatInstanceId.toString().trim());
+        } catch (NumberFormatException e) {
+            return null;
+        }
+    }
+
+    public void setSeatInstanceId(Object seatInstanceId) {
+        this.seatInstanceId = seatInstanceId;
+    }
+
+    public String getSeatNumber() {
+        if (seatNumber != null && !seatNumber.isBlank()) {
+            return seatNumber;
+        }
+        if (seatInstanceId != null) {
+            String str = seatInstanceId.toString().trim();
+            if (str.startsWith("seat_")) {
+                return str.substring(5);
+            }
+        }
+        return null;
+    }
 }
