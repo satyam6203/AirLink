@@ -11,7 +11,6 @@ import com.airline.ancillary_service.Repo.InsuranceCoverageRepository;
 import com.airline.ancillary_service.service.FlightCabinAncillaryService;
 import enums.AncillaryType;
 import lombok.RequiredArgsConstructor;
-import org.springframework.expression.ExpressionException;
 import org.springframework.stereotype.Service;
 import payload.request.FlightCabinAncillaryRequest;
 import payload.response.FlightCabinAncillaryResponse;

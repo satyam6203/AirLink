@@ -26,6 +26,7 @@
         <module>ancillary-service</module>
         <module>booking-service</module>
         <module>payment-service</module>
+        <module>notification-service</module>
     </modules>
 
 </project>

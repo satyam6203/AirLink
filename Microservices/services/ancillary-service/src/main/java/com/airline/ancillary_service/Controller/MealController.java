@@ -1,6 +1,5 @@
 package com.airline.ancillary_service.Controller;
 
-import com.airline.ancillary_service.Model.Meal;
 import com.airline.ancillary_service.service.MealService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;

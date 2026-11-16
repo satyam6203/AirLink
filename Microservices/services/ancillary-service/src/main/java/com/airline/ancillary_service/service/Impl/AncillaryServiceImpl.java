@@ -8,13 +8,11 @@ import com.airline.ancillary_service.Repo.AncillaryRepository;
 import com.airline.ancillary_service.Repo.InsuranceCoverageRepository;
 import com.airline.ancillary_service.client.AirlineClient;
 import com.airline.ancillary_service.service.AncillaryService;
-import lombok.AllArgsConstructor;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import payload.request.AncillaryRequest;
 import payload.response.AirLineResponse;
-import payload.response.AircraftResponse;
 import payload.response.AncillaryResponse;
 import payload.response.InsuranceCoverageResponse;
 

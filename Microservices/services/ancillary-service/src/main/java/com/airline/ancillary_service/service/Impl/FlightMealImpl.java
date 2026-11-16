@@ -6,7 +6,6 @@ import com.airline.ancillary_service.Model.Meal;
 import com.airline.ancillary_service.Repo.FlightMealRepository;
 import com.airline.ancillary_service.Repo.MealRepository;
 import com.airline.ancillary_service.service.FlightMealService;
-import com.airline.ancillary_service.service.MealService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import payload.request.FlightMealRequest;
